@@ -1,0 +1,6 @@
+@ArtMarketPlaceAPI_HostAddress = http://localhost:5089
+
+GET {{ArtMarketPlaceAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
