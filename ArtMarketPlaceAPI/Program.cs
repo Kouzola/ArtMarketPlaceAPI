@@ -1,6 +1,14 @@
+using Data_Access_Layer.AppDbContext;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+var configuration = builder.Configuration;
+builder.Services.AddDbContext<ArtMarketPlaceDbContext>(options =>
+    {
+        options.UseSqlServer(configuration.GetConnectionString("ArtMarketPlaceDb"));
+    });
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

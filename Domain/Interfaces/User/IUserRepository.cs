@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain_Layer.Interfaces
+namespace Domain_Layer.Interfaces.User
 {
-    internal interface IUserService
+    public interface IUserRepository
     {
     }
 }

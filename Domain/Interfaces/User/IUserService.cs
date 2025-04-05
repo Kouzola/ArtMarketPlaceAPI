@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data_Access_Layer.DbContext
+namespace Domain_Layer.Interfaces.User
 {
-    internal class ArtMarketPlaceDbContext
+    internal interface IUserService
     {
     }
 }
