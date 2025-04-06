@@ -15,14 +15,15 @@ namespace Domain_Layer.Entities
         public string LastName { get; set; }
         public string Email { get; set; }
         public Role Role { get; set; }
-        public bool IsActive { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public bool IsActive { get; set; } = true;
+        public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; set; }
 
         public string FullName
         {
             get{return $"{FirstName} {LastName}";}
         }
+
     }
 
     public enum Role

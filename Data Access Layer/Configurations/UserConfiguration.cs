@@ -26,7 +26,10 @@ namespace Data_Access_Layer.Configurations
             builder.Property(u => u.Email).IsRequired().HasMaxLength(100);
             builder.HasIndex(u => u.Email).IsUnique();
 
-            builder.Property(u => u.Role).IsRequired();
+            builder.Property(u => u.Role).IsRequired().HasConversion(
+                   r => r.ToString(),
+                   r => (Role)Enum.Parse(typeof(Role),r));
+
             builder.Property(u => u.IsActive).IsRequired().HasDefaultValue(true);
 
             builder.Property(g => g.CreatedAt).IsRequired().HasDefaultValueSql("GETDATE()");
