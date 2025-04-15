@@ -16,6 +16,7 @@ namespace Data_Access_Layer.AppDbContext
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new InquiryConfiguration());
         }
 
     }
