@@ -35,7 +35,6 @@ namespace Data_Access_Layer.Configurations
             builder.Property(g => g.CreatedAt).IsRequired().HasDefaultValueSql("GETDATE()");
             builder.Property(g => g.UpdatedAt).IsRequired().HasDefaultValueSql("GETDATE()");
 
-            //Relation Field Configuration
             builder.OwnsOne(u => u.Address, a =>
             {
                 a.Property(p => p.Street).HasColumnName("Street");
@@ -43,6 +42,8 @@ namespace Data_Access_Layer.Configurations
                 a.Property(p => p.PostalCode).HasColumnName("PostalCode");
                 a.Property(p => p.Country).HasColumnName("Country");
             });
+            //Relation Field Configuration
+
             //Customer Role
             builder.HasMany(u => u.Reviews).WithOne(r => r.Customer).HasForeignKey(r => r.CustomerId);
             builder.HasMany(u => u.Inquiries).WithOne(r => r.Customer).HasForeignKey(r => r.CustomerId);
