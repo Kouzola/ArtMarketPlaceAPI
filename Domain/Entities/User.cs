@@ -19,6 +19,10 @@ namespace Domain_Layer.Entities
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; set; }
 
+        //Relation related Field
+        public ICollection<Product> Products { get; } = new List<Product>();
+        public ICollection<Review> Reviews { get; } = new List<Review>();
+
         public string FullName
         {
             get { return $"{FirstName} {LastName}"; }

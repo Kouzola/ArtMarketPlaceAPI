@@ -18,5 +18,10 @@ namespace Domain_Layer.Entities
         public bool Available { get; set; } = true;
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; set; }
+
+        //Relation related Field
+        public User Artisan { get; set; }
+        public int ArtisanId { get; set; }
+        public ICollection<Review> Reviews { get; } = new List<Review>();
     }
 }
