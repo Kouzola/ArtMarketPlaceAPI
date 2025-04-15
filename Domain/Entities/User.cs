@@ -22,6 +22,7 @@ namespace Domain_Layer.Entities
         //Relation related Field
         public ICollection<Product> Products { get; } = new List<Product>();
         public ICollection<Review> Reviews { get; } = new List<Review>();
+        public ICollection<Inquiry> Inquiries { get; } = new List<Inquiry>(); //TODO : Utiliser une vérif métier pour que pas les delivery guy peut avoir des inquiries
 
         public string FullName
         {

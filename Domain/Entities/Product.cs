@@ -22,6 +22,9 @@ namespace Domain_Layer.Entities
         //Relation related Field
         public User Artisan { get; set; }
         public int ArtisanId { get; set; }
+        public Category category { get; set; }
+        public int CategoryId { get; set; }
         public ICollection<Review> Reviews { get; } = new List<Review>();
+
     }
 }
