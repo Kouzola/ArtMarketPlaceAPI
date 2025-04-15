@@ -10,6 +10,7 @@ namespace ArtMarketPlaceAPI.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
+    //TODO : Vérifier les endpoints de la consigne pour adapter peut-être
     public class UserController : ControllerBase
     {
         //CERTAIN GET PEUVENT ETRE AVEC D4AUTRE ROLE QUE ADMIN SINON TT LE RESTE C ADMIN
@@ -81,7 +82,7 @@ namespace ArtMarketPlaceAPI.Controllers
                     LastName = request.LastName,
                     Email = request.Email,
                     Role = request.Role,
-                    IsActive = request.IsActive,
+                    Active = request.Active,
                 });
             return Ok(user);
         }

@@ -30,10 +30,28 @@ namespace Data_Access_Layer.Configurations
                    r => r.ToString(),
                    r => (Role)Enum.Parse(typeof(Role),r));
 
-            builder.Property(u => u.IsActive).IsRequired().HasDefaultValue(true);
+            builder.Property(u => u.Active).IsRequired().HasDefaultValue(true);
 
             builder.Property(g => g.CreatedAt).IsRequired().HasDefaultValueSql("GETDATE()");
             builder.Property(g => g.UpdatedAt).IsRequired().HasDefaultValueSql("GETDATE()");
+
+            //Relation Field Configuration
+            builder.OwnsOne(u => u.Address, a =>
+            {
+                a.Property(p => p.Street).HasColumnName("Street");
+                a.Property(p => p.City).HasColumnName("City");
+                a.Property(p => p.PostalCode).HasColumnName("PostalCode");
+                a.Property(p => p.Country).HasColumnName("Country");
+            });
+            //Customer Role
+            builder.HasMany(u => u.Reviews).WithOne(r => r.Customer).HasForeignKey(r => r.CustomerId);
+            builder.HasMany(u => u.Inquiries).WithOne(r => r.Customer).HasForeignKey(r => r.CustomerId);
+            builder.HasMany(u => u.Orders).WithOne(r => r.Customer).HasForeignKey(r => r.CustomerId);
+            //Artisan Role
+            builder.HasMany(u => u.Products).WithOne(r => r.Artisan).HasForeignKey(r => r.ArtisanId);
+            builder.HasMany(u => u.Inquiries).WithOne(r => r.Artisan).HasForeignKey(r => r.ArtisanId);
+            //DeliveryPartner Role
+            builder.HasMany(u => u.Shipments).WithOne(r => r.DeliveryPartner).HasForeignKey(r => r.DeliveryPartnerId);
         }
     }
 }

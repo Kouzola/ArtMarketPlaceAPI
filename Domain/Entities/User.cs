@@ -16,6 +16,7 @@ namespace Domain_Layer.Entities
         public string Email { get; set; }
         public Role Role { get; set; }
         public bool Active { get; set; } = true;
+        public Address Address { get; set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; set; }
 
@@ -23,12 +24,22 @@ namespace Domain_Layer.Entities
         public ICollection<Product> Products { get; } = new List<Product>();
         public ICollection<Review> Reviews { get; } = new List<Review>();
         public ICollection<Inquiry> Inquiries { get; } = new List<Inquiry>(); //TODO : Utiliser une vérif métier pour que pas les delivery guy peut avoir des inquiries
+        public ICollection<Order> Orders { get; } = new List<Order>();
+        public ICollection<Shipment> Shipments { get; } = new List<Shipment>(); //TODO: Verif métier pour uniquement les delivery guys
 
         public string FullName
         {
             get { return $"{FirstName} {LastName}"; }
         }
 
+    }
+
+    public class Address
+    {
+        public string Street { get; set; }
+        public string City { get; set; }
+        public string PostalCode { get; set; }
+        public string Country { get; set; }
     }
 
     public enum Role

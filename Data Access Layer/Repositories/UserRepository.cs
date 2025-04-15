@@ -22,7 +22,7 @@ namespace Data_Access_Layer.Repositories
 
         public async Task<User?> AddUserAsync(User user)
         {
-            user.IsActive = true;
+            user.Active = true;
             await _context.Users.AddAsync(user);
             if (_context.SaveChanges() > 0) return user;
             else return null;
@@ -66,7 +66,7 @@ namespace Data_Access_Layer.Repositories
             if(!string.IsNullOrWhiteSpace(user.Password)) userToUpdate.Password = user.Password;
             userToUpdate.FirstName = user.FirstName;
             userToUpdate.LastName = user.LastName;
-            userToUpdate.IsActive = user.IsActive;
+            userToUpdate.Active = user.Active;
             userToUpdate.UpdatedAt = DateTime.Now;
             userToUpdate.Role = user.Role;
             
