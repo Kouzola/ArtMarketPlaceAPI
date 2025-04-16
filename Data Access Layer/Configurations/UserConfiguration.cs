@@ -45,12 +45,12 @@ namespace Data_Access_Layer.Configurations
             //Relation Field Configuration
 
             //Customer Role
-            builder.HasMany(u => u.Reviews).WithOne(r => r.Customer).HasForeignKey(r => r.CustomerId).OnDelete(DeleteBehavior.SetNull);
-            builder.HasMany(u => u.Inquiries).WithOne(r => r.Customer).HasForeignKey(r => r.CustomerId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(u => u.Reviews).WithOne(r => r.Customer).HasForeignKey(r => r.CustomerId).OnDelete(DeleteBehavior.ClientSetNull);
+            builder.HasMany(u => u.InquiriesAsCustomer).WithOne(r => r.Customer).HasForeignKey(r => r.CustomerId).OnDelete(DeleteBehavior.Cascade);
             builder.HasMany(u => u.Orders).WithOne(r => r.Customer).HasForeignKey(r => r.CustomerId).OnDelete(DeleteBehavior.NoAction);
             //Artisan Role
             builder.HasMany(u => u.Products).WithOne(r => r.Artisan).HasForeignKey(r => r.ArtisanId).OnDelete(DeleteBehavior.Cascade);
-            builder.HasMany(u => u.Inquiries).WithOne(r => r.Artisan).HasForeignKey(r => r.ArtisanId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(u => u.InquiriesAsArtisan).WithOne(r => r.Artisan).HasForeignKey(r => r.ArtisanId).OnDelete(DeleteBehavior.NoAction); //TODO : Gerer suppresion quand on delete un artiste
             //DeliveryPartner Role
             builder.HasMany(u => u.Shipments).WithOne(r => r.DeliveryPartner).HasForeignKey(r => r.DeliveryPartnerId).OnDelete(DeleteBehavior.NoAction);
         }

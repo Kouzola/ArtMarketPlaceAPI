@@ -12,15 +12,15 @@ namespace Domain_Layer.Entities
         public DateTime ShippingDate { get; set; }
         public DateTime EstimatedArrivalDate { get; set; }
         public DateTime ArrivalDate { get; set; }
-        public string TrackingNumber { get; set; }
+        public string TrackingNumber { get; set; } = null!;
         public ShipmentStatus Status { get; set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; set; }
 
         //Relation related Field
-        public Order Order { get; set; }
+        public Order Order { get; set; } = null!;
         public int OrderId { get; set; }
-        public User DeliveryPartner { get; set; }
+        public User DeliveryPartner { get; set; } = null!;
         public int DeliveryPartnerId { get; set; }
     }
 
