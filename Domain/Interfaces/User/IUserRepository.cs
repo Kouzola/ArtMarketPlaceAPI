@@ -16,5 +16,7 @@ namespace Domain_Layer.Interfaces.User
         Task<Entities.User> UpdateUserAsync(Entities.User user);
         Task<bool> DeleteUserAsync(int id);
 
+        //TODO : Add a ContextSaveChange when we need to change alot of stuff
+
     }
 }

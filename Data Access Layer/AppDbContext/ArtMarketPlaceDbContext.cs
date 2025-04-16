@@ -25,7 +25,6 @@ namespace Data_Access_Layer.AppDbContext
             modelBuilder.ApplyConfiguration(new CustomizationConfiguration());
             modelBuilder.ApplyConfiguration(new PaymentDetailConfiguration());
             modelBuilder.ApplyConfiguration(new OrderProductConfiguration());
-
         }
 
     }
