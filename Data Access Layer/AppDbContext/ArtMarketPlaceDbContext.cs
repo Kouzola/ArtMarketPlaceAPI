@@ -17,6 +17,15 @@ namespace Data_Access_Layer.AppDbContext
         {
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new InquiryConfiguration());
+            modelBuilder.ApplyConfiguration(new OrderConfiguration());
+            modelBuilder.ApplyConfiguration(new ReviewConfiguration());
+            modelBuilder.ApplyConfiguration(new ShipmentConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductConfiguration());
+            modelBuilder.ApplyConfiguration(new CategoryConfiguration());
+            modelBuilder.ApplyConfiguration(new CustomizationConfiguration());
+            modelBuilder.ApplyConfiguration(new PaymentDetailConfiguration());
+            modelBuilder.ApplyConfiguration(new OrderProductConfiguration());
+
         }
 
     }
