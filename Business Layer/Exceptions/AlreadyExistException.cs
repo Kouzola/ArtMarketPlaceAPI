@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data_Access_Layer.Exceptions
+namespace Business_Layer.Exceptions
 {
-    internal class DataAccessException
+    public class AlreadyExistException(string message): Exception(message)
     {
     }
 }

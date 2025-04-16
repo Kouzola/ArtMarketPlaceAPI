@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain_Layer.Interfaces
+namespace Business_Layer.Exceptions
 {
-    internal interface IUserService
+    public class NotFoundException(string message) : Exception(message)
     {
     }
 }
