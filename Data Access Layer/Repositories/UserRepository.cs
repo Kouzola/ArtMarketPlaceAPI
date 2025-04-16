@@ -24,7 +24,7 @@ namespace Data_Access_Layer.Repositories
         {
             user.Active = true;
             await _context.Users.AddAsync(user);
-            if (_context.SaveChanges() > 0) return user;
+            if (await _context.SaveChangesAsync() > 0) return user;
             else return null;
         }
 
@@ -63,16 +63,15 @@ namespace Data_Access_Layer.Repositories
             if (userToUpdate == null) return null;
             userToUpdate.UserName = user.UserName;
             userToUpdate.Email = user.Email;
-            if(!string.IsNullOrWhiteSpace(user.Password)) userToUpdate.Password = user.Password;
+            if (!string.IsNullOrWhiteSpace(user.Password)) userToUpdate.Password = user.Password;
             userToUpdate.FirstName = user.FirstName;
             userToUpdate.LastName = user.LastName;
             userToUpdate.Active = user.Active;
             userToUpdate.UpdatedAt = DateTime.Now;
             userToUpdate.Role = user.Role;
-            
+
             await _context.SaveChangesAsync();
             return userToUpdate;
-
         }
     }
 }
