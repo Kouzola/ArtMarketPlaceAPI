@@ -37,7 +37,7 @@ namespace Domain_Layer.Entities
 
     public enum ShippingOption
     {
-        FAST,
-        NORMAL
+        NORMAL,
+        FAST
     }
 }

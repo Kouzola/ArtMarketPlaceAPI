@@ -28,12 +28,12 @@ namespace Data_Access_Layer.Configurations
 
             builder.Property(u => u.Role).IsRequired().HasConversion(
                    r => r.ToString(),
-                   r => (Role)Enum.Parse(typeof(Role),r));
+                   r => (Role)Enum.Parse(typeof(Role), r));
 
             builder.Property(u => u.Active).IsRequired().HasDefaultValue(true);
 
-            builder.Property(g => g.CreatedAt).IsRequired().HasDefaultValueSql("GETDATE()");
-            builder.Property(g => g.UpdatedAt).IsRequired().HasDefaultValueSql("GETDATE()");
+            builder.Property(u => u.CreatedAt).IsRequired().HasDefaultValueSql("GETDATE()");
+            builder.Property(u => u.UpdatedAt).IsRequired().HasDefaultValueSql("GETDATE()");
 
             builder.OwnsOne(u => u.Address, a =>
             {
@@ -45,14 +45,14 @@ namespace Data_Access_Layer.Configurations
             //Relation Field Configuration
 
             //Customer Role
-            builder.HasMany(u => u.Reviews).WithOne(r => r.Customer).HasForeignKey(r => r.CustomerId);
-            builder.HasMany(u => u.Inquiries).WithOne(r => r.Customer).HasForeignKey(r => r.CustomerId);
-            builder.HasMany(u => u.Orders).WithOne(r => r.Customer).HasForeignKey(r => r.CustomerId);
+            builder.HasMany(u => u.Reviews).WithOne(r => r.Customer).HasForeignKey(r => r.CustomerId).OnDelete(DeleteBehavior.SetNull);
+            builder.HasMany(u => u.Inquiries).WithOne(r => r.Customer).HasForeignKey(r => r.CustomerId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(u => u.Orders).WithOne(r => r.Customer).HasForeignKey(r => r.CustomerId).OnDelete(DeleteBehavior.NoAction);
             //Artisan Role
-            builder.HasMany(u => u.Products).WithOne(r => r.Artisan).HasForeignKey(r => r.ArtisanId);
-            builder.HasMany(u => u.Inquiries).WithOne(r => r.Artisan).HasForeignKey(r => r.ArtisanId);
+            builder.HasMany(u => u.Products).WithOne(r => r.Artisan).HasForeignKey(r => r.ArtisanId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(u => u.Inquiries).WithOne(r => r.Artisan).HasForeignKey(r => r.ArtisanId).OnDelete(DeleteBehavior.Cascade);
             //DeliveryPartner Role
-            builder.HasMany(u => u.Shipments).WithOne(r => r.DeliveryPartner).HasForeignKey(r => r.DeliveryPartnerId);
+            builder.HasMany(u => u.Shipments).WithOne(r => r.DeliveryPartner).HasForeignKey(r => r.DeliveryPartnerId).OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

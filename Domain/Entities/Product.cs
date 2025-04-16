@@ -22,11 +22,11 @@ namespace Domain_Layer.Entities
         //Relation related Field
         public User Artisan { get; set; }
         public int ArtisanId { get; set; }
-        public Category category { get; set; }
+        public Category Category { get; set; }
         public int CategoryId { get; set; }
         public ICollection<Review> Reviews { get; } = new List<Review>();
         public ICollection<Customization> Customizations { get; } = new List<Customization>();
-        public ICollection<Order> Orders { get; }   
+        public ICollection<Order> Orders { get; }
         public ICollection<OrderProduct> OrderProducts { get; } = new List<OrderProduct>();
     }
 }

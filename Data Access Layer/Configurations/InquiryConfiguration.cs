@@ -16,9 +16,11 @@ namespace Data_Access_Layer.Configurations
             builder.HasKey(i => i.Id);
 
             builder.Property(i => i.Title).IsRequired().HasMaxLength(50);
-            builder.Property(i => i.Description).IsRequired();            
+            builder.Property(i => i.Description).IsRequired();
             builder.Property(i => i.WantConsultation).IsRequired();
 
+            builder.Property(i => i.CreatedAt).IsRequired().HasDefaultValueSql("GETDATE()");
+            builder.Property(i => i.UpdatedAt).IsRequired().HasDefaultValueSql("GETDATE()");
         }
     }
 }
