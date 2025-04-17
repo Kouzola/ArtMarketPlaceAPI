@@ -4,6 +4,7 @@ using Business_Layer.Services;
 using Business_Layer.Validators;
 using Data_Access_Layer.AppDbContext;
 using Data_Access_Layer.Repositories;
+using Domain_Layer.Interfaces.Inquiry;
 using Domain_Layer.Interfaces.User;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -24,6 +25,7 @@ builder.Services.AddDbContext<ArtMarketPlaceDbContext>(options =>
 
 //Repositories
 builder.Services.AddScoped<IUserRepository,UserRepository>();
+builder.Services.AddScoped<IInquiryRepository,InquiryRepository>();
 //Services
 builder.Services.AddScoped<IUserService, UserService>();
 //ExceptionHandler
