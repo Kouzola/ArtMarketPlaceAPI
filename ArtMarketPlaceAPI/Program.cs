@@ -37,6 +37,7 @@ builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<UserLoginValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<UserRegisterValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<UserRequestForAdminValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<InquiryRequestValidator>();
 
 //Authentification
 builder.Services.AddAuthentication(opt => {

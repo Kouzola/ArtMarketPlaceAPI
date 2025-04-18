@@ -51,6 +51,7 @@ namespace Data_Access_Layer.Repositories
             inquiryToUpdate.Description = inquiry.Description;
             inquiryToUpdate.WantConsultation = inquiry.WantConsultation;
             inquiryToUpdate.ArtisanId = inquiry.ArtisanId;
+            inquiryToUpdate.UpdatedAt = DateTime.Now;
 
             await _context.SaveChangesAsync();
             return inquiryToUpdate;
