@@ -15,6 +15,7 @@ namespace ArtMarketPlaceAPI.Dto.Mappers
                 WantConsultation = inquiry.WantConsultation,
                 CreatedAt = inquiry.CreatedAt,
                 UpdatedAt = inquiry.UpdatedAt,
+                ArtisanResponse = (inquiry.ArtisanResponse ?? string.Empty),
                 Customer = inquiry.Customer.MapToDto(),
                 Artisan = inquiry.Artisan.MapToDto(),
             };

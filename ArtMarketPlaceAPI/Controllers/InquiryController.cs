@@ -1,7 +1,9 @@
-﻿using ArtMarketPlaceAPI.Dto.Request;
+﻿using ArtMarketPlaceAPI.Dto.Mappers;
+using ArtMarketPlaceAPI.Dto.Request;
 using Domain_Layer.Interfaces.Inquiry;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ArtMarketPlaceAPI.Controllers
 {
@@ -13,27 +15,35 @@ namespace ArtMarketPlaceAPI.Controllers
         private readonly IInquiryService _service = service;
 
         #region GET
-        [HttpGet("artisan/{username}")]
+        [HttpGet("artisan/{artisanId:int}")]
         [Authorize (Roles = "Artisan,Admin")]
-        public async Task<IActionResult> GetInquiriesForAnArtisanByUsername(string username)
+        public async Task<IActionResult> GetInquiriesForAnArtisanByUsername(int artisanId)
         {
-            var inquiries = await _service.GetAllInquiriesForArtistAsync(username);
-            return Ok(inquiries);
+            var currentUserId = User.FindFirst("id")?.Value;
+
+            if (currentUserId != artisanId.ToString() && User.FindFirstValue(ClaimTypes.Role) != "admin") return Forbid();
+
+            var inquiries = await _service.GetAllInquiriesForArtistAsync(artisanId);
+            return Ok(inquiries.Select(i => i.MapToDto()));
         }
 
-        [HttpGet("customer/{username}")]
+        [HttpGet("customer/{customerId:int}")]
         [Authorize(Roles = "Customer, Admin")]
-        public async Task<IActionResult> GetInquiriesForAnCustomerByUsername(string username)
+        public async Task<IActionResult> GetInquiriesForAnCustomerByUsername(int customerId)
         {
-            var inquiries = await _service.GetAllInquiriesFromCustomerAsync(username);
-            return Ok(inquiries);
+            var currentUserId = User.FindFirst("id")?.Value;
+
+            if (currentUserId != customerId.ToString() && User.FindFirstValue(ClaimTypes.Role) != "admin") return Forbid();
+
+            var inquiries = await _service.GetAllInquiriesFromCustomerAsync(customerId);
+            return Ok(inquiries.Select(i => i.MapToDto()));
         }
         #endregion
 
         #region POST
         [HttpPost]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> UpdateInquiry(InquiryRequestDto request)
+        public async Task<IActionResult> AddInquiry(InquiryRequestDto request)
         {
             var inquiry = await _service.AddInquiryAsync(new Domain_Layer.Entities.Inquiry
             {
@@ -43,12 +53,12 @@ namespace ArtMarketPlaceAPI.Controllers
                 CustomerId = request.CustomerId,
                 ArtisanId = request.ArtisanId,
             });
-            return Ok(inquiry);
+            return Ok(inquiry.MapToDto());
         }
         #endregion
 
         #region PUT
-        [HttpPut("{id:int}")]
+        [HttpPut("customer/{id:int}")]
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> AddInquiry(InquiryRequestDto request, int id)
         {
@@ -61,7 +71,20 @@ namespace ArtMarketPlaceAPI.Controllers
                 CustomerId = request.CustomerId,
                 ArtisanId = request.ArtisanId,
             });
-            return Ok(inquiry);
+            return Ok(inquiry.MapToDto());
+        }
+
+        [HttpPut("artisan/{id:int}")]
+        [Authorize(Roles = "Artisan")]
+        public async Task<IActionResult> AnswerToInquiry(int id, [FromBody] string answer)
+        {
+            //Check si l'inquiry lui appartient
+            var currentUserId = User.FindFirst("id")?.Value;
+            var inquiry = await _service.GetInquiriesByIdAsync(id);
+            if (inquiry!.ArtisanId.ToString() != currentUserId) return Forbid();
+            //Repondre
+            var updatedInquiry = await _service.AnswerToInquiry(id, answer);
+            return Ok(updatedInquiry.MapToDto());
         }
         #endregion
 

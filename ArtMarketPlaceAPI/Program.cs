@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +29,7 @@ builder.Services.AddScoped<IUserRepository,UserRepository>();
 builder.Services.AddScoped<IInquiryRepository,InquiryRepository>();
 //Services
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IInquiryService, InquiryService>();
 //ExceptionHandler
 builder.Services.AddExceptionHandler<NotFoundExceptionHandler>();
 builder.Services.AddExceptionHandler<AlreadyExistsExceptionHandler>();
@@ -38,6 +40,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<UserLoginValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<UserRegisterValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<UserRequestForAdminValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<InquiryRequestValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<UserSelfUpdateValidator>();
 
 //Authentification
 builder.Services.AddAuthentication(opt => {
@@ -58,7 +61,11 @@ builder.Services.AddAuthentication(opt => {
                 };
             });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option => {

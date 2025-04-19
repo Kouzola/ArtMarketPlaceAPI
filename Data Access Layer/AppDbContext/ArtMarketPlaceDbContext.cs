@@ -12,7 +12,7 @@ namespace Data_Access_Layer.AppDbContext
     public class ArtMarketPlaceDbContext(DbContextOptions<ArtMarketPlaceDbContext> options) : DbContext(options)
     {
         public DbSet<User> Users { get; set; }
-        public DbSet<Inquiry> Inquiries { get; set; }
+        public DbSet<Inquiry> Inquiry { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Shipment> Shipments { get; set; }

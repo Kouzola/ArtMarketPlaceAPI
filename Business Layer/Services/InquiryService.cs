@@ -3,6 +3,7 @@ using Domain_Layer.Entities;
 using Domain_Layer.Interfaces.Inquiry;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ namespace Business_Layer.Services
             return await _repository.AddInquiryAsync(inquiry);
         }
 
+
         public async Task<bool> DeleteInquiriesAsync(List<int> ids)
         {
            return await _repository.DeleteInquiriesAsync(ids);
@@ -28,14 +30,14 @@ namespace Business_Layer.Services
             return await _repository.DeleteInquiryAsync(id);
         }
 
-        public async Task<IEnumerable<Inquiry>> GetAllInquiriesForArtistAsync(string username)
+        public async Task<IEnumerable<Inquiry>> GetAllInquiriesForArtistAsync(int artisanId)
         {
-            return (await _repository.GetAllInquiriesAsync()).Where(i => i.Artisan.UserName == username);
+            return (await _repository.GetAllInquiriesAsync()).Where(i => i.ArtisanId == artisanId);
         }
 
-        public async Task<IEnumerable<Inquiry>> GetAllInquiriesFromCustomerAsync(string username)
+        public async Task<IEnumerable<Inquiry>> GetAllInquiriesFromCustomerAsync(int customerId)
         {
-            return (await _repository.GetAllInquiriesAsync()).Where(i => i.Customer.UserName == username);
+            return (await _repository.GetAllInquiriesAsync()).Where(i => i.CustomerId == customerId);
         }
 
         public async Task<Inquiry?> GetInquiriesByIdAsync(int id)
@@ -45,11 +47,19 @@ namespace Business_Layer.Services
             return inquiry;
         }
 
-        public async Task<Inquiry?> UpdateInquiryAsync(Inquiry inquiry)
+        public async Task<Inquiry> UpdateInquiryAsync(Inquiry inquiry)
         {
             var inquiryUpdated = await _repository.UpdateInquiryAsync(inquiry);
             if (inquiryUpdated == null) throw new NotFoundException("Inquiry not found!");
             return inquiryUpdated;
+        }
+
+        public async Task<Inquiry> AnswerToInquiry(int inquiryId, string answer)
+        {
+            var inquiry = await GetInquiriesByIdAsync(inquiryId);
+            inquiry!.ArtisanResponse = answer;
+            var updatedInquiry = await _repository.UpdateInquiryAsync(inquiry);
+            return updatedInquiry!;
         }
     }
 }
