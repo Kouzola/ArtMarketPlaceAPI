@@ -24,6 +24,18 @@ namespace Data_Access_Layer.Repositories
             return inquiry;
         }
 
+        public async Task<bool> DeleteInquiriesAsync(List<int> ids)
+        {
+            var inquiries = await _context.Inquiries
+                            .Where(i => ids.Contains(i.Id))
+                            .ToListAsync();
+
+            if (!inquiries.Any()) return false;
+
+            _context.Inquiries.RemoveRange(inquiries);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
         public async Task<bool> DeleteInquiryAsync(int id)
         {
             var inquiry = await _context.Inquiries.FindAsync(id);

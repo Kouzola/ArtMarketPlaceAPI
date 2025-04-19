@@ -13,5 +13,6 @@ namespace Domain_Layer.Interfaces.Inquiry
         Task<Entities.Inquiry> AddInquiryAsync(Entities.Inquiry inquiry);
         Task<Entities.Inquiry?> UpdateInquiryAsync(Entities.Inquiry inquiry);
         Task<bool> DeleteInquiryAsync(int id);
+        Task<bool> DeleteInquiriesAsync(List<int> ids);
     }
 }

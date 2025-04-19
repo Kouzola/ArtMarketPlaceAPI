@@ -1,4 +1,5 @@
-﻿using Domain_Layer.Entities;
+﻿using Business_Layer.Exceptions;
+using Domain_Layer.Entities;
 using Domain_Layer.Interfaces.Inquiry;
 using System;
 using System.Collections.Generic;
@@ -8,43 +9,47 @@ using System.Threading.Tasks;
 
 namespace Business_Layer.Services
 {
-    public class InquiryService(IInquiryService service) : IInquiryService
+    public class InquiryService(IInquiryRepository repository) : IInquiryService
     {
-        private readonly IInquiryService _service = service;
+        private readonly IInquiryRepository _repository = repository;
 
-        public Task<Inquiry> AddInquiryAsync(Inquiry inquiry)
+        public async Task<Inquiry> AddInquiryAsync(Inquiry inquiry)
         {
-            throw new NotImplementedException();
+            return await _repository.AddInquiryAsync(inquiry);
         }
 
-        public Task<bool> DeleteInquiries(List<int> ids)
+        public async Task<bool> DeleteInquiries(List<int> ids)
         {
-            throw new NotImplementedException();
+           return await _repository.DeleteInquiriesAsync(ids);
         }
 
-        public Task<bool> DeleteInquiryAsync(int id)
+        public async Task<bool> DeleteInquiryAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _repository.DeleteInquiryAsync(id);
         }
 
-        public Task<IEnumerable<Inquiry>> GetAllInquiriesForArtistAsync(string username)
+        public async Task<IEnumerable<Inquiry>> GetAllInquiriesForArtistAsync(string username)
         {
-            throw new NotImplementedException();
+            return (await _repository.GetAllInquiriesAsync()).Where(i => i.Artisan.UserName == username);
         }
 
-        public Task<IEnumerable<Inquiry>> GetAllInquiriesFromCustomerAsync(string username)
+        public async Task<IEnumerable<Inquiry>> GetAllInquiriesFromCustomerAsync(string username)
         {
-            throw new NotImplementedException();
+            return (await _repository.GetAllInquiriesAsync()).Where(i => i.Customer.UserName == username);
         }
 
-        public Task<Inquiry?> GetInquiriesByIdAsync(int id)
+        public async Task<Inquiry?> GetInquiriesByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var inquiry = await _repository.GetInquiriesByIdAsync(id);
+            if (inquiry == null) throw new NotFoundException("Inquiry not found!");
+            return inquiry;
         }
 
-        public Task<Inquiry?> UpdateInquiryAsync(Inquiry inquiry)
+        public async Task<Inquiry?> UpdateInquiryAsync(Inquiry inquiry)
         {
-            throw new NotImplementedException();
+            var inquiryUpdated = await _repository.UpdateInquiryAsync(inquiry);
+            if (inquiryUpdated == null) throw new NotFoundException("Inquiry not found!");
+            return inquiryUpdated;
         }
     }
 }
