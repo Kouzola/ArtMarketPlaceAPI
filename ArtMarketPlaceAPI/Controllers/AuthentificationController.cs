@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ArtMarketPlaceAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     public class AuthentificationController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -30,7 +30,14 @@ namespace ArtMarketPlaceAPI.Controllers
         {
             if (registerRequest.Role == Role.Admin) return BadRequest("Register failed : Role Invalid!");
             bool response = await _userService.Register(registerRequest.UserName, registerRequest.FirstName, registerRequest.LastName, 
-                registerRequest.Email, registerRequest.Password, registerRequest.Role);
+                registerRequest.Email, registerRequest.Password, registerRequest.Role,
+                new Address 
+                {
+                    Street = registerRequest.Street,
+                    City = registerRequest.City,
+                    PostalCode = registerRequest.PostalCode,
+                    Country = registerRequest.Country,
+                });
             if (response) return Ok("Register succesfully!");
             else return BadRequest("Register failed!");
         }

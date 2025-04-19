@@ -4,22 +4,20 @@ using Azure.Core;
 using Domain_Layer.Interfaces.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ArtMarketPlaceAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    //TODO : Vérifier les endpoints de la consigne pour adapter peut-être
     public class UserController : ControllerBase
     {
-        //CERTAIN GET PEUVENT ETRE AVEC D4AUTRE ROLE QUE ADMIN SINON TT LE RESTE C ADMIN
         private readonly IUserService _userService;
         public UserController(IUserService userService)
         {
             _userService = userService;
         }
-        #region USER
 
         #region GET
         [HttpGet("admin/users")]
@@ -30,9 +28,9 @@ namespace ArtMarketPlaceAPI.Controllers
             return Ok(users);
         }
 
-        [HttpGet("admin/{id:int}")]
+        [HttpGet("admin/users/{id:int}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetAllUserById(int id)
+        public async Task<IActionResult> GetUserByIdForAdmin(int id)
         {
             var user = await _userService.GetUserByIdAsync(id);
             return Ok(user);
@@ -46,29 +44,23 @@ namespace ArtMarketPlaceAPI.Controllers
             var user = await _userService.GetUserByUsernameAsync(username);
             return Ok(user.MapToDto());
         }
-        #endregion
 
-        #region POST
-        [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AddUser(UserRequestDtoForAdmin request)
+        [HttpGet("{id:int}")]
+        [Authorize(Roles = "Customer,Artisan,Delivery")]
+        public async Task<IActionResult> GetUserById(int id)
         {
-            var user = await _userService.AddUserAsync(new Domain_Layer.Entities.User
-            {
-                UserName = request.UserName,
-                Password = request.Password,
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                Email = request.Email,
-                Role = request.Role,
-            });
-            return Ok(user);
+            var currentUserId = User.FindFirst("id")?.Value;
+
+            if (currentUserId != id.ToString()) return Forbid();
+
+            var user = await _userService.GetUserByIdAsync(id);
+            return Ok(user.MapToSelfResponseDto());
         }
-        #endregion
+            #endregion
 
         #region PUT
-        //Update pour admin. L'admin peut tt update mais pour le password il n'est pas obliger.
-        [HttpPut("admin/{id:int}")]
+            //Update pour admin. L'admin peut tt update mais pour le password il n'est pas obliger.
+        [HttpPut("admin/users/{id:int}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateUserForAdmin(UserRequestDtoForAdmin request, int id)
         {
@@ -83,6 +75,7 @@ namespace ArtMarketPlaceAPI.Controllers
                     Email = request.Email,
                     Role = request.Role,
                     Active = request.Active,
+                    Address = new Domain_Layer.Entities.Address { Street = request.Street, City = request.City, Country = request.Country, PostalCode = request.PostalCode }
                 });
             return Ok(user);
         }
@@ -93,9 +86,9 @@ namespace ArtMarketPlaceAPI.Controllers
         public async Task<IActionResult> UpdateUserForUser(UserSelfUpdateDto request, int id)
         {
             //Check le token claim avec l'id
-            var userIdFromToken = int.Parse(User.FindFirst("id")?.Value ?? "0");
+            var currentUserId = User.FindFirst("id")?.Value;
 
-            if (userIdFromToken != id)
+            if (currentUserId != id.ToString())
             {
                 return BadRequest("Invalid Request!");
             }
@@ -109,6 +102,7 @@ namespace ArtMarketPlaceAPI.Controllers
                     FirstName = request.FirstName,
                     LastName = request.LastName,
                     Email = request.Email,
+                    Address = new Domain_Layer.Entities.Address { Street = request.Street, City = request.City, Country = request.Country, PostalCode = request.PostalCode}
                 });
 
             return Ok(user.MapToSelfResponseDto());
@@ -116,7 +110,7 @@ namespace ArtMarketPlaceAPI.Controllers
         #endregion
 
         #region DELETE
-        [HttpDelete("{id:int}")]
+        [HttpDelete("admin/users/{id:int}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteUserById(int id)
         {
@@ -125,7 +119,6 @@ namespace ArtMarketPlaceAPI.Controllers
         }
         #endregion
 
-        #endregion
 
     }
 }

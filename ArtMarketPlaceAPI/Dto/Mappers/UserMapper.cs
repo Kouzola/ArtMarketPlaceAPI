@@ -9,6 +9,7 @@ namespace ArtMarketPlaceAPI.Dto.Mappers
         {
             return new UserResponseDto
             {
+                Id = user.Id,
                 UserName = user.UserName,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
@@ -21,12 +22,14 @@ namespace ArtMarketPlaceAPI.Dto.Mappers
         {
             return new UserSelfResponseDto
             {
+                Id = user.Id,
                 UserName = user.UserName,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Role = user.Role,
                 FullName = user.FullName,
                 Email = user.Email,
+                Address = user.Address,
             };
         }
     }

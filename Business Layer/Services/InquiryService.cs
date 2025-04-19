@@ -18,7 +18,7 @@ namespace Business_Layer.Services
             return await _repository.AddInquiryAsync(inquiry);
         }
 
-        public async Task<bool> DeleteInquiries(List<int> ids)
+        public async Task<bool> DeleteInquiriesAsync(List<int> ids)
         {
            return await _repository.DeleteInquiriesAsync(ids);
         }

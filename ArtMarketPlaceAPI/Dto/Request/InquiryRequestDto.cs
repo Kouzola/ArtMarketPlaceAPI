@@ -7,7 +7,7 @@ namespace ArtMarketPlaceAPI.Dto.Request
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public bool WantConsultation { get; set; }
-        public string CustomerUsername { get; set; } = string.Empty;
-        public string ArtisanUsername { get; set; } = string.Empty;
+        public int CustomerId { get; set; }
+        public int ArtisanId { get; set; }
     }
 }
