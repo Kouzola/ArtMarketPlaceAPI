@@ -1,6 +1,7 @@
 ﻿using ArtMarketPlaceAPI.Dto.Mappers;
 using ArtMarketPlaceAPI.Dto.Request;
 using Domain_Layer.Interfaces.Category;
+using Domain_Layer.Interfaces.Product;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,9 +10,11 @@ namespace ArtMarketPlaceAPI.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public class ProductController(ICategoryService categoryService) : ControllerBase
+    public class ProductController(ICategoryService categoryService, IProductService productService, IFileService fileService) : ControllerBase
     {
         private readonly ICategoryService _categoryService = categoryService;
+        private readonly IProductService _productService = productService;
+        private readonly IFileService _fileService = fileService;
 
         #region Category
         #region GET
@@ -79,7 +82,21 @@ namespace ArtMarketPlaceAPI.Controllers
         #endregion
 
         #region Product
+        #region GET
 
+        #endregion
+
+        #region POST
+
+        #endregion
+
+        #region PUT
+
+        #endregion
+
+        #region DELETE
+
+        #endregion
         #endregion
 
         #region Customization

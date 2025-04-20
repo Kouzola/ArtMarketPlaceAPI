@@ -22,7 +22,6 @@ namespace ArtMarketPlaceAPI.Dto.Response
         public string Email {  get; set; } = string.Empty;
         public Role Role { get; set; }
         public string FullName { get; set; } = string.Empty;
-
         public Address Address { get; set; } = null!;
     }
 }
