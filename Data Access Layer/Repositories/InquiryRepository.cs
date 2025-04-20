@@ -19,9 +19,9 @@ namespace Data_Access_Layer.Repositories
         }
         public async Task<Inquiry> AddInquiryAsync(Inquiry inquiry)
         {
-            await _context.Inquiry.AddAsync(inquiry);
+            var inquiryToAdd = await _context.Inquiry.AddAsync(inquiry);
             await _context.SaveChangesAsync();
-            return inquiry;
+            return inquiryToAdd.Entity;
         }
 
         public async Task<bool> DeleteInquiriesAsync(List<int> ids)

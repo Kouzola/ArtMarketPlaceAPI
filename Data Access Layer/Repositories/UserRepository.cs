@@ -23,9 +23,9 @@ namespace Data_Access_Layer.Repositories
         public async Task<User> AddUserAsync(User user)
         {
             user.Active = true;
-            await _context.Users.AddAsync(user);
+            var userToAdd = await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
-            return user;
+            return userToAdd.Entity;
         }
 
         public async Task<bool> DeleteUserAsync(int id)
