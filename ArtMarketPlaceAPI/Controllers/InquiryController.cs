@@ -94,7 +94,7 @@ namespace ArtMarketPlaceAPI.Controllers
         public async Task<IActionResult> DeleteInquiry(int id)
         {
             var inquiry = await _service.DeleteInquiryAsync(id);
-            return inquiry ? Ok(inquiry) : NotFound();
+            return inquiry ? Ok("Inquiry Deleted") : NotFound();
         }
 
         [HttpDelete]
@@ -102,7 +102,7 @@ namespace ArtMarketPlaceAPI.Controllers
         public async Task<IActionResult> DeleteInquiries([FromQuery] List<int> ids)
         {
             var inquiry = await _service.DeleteInquiriesAsync(ids);
-            return inquiry ? Ok(inquiry) : NotFound();
+            return inquiry ? Ok("Inquiries Deleted") : NotFound();
         }
 
         #endregion

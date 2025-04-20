@@ -4,6 +4,7 @@ using Business_Layer.Services;
 using Business_Layer.Validators;
 using Data_Access_Layer.AppDbContext;
 using Data_Access_Layer.Repositories;
+using Domain_Layer.Interfaces.Category;
 using Domain_Layer.Interfaces.Inquiry;
 using Domain_Layer.Interfaces.User;
 using FluentValidation;
@@ -27,9 +28,11 @@ builder.Services.AddDbContext<ArtMarketPlaceDbContext>(options =>
 //Repositories
 builder.Services.AddScoped<IUserRepository,UserRepository>();
 builder.Services.AddScoped<IInquiryRepository,InquiryRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 //Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IInquiryService, InquiryService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 //ExceptionHandler
 builder.Services.AddExceptionHandler<NotFoundExceptionHandler>();
 builder.Services.AddExceptionHandler<AlreadyExistsExceptionHandler>();
@@ -41,6 +44,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<UserRegisterValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<UserRequestForAdminValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<InquiryRequestValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<UserSelfUpdateValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<CategoryRequestValidator>();
 
 //Authentification
 builder.Services.AddAuthentication(opt => {
