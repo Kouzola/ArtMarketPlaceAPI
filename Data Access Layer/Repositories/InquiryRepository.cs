@@ -33,7 +33,7 @@ namespace Data_Access_Layer.Repositories
             if (!inquiries.Any()) return false;
 
             _context.Inquiry.RemoveRange(inquiries);
-            return await _context.SaveChangesAsync() > 0;
+            return await _context.SaveChangesAsync() >= inquiries.Count;
         }
 
         public async Task<bool> DeleteInquiryAsync(int id)
