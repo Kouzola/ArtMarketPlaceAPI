@@ -1,6 +1,8 @@
 ﻿using Business_Layer.Exceptions;
 using Domain_Layer.Entities;
+using Domain_Layer.Interfaces.Category;
 using Domain_Layer.Interfaces.Product;
+using Domain_Layer.Interfaces.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,13 +11,18 @@ using System.Threading.Tasks;
 
 namespace Business_Layer.Services
 {
-    public class ProductService(IProductRepository repository) : IProductService
+    public class ProductService(IProductRepository repository, ICategoryService categoryService, IUserService userService) : IProductService
     {
         private readonly IProductRepository _repository = repository;
-
+        private readonly ICategoryService _categoryService = categoryService;
+        private readonly IUserService _userService = userService;
         public async Task<Product> AddProductAsync(Product product)
         {
-            var artisanIdentifier = product.Artisan.UserName.Substring(0, 2).ToUpper() + product.Artisan.FirstName.Substring(0,1).ToUpper() + product.Artisan.LastName.Substring(0,1).ToUpper();
+            var artisan = await _userService.GetUserByIdAsync(product.ArtisanId);
+            if (artisan == null || artisan.Role != Role.Artisan) throw new NotFoundException("Artisan not found");
+            var category = await _categoryService.GetCategoryByIdAsync(product.CategoryId);
+            if (category == null) throw new NotFoundException("Category not found");
+            var artisanIdentifier = artisan.UserName.Substring(0, 2).ToUpper() + artisan.FirstName.Substring(0,1).ToUpper() + artisan.LastName.Substring(0,1).ToUpper();
             var ProductsCountOfArtisan = (await GetProductsByArtisanAsync(product.ArtisanId)).Count();
             var uniqueId = Guid.NewGuid().ToString("N").Substring(0,6).ToUpper();
             var productReference = artisanIdentifier + "-" + ProductsCountOfArtisan + "-" + uniqueId;
@@ -63,11 +70,15 @@ namespace Business_Layer.Services
 
         public async Task<IEnumerable<Product>> GetProductsByArtisanAsync(int artisanId)
         {
+            var artisan = await _userService.GetUserByIdAsync(artisanId);
+            if(artisan == null) throw new NotFoundException("Artisan not found");
             return await _repository.GetProductsByArtisanAsync(artisanId);
         }
 
         public async Task<IEnumerable<Product>> GetProductsByCategoryAsync(int categoryId)
         {
+            var category = await _categoryService.GetCategoryByIdAsync(categoryId);
+            if (category == null) throw new NotFoundException("Category not found");
             return await _repository.GetProductsByCategoryAsync(categoryId);
         }
 

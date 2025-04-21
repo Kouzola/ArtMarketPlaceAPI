@@ -20,7 +20,7 @@ namespace ArtMarketPlaceAPI.Dto.Mappers
                 CreatedAt = product.CreatedAt,
                 UpdatedAt = product.UpdatedAt,
                 Artisan = product.Artisan.MapToDto(),
-                Category = product.Category.MapToDto(),
+                Category = product.Category.Name,
             };
         }
     }

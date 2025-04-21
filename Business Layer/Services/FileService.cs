@@ -25,7 +25,7 @@ namespace Business_Layer.Services
         {
             //Dossier où on va stocker les images
             var contentPath = _environment.ContentRootPath;
-            var saveFileDir = Path.Combine(contentPath,"Image");
+            var saveFileDir = Path.Combine(contentPath,"Images");
             if(!Directory.Exists(saveFileDir)) Directory.CreateDirectory(saveFileDir);
 
             //Generer un nom de fichier généré ici

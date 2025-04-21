@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace ArtMarketPlaceAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-    [Authorize]
+    [Route("api")]
+    [Authorize(Roles = "Customer,Artisan,Admin")]
     public class ProductController(ICategoryService categoryService, IProductService productService, IFileService fileService) : ControllerBase
     {
         private readonly ICategoryService _categoryService = categoryService;
@@ -18,21 +18,21 @@ namespace ArtMarketPlaceAPI.Controllers
 
         #region Category
         #region GET
-        [HttpGet]
+        [HttpGet("Categories")]
         public async Task<IActionResult> GetAllCategories()
         {
             var categories = await _categoryService.GetAllCategoriesAsync();
             return Ok(categories.Select(c => c.MapToDto()));
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("Categories/{id:int}")]
         public async Task<IActionResult> GetCategoryById(int id)
         {
             var category = await _categoryService.GetCategoryByIdAsync(id);
             return Ok(category.MapToDto());
         }
 
-        [HttpGet("{name}")]
+        [HttpGet("Categories/{name}")]
         public async Task<IActionResult> GetCategoryById(string name)
         {
             var category = await _categoryService.GetCategoryByNameAsync(name);
@@ -41,7 +41,7 @@ namespace ArtMarketPlaceAPI.Controllers
         #endregion
 
         #region POST
-        [HttpPost]
+        [HttpPost("Categories")]
         [Authorize(Roles = "Artisan, Admin")]
         public async Task<IActionResult> AddCategory(CategoryRequestDto request)
         {
@@ -55,7 +55,7 @@ namespace ArtMarketPlaceAPI.Controllers
         #endregion
 
         #region PUT
-        [HttpPut("{id:int}")]
+        [HttpPut("Categories/{id:int}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateCategory(int id, CategoryRequestDto request)
         {
@@ -70,12 +70,12 @@ namespace ArtMarketPlaceAPI.Controllers
         #endregion
 
         #region DELETE
-        [HttpDelete("{id:int}")]
+        [HttpDelete("Categories/{id:int}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
             var response = await _categoryService.DeleteCategorybyIdAsync(id);
-            if(response) return Ok($"Product with id : {id} deleted");
+            if (response) return Ok($"Product with id : {id} deleted");
             return NotFound();
         }
         #endregion
@@ -83,11 +83,60 @@ namespace ArtMarketPlaceAPI.Controllers
 
         #region Product
         #region GET
+        [HttpGet("Products")]
+        public async Task<IActionResult> GetAllProducts()
+        {
+            var products = await _productService.GetAllProductsAsync();
+            return Ok(products.Select(p => p.MapToDto()));
+        }
 
+        [HttpGet("Products/{id:int}")]
+        public async Task<IActionResult> GetProductById(int id)
+        {
+            var product = await _productService.GetProductByIdAsync(id);
+            return Ok(product.MapToDto());
+        }
+        [HttpGet("Products/by-reference/{reference}")]
+        public async Task<IActionResult> GetProductByReference(string reference)
+        {
+            var product = await _productService.GetProductByReferenceAsync(reference);
+            return Ok(product.MapToDto());
+        }
+        [HttpGet("Products/by-artisanId/{artisanId:int}")]
+        public async Task<IActionResult> GetProductsByArtisan(int artisanId)
+        {
+            var products = await _productService.GetProductsByArtisanAsync(artisanId);
+            return Ok(products.Select(p => p.MapToDto()));
+        }
+
+        [HttpGet("Products/by-categoryId/{categoryId:int}")]
+        public async Task<IActionResult> GetProductsByCategory(int categoryId)
+        {
+            var products = await _productService.GetProductsByCategoryAsync(categoryId);
+            return Ok(products.Select(p => p.MapToDto()));
+        }
         #endregion
 
         #region POST
+        [HttpPost("Products")]
+        [Authorize(Roles = "Artisan")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> AddProduct([FromForm] ProductRequestDto request)
+        {
+            var product = await _productService.AddProductAsync(new Domain_Layer.Entities.Product
+            {
+                Name = request.Name,
+                Description = request.Description,
+                Price = request.Price,
+                Stock = request.Stock,
+                Image = await _fileService.SaveImageFileAsync(request.ImageFile),
+                Available = request.Available,
+                ArtisanId = request.ArtisanId,
+                CategoryId = request.CategoryId,
+            });
 
+            return Ok(product.MapToDto());
+        }
         #endregion
 
         #region PUT
