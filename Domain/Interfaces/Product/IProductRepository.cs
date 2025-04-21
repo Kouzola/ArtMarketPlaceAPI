@@ -15,8 +15,8 @@ namespace Domain_Layer.Interfaces.Product
         Task<Entities.Product?> GetProductByReferenceAsync(string reference);
         Task<Entities.Product> AddProductAsync(Entities.Product product);
         Task<Entities.Product?> UpdateProductAsync(Entities.Product product);
-        Task<bool> DeleteProductAsync(int id);
-        Task<bool> DeleteProductsAsync(List<int> ids);
+        Task<bool> DeleteProductAsync(Entities.Product product);
+        Task<bool> DeleteProductsAsync(List<Entities.Product> products);
 
     }
 }

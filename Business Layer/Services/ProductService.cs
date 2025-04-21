@@ -30,14 +30,14 @@ namespace Business_Layer.Services
             return await _repository.AddProductAsync(product);
         }
 
-        public async Task<bool> DeleteProductAsync(int id)
+        public async Task<bool> DeleteProductAsync(Product product)
         {
-            return await _repository.DeleteProductAsync(id);
+            return await _repository.DeleteProductAsync(product);
         }
 
-        public async Task<bool> DeleteProductsAsync(List<int> ids)
+        public async Task<bool> DeleteProductsAsync(List<Product> products)
         {
-            return await _repository.DeleteProductsAsync(ids);
+            return await _repository.DeleteProductsAsync(products);
         }
 
         public async Task<Product> ToggleProductAvailability(int id)
@@ -85,8 +85,7 @@ namespace Business_Layer.Services
         public async Task<Product> UpdateProductAsync(Product product)
         {
             var updatedProduct = await _repository.UpdateProductAsync(product);
-            if (updatedProduct == null) throw new NotFoundException("Product not found!");
-            return updatedProduct;
+            return updatedProduct!;
         }
     }
 }

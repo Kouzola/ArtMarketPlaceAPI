@@ -13,12 +13,13 @@ namespace Business_Layer.Services
     public class FileService(IWebHostEnvironment environment) : IFileService
     {
         private readonly IWebHostEnvironment _environment = environment;
-        public Task DeleteImageFileAsync(string fileName)
+        public void DeleteImageFileAsync(string fileName)
         {
             var contentPath = _environment.ContentRootPath;
-            Path.Combine(contentPath,"Images",fileName);
-            if(File.Exists(contentPath)) File.Delete(contentPath);
-            throw new NotFoundException("File Not found!");
+            var fileToDelete = Path.Combine(contentPath,"Images",fileName);
+            Console.WriteLine(fileToDelete);
+            if(File.Exists(fileToDelete)) throw new NotFoundException("File Not found!");
+            return await File.Delete(fileToDelete);
         }
 
         public async Task<string> SaveImageFileAsync(IFormFile imageFile)

@@ -1,5 +1,6 @@
 ﻿using ArtMarketPlaceAPI.Dto.Mappers;
 using ArtMarketPlaceAPI.Dto.Request;
+using Domain_Layer.Entities;
 using Domain_Layer.Interfaces.Category;
 using Domain_Layer.Interfaces.Product;
 using Microsoft.AspNetCore.Authorization;
@@ -140,11 +141,65 @@ namespace ArtMarketPlaceAPI.Controllers
         #endregion
 
         #region PUT
+        [HttpPut("Products/{id:int}")]
+        [Authorize(Roles = "Artisan, Admin")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UpdateProduct(int id, [FromForm] ProductRequestDto request)
+        {
+            var productToUpdate = await _productService.GetProductByIdAsync(id);
+            if (productToUpdate == null) return NotFound("Product not found!");
+            var updatedProduct = new Domain_Layer.Entities.Product
+            {
+                Id = id,
+                Name = request.Name,
+                Description = request.Description,
+                Price = request.Price,
+                Stock = request.Stock,
+                Available = request.Available,
+                CategoryId = request.CategoryId,
+                Image = productToUpdate.Image,
+            };
+            //Check si même image, si pas on remplace et on supprime l'ancienne
+            if (productToUpdate.Image != request.ImageFile.FileName)
+            {
+                _fileService.DeleteImageFileAsync(productToUpdate.Image);
+                updatedProduct.Image = await _fileService.SaveImageFileAsync(request.ImageFile);
+            }
+            
+            var product = await _productService.UpdateProductAsync(updatedProduct);
 
+            return Ok(product.MapToDto());
+
+        }
         #endregion
 
         #region DELETE
+        [HttpDelete("Products/{id:int}")]
+        [Authorize(Roles = "Artisan, Admin")]
+        public async Task<IActionResult> DeleteProductById(int id)
+        {
+            var product = await _productService.GetProductByIdAsync(id);
+            var response = await _productService.DeleteProductAsync(product);
+            if (!response) return NotFound("Product not found!");
+             _fileService.DeleteImageFileAsync(product.Image);
+            return Ok("Product deleted.");
+        }
 
+        [HttpDelete("Products")]
+        [Authorize(Roles = "Artisan, Admin")]
+        public async Task<IActionResult> DeleteProductsById(List<int> ids)
+        {
+            List<Product> productToDelete = new List<Product>();
+            foreach (var id in ids)
+            {
+                var product = await _productService.GetProductByIdAsync(id);
+                productToDelete.Add(product);
+            }
+            var response = await _productService.DeleteProductsAsync(productToDelete);
+            if (!response) return NotFound("One or multiple products don't exist.");
+            foreach (var product in productToDelete) _fileService.DeleteImageFileAsync(product.Image);
+            return Ok("Products deleted.");
+        }
         #endregion
         #endregion
 

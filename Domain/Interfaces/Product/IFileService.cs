@@ -10,6 +10,6 @@ namespace Domain_Layer.Interfaces.Product
     public interface IFileService
     {
         Task<string> SaveImageFileAsync(IFormFile fileName);
-        Task DeleteImageFileAsync(string fileName);
+        void DeleteImageFileAsync(string fileName);
     }
 }

@@ -21,23 +21,15 @@ namespace Data_Access_Layer.Repositories
             return productAdded.Entity;
         }
 
-        public async Task<bool> DeleteProductAsync(int id)
+        public async Task<bool> DeleteProductAsync(Product product)
         {
-            var product = await _context.Products.FindAsync(id);
-            if (product == null) return false;
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
             return true;
         }
 
-        public async Task<bool> DeleteProductsAsync(List<int> ids)
+        public async Task<bool> DeleteProductsAsync(List<Product> products)
         {
-            var products = await _context.Products
-                            .Where(p => ids.Contains(p.Id))
-                            .ToListAsync();
-
-            if(!products.Any()) return false;
-
             _context.Products.RemoveRange(products);
             return await _context.SaveChangesAsync() >= products.Count;
         }

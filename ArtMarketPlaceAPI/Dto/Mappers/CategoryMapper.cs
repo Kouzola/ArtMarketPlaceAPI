@@ -12,7 +12,7 @@ namespace ArtMarketPlaceAPI.Dto.Mappers
                 Id = category.Id,
                 Name = category.Name,
                 Description = category.Description,
-                Products = category.Products.Select(p => p.MapToDto()).ToList(),
+                Products = category.Products.Select(p => p.Name).ToList(),
                 CreatedAt = category.CreatedAt,
                 UpdatedAt = category.UpdatedAt,
             };
