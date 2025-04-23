@@ -2,6 +2,7 @@
 using ArtMarketPlaceAPI.Dto.Request;
 using Domain_Layer.Entities;
 using Domain_Layer.Interfaces.Category;
+using Domain_Layer.Interfaces.Customization;
 using Domain_Layer.Interfaces.Product;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +12,12 @@ namespace ArtMarketPlaceAPI.Controllers
     [ApiController]
     [Route("api")]
     [Authorize(Roles = "Customer,Artisan,Admin")]
-    public class ProductController(ICategoryService categoryService, IProductService productService, IFileService fileService) : ControllerBase
+    public class ProductController(ICategoryService categoryService, IProductService productService, IFileService fileService, ICustomizationService customizationService) : ControllerBase
     {
         private readonly ICategoryService _categoryService = categoryService;
         private readonly IProductService _productService = productService;
         private readonly IFileService _fileService = fileService;
+        private readonly ICustomizationService _customizationService = customizationService;
 
         #region Category
         #region GET
@@ -204,7 +206,75 @@ namespace ArtMarketPlaceAPI.Controllers
         #endregion
 
         #region Customization
+        #region GET
+        [HttpGet("Customizations")]
+        public async Task<IActionResult> GetAllCustomizations()
+        {
+            var customizations = await _customizationService.GetAllCustomizationAsync();
+            return Ok(customizations.Select(c => c.MapToDto()));
+        }
 
+        [HttpGet("Customizations/{id:int}")]
+        public async Task<IActionResult> GetCustomizationById(int id)
+        {
+            var customization = await _customizationService.GetCustomizationByIdAsync(id);
+            return Ok(customization.MapToDto());
+        }
+
+        [HttpGet("Customizations/by-product/{productId:int}")]
+        public async Task<IActionResult> GetAllCustomizationsForAProduct(int productId)
+        {
+            var customizations = await _customizationService.GetAllCustomizationForAProductAsync(productId);
+            return Ok(customizations.Select(c => c.MapToDto()));
+        }
+        #endregion
+
+        #region POST
+        [HttpPost("Customizations")]
+        [Authorize(Roles = "Artisan")]
+        public async Task<IActionResult> UpdateCustomization(CustomizationRequestDto request)
+        {
+            var customization = await _customizationService.AddCustomizationAsync(new Customization
+            {
+                Name = request.Name,
+                Description = request.Description,
+                Price = request.Price,
+                ProductId = request.ProductId
+            });
+
+            return Ok(customization.MapToDto());
+        }
+        #endregion
+
+        #region PUT
+        [HttpPut("Customizations/{id:int}")]
+        [Authorize(Roles = "Artisan,Admin")]
+        public async Task<IActionResult> UpdateCustomization(int id, CustomizationRequestDto request)
+        {
+            var customization = await _customizationService.UpdateCustomizationAsync(new Customization
+            {
+                Id = id,
+                Name = request.Name,
+                Description = request.Description,
+                Price = request.Price,
+                ProductId = request.ProductId
+            });
+
+            return Ok(customization.MapToDto());
+        }
+        
+        #endregion
+
+        #region DELETE
+        [HttpDelete("Customizations/{id:int}")]
+        [Authorize(Roles = "Artisan,Admin")]
+        public async Task<IActionResult> DeleteCustomization(int id)
+        {
+            var response = await _customizationService.DeleteCustomizationAsync(id);
+            if (!response) return NotFound("Customization not found!");
+            return Ok("Customization Deleted");
+        }
+        #endregion
         #endregion
     }
 }

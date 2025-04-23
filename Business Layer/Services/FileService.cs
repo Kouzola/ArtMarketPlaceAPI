@@ -19,7 +19,7 @@ namespace Business_Layer.Services
             var fileToDelete = Path.Combine(contentPath,"Images",fileName);
             Console.WriteLine(fileToDelete);
             if(File.Exists(fileToDelete)) throw new NotFoundException("File Not found!");
-            return await File.Delete(fileToDelete);
+            File.Delete(fileToDelete);
         }
 
         public async Task<string> SaveImageFileAsync(IFormFile imageFile)

@@ -5,6 +5,7 @@ using Business_Layer.Validators;
 using Data_Access_Layer.AppDbContext;
 using Data_Access_Layer.Repositories;
 using Domain_Layer.Interfaces.Category;
+using Domain_Layer.Interfaces.Customization;
 using Domain_Layer.Interfaces.Inquiry;
 using Domain_Layer.Interfaces.Product;
 using Domain_Layer.Interfaces.User;
@@ -32,12 +33,14 @@ builder.Services.AddScoped<IUserRepository,UserRepository>();
 builder.Services.AddScoped<IInquiryRepository,InquiryRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<ICustomizationRepository,CustomizationRepository>();
 //Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IInquiryService, InquiryService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<ICustomizationService, CustomizationService>();
 //ExceptionHandler
 builder.Services.AddExceptionHandler<NotFoundExceptionHandler>();
 builder.Services.AddExceptionHandler<AlreadyExistsExceptionHandler>();
@@ -51,6 +54,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<InquiryRequestValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<UserSelfUpdateValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<CategoryRequestValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<ProductRequestValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<CustomizationRequestValidtor>();
 
 //Authentification
 builder.Services.AddAuthentication(opt => {

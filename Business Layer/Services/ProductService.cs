@@ -20,8 +20,7 @@ namespace Business_Layer.Services
         {
             var artisan = await _userService.GetUserByIdAsync(product.ArtisanId);
             if (artisan == null || artisan.Role != Role.Artisan) throw new NotFoundException("Artisan not found");
-            var category = await _categoryService.GetCategoryByIdAsync(product.CategoryId);
-            if (category == null) throw new NotFoundException("Category not found");
+            await _categoryService.GetCategoryByIdAsync(product.CategoryId); // Check si category existe
             var artisanIdentifier = artisan.UserName.Substring(0, 2).ToUpper() + artisan.FirstName.Substring(0,1).ToUpper() + artisan.LastName.Substring(0,1).ToUpper();
             var ProductsCountOfArtisan = (await GetProductsByArtisanAsync(product.ArtisanId)).Count();
             var uniqueId = Guid.NewGuid().ToString("N").Substring(0,6).ToUpper();
