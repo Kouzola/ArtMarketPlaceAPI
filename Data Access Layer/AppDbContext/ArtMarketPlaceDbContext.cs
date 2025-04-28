@@ -21,6 +21,8 @@ namespace Data_Access_Layer.AppDbContext
         public DbSet<Customization> Customizations { get; set; }
         public DbSet<PaymentDetail> PaymentDetails { get; set; }
         public DbSet<OrderProduct> OrderProducts { get; set; }
+        public DbSet<Cart> Carts { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -34,6 +36,9 @@ namespace Data_Access_Layer.AppDbContext
             modelBuilder.ApplyConfiguration(new CustomizationConfiguration());
             modelBuilder.ApplyConfiguration(new PaymentDetailConfiguration());
             modelBuilder.ApplyConfiguration(new OrderProductConfiguration());
+            modelBuilder.ApplyConfiguration(new CartConfiguration());
+            modelBuilder.ApplyConfiguration(new CartItemConfiguration());
+
         }
 
     }
