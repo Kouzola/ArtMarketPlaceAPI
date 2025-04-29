@@ -14,5 +14,7 @@ namespace Domain_Layer.Entities
         public Product Product { get; set; } = null!;
         public int Quantity { get; set; }
         public int UnitPrice { get; set; }
+
+        public bool IsValidatedByArtisan { get; set; }
     }
 }

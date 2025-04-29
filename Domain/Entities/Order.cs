@@ -27,6 +27,7 @@ namespace Domain_Layer.Entities
 
     public enum OrderStatus
     {
+        NOT_PAYED,
         PENDING,
         CONFIRM,
         SHIPPED,

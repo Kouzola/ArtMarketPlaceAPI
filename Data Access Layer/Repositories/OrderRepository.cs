@@ -16,6 +16,9 @@ namespace Data_Access_Layer.Repositories
 
         public async Task<Order> AddOrderAsync(Order order)
         {
+            //Remplir OrderProduct sur le front donc avoir un bon DTO qui remplit ca bien
+
+            //OUVRIR LE ORDER PRODUCT ET RAJOUTER DES TRUCS DEDANS
             var orderAdded = await _context.Orders.AddAsync(order);
             await _context.SaveChangesAsync();
             return orderAdded.Entity;
@@ -97,6 +100,8 @@ namespace Data_Access_Layer.Repositories
             orderToUpdated.ShippingOption = order.ShippingOption;
             orderToUpdated.PaymentDetail = order.PaymentDetail;
             orderToUpdated.UpdatedAt = DateTime.Now;
+
+            //Ouvrir le ORDER PRODUCT ET LE MODIFIER
 
             await _context.SaveChangesAsync();
             return orderToUpdated;
