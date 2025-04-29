@@ -9,9 +9,9 @@ namespace Domain_Layer.Entities
     public class Shipment
     {
         public int Id { get; set; }
-        public DateTime ShippingDate { get; set; }
-        public DateTime EstimatedArrivalDate { get; set; }
-        public DateTime ArrivalDate { get; set; }
+        public DateTime? ShippingDate { get; set; }
+        public DateTime? EstimatedArrivalDate { get; set; }
+        public DateTime? ArrivalDate { get; set; }
         public string TrackingNumber { get; set; } = null!;
         public ShipmentStatus Status { get; set; }
         public DateTime CreatedAt { get; private set; }

@@ -20,14 +20,13 @@ namespace Domain_Layer.Interfaces.Order
         Task<double> GetOrderTotalPriceAsync(int id);
 
         //Transport
-        Task<Entities.Order> ShipOrderAsync(int orderId);
-        Task<Entities.Order> TrackOrderAsync(int orderId);
+        Task<Entities.Order> UpdateOrderStatus(int orderId, OrderStatus status);
         //Payment
         Task<PaymentDetail> PayOrderAsync(int orderId, PaymentDetail paymentDetail);
         Task<PaymentDetail> GetOrderPaymentDetailAsync(int orderId);
         //Validation
         Task<bool> ValidateAndProcessOrderAsync(Entities.Order order); //Condition OK => Processus lancer paiement etc
-        Task<bool> confirmOrderAsync(int id); //Artisan qui confirme la commande
+        Task<bool> ConfirmOrderAsync(int id); //Artisan qui confirme la commande
         Task<bool> CancelOrderAsync(int id);
 
     }

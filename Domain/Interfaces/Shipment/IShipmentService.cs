@@ -11,8 +11,8 @@ namespace Domain_Layer.Interfaces.Shipment
     {
         Task<IEnumerable<Entities.Shipment>> GetAllShipmentOfAnOrder(int orderId);
         Task<IEnumerable<Entities.Shipment>> GetAllShipmentOfAnDeliveryPartner(int deliveryPartnerId);
-        Task<Entities.Shipment?> GetShipmentByTrackingNumberAsync(string trackingNumber);
-        Task<Entities.Shipment?> GetShipmentByIdAsync(int id);
+        Task<Entities.Shipment> GetShipmentByTrackingNumberAsync(string trackingNumber);
+        Task<Entities.Shipment> GetShipmentByIdAsync(int id);
         Task<Entities.Shipment> AddShipmentAsync(Entities.Shipment shipment);
         Task<Entities.Shipment> UpdateShipmentDeliveryStatus(int shipmentId, ShipmentStatus shipmentStatus); //Quand on passe en expedier on va rajouter la date expedition
         Task<Entities.Shipment> UpdateEstimatedTimeArrival (int shipmentId, DateTime estimatedTime);
