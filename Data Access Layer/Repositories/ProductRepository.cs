@@ -105,6 +105,7 @@ namespace Data_Access_Layer.Repositories
             productToUpdate.Description = product.Description;
             productToUpdate.Price = product.Price;
             productToUpdate.Stock = product.Stock;
+            productToUpdate.ReservedStock = product.ReservedStock;
             productToUpdate.Image = product.Image;
             productToUpdate.Available = product.Available;
             productToUpdate.CategoryId = product.CategoryId;

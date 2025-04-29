@@ -15,10 +15,11 @@ namespace Business_Layer.Services
         private readonly IOrderRepository _repository = repository;
         private readonly IUserService _userService = userService;
         //DES METHODES VONT SUREMENT ETRE SUPPRIMER
+        //TODO AFFICHER STOCK - RESERVE STOCK SUR L'UI
 
         public Task<Order> AddOrderAsync(Order order)
         {
-            
+            //Checker avec les quantité des produit d'orderProduct est augmenté la reserver stock
             throw new NotImplementedException();
         }
 
@@ -71,6 +72,7 @@ namespace Business_Layer.Services
         public Task<PaymentDetail> PayOrderAsync(int orderId, PaymentDetail paymentDetail)
         {
             //Retire du stock, les produits car quand on paye la commande.
+            //Et Passer le reserveStock a zero quoi
             throw new NotImplementedException();
         }
 

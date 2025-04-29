@@ -22,6 +22,7 @@ namespace Data_Access_Layer.Configurations
 
             builder.Property(p => p.Price).IsRequired();
             builder.Property(p => p.Stock).IsRequired();
+            builder.Property(p => p.ReservedStock).IsRequired();
             builder.Property(p => p.Available).IsRequired();
 
             builder.Property(p => p.Image).IsRequired();

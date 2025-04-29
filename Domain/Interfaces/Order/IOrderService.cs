@@ -26,7 +26,7 @@ namespace Domain_Layer.Interfaces.Order
         Task<PaymentDetail> PayOrderAsync(int orderId, PaymentDetail paymentDetail);
         Task<PaymentDetail> GetOrderPaymentDetailAsync(int orderId);
         //Validation
-        Task<bool> CancelOrder(int orderId);
+        Task<bool> CancelOrderAsync(int orderId);
         Task ValidateAndProcessOrderAsync(Entities.Order order); //Condition OK => Processus lancer paiement etc
         Task<bool> ValidateProductsInOrderAsync(int orderId, int artisanId);
 
