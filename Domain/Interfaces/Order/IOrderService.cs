@@ -17,14 +17,13 @@ namespace Domain_Layer.Interfaces.Order
         Task<Entities.Order> AddOrderAsync(Entities.Order order);
         Task<Entities.Order> UpdateOrderAsync(Entities.Order order);
         Task<bool> DeleteOrderAsync(int id);
-        Task<Entities.Order> GetOrderByStatusAsync(Entities.OrderStatus status);
         Task<double> GetOrderTotalPriceAsync(int id);
 
         //Transport
         Task<Entities.Order> UpdateOrderStatus(int orderId, OrderStatus status);
+        Task<Entities.Order> ShipOrderAsync(int orderId, int deliveryPartnerId, int artisanId);
         //Payment
         Task<PaymentDetail> PayOrderAsync(int orderId, PaymentDetail paymentDetail);
-        Task<PaymentDetail> GetOrderPaymentDetailAsync(int orderId);
         //Validation
         Task<bool> CancelOrderAsync(int orderId);
         Task ValidateAndProcessOrderAsync(Entities.Order order); //Condition OK => Processus lancer paiement etc

@@ -1,6 +1,8 @@
 ﻿using Business_Layer.Exceptions;
 using Domain_Layer.Entities;
 using Domain_Layer.Interfaces.Order;
+using Domain_Layer.Interfaces.PaymentDetails;
+using Domain_Layer.Interfaces.Product;
 using Domain_Layer.Interfaces.User;
 using System;
 using System.Collections.Generic;
@@ -10,75 +12,110 @@ using System.Threading.Tasks;
 
 namespace Business_Layer.Services
 {
-    public class OrderService(IOrderRepository repository, IUserService userService) : IOrderService
+    public class OrderService(IOrderRepository repository, IUserService userService, IProductService productService, IPaymentDetailsService paymentDetailsService) : IOrderService
     {
         private readonly IOrderRepository _repository = repository;
         private readonly IUserService _userService = userService;
+        private readonly IProductService _productService = productService;
+        private readonly IPaymentDetailsService _paymentDetailsService = paymentDetailsService;
         //DES METHODES VONT SUREMENT ETRE SUPPRIMER
         //TODO AFFICHER STOCK - RESERVE STOCK SUR L'UI
 
-        public Task<Order> AddOrderAsync(Order order)
+        public async Task<Order> AddOrderAsync(Order order)
         {
             //Checker avec les quantité des produit d'orderProduct est augmenté la reserver stock
-            throw new NotImplementedException();
+            var customer = await _userService.GetUserByIdAsync(order.CustomerId); //Si customer existe pas le GetUserById lance une exception
+            //Verifier les produits s'ils existent et s'ils sont en stock , si oui on reserve la quantité demandé de produit
+            var orderProducts = order.OrderProducts.ToList();
+            List<Product> dbProductsToUpdate = new List<Product>();
+            foreach (var orderProduct in orderProducts)
+            {
+                var productDb = await _productService.GetProductByIdAsync(orderProduct.ProductId);
+                if (orderProduct.Quantity > productDb.Stock - productDb.ReservedStock) throw new BusinessException($"The {productDb.Name} is Out Of Stock!");
+                productDb.ReservedStock += orderProduct.Quantity;
+                dbProductsToUpdate.Add(productDb); //On met les produits dans une liste pour les update après les vérifications de stocks.
+            }
+
+            dbProductsToUpdate.ForEach(async x => await _productService.UpdateProductAsync(x));
+
+            return await _repository.AddOrderAsync(order);
         }
 
         
-        public Task<bool> DeleteOrderAsync(int id)
+        public async Task<bool> DeleteOrderAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _repository.DeleteOrderAsync(id);
         }
 
-        public Task<IEnumerable<Order>> GetAllOrderOfCustomerAsync(int customerId)
+        public async Task<IEnumerable<Order>> GetAllOrderOfCustomerAsync(int customerId)
         {
-            throw new NotImplementedException();
+            var customer = await _userService.GetUserByIdAsync(customerId);
+
+            return await _repository.GetAllOrderOfCustomerAsync(customerId);
         }
 
-        public Task<IEnumerable<Order>> GetAllOrdersAsync()
+        public async Task<IEnumerable<Order>> GetAllOrdersAsync()
         {
-            throw new NotImplementedException();
+            return await _repository.GetAllOrdersAsync();
         }
 
-        public Task<Order> GetOrderByCodeAsync(string code)
+        public async Task<Order> GetOrderByCodeAsync(string code)
         {
-            throw new NotImplementedException();
+            var order = await _repository.GetOrderByCodeAsync(code);
+            if (order == null) throw new NotFoundException("Order not found!");
+            return order;
         }
 
-        public Task<Order> GetOrderByIdAsync(int id)
+        public async Task<Order> GetOrderByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var order = await _repository.GetOrderByIdAsync(id);
+            if (order == null) throw new NotFoundException("Order not found!");
+            return order;
         }
 
-        public Task<Order> GetOrderByStatusAsync(OrderStatus status)
+        public async Task<Order> GetOrderOfAnShipmentAsync(int shipmentId)
         {
-            throw new NotImplementedException();
+            var order = await _repository.GetOrderOfAnShipmentAsync(shipmentId);
+            if (order == null) throw new NotFoundException("Order not found!");
+            return order;
         }
 
-        public Task<Order> GetOrderOfAnShipmentAsync(int shipmentId)
+        public async Task<double> GetOrderTotalPriceAsync(int id)
         {
-            throw new NotImplementedException();
+            var order = await _repository.GetOrderByIdAsync(id);
+            if (order == null) throw new NotFoundException("Order not found!");
+            double totalPrice = 0.0;
+            foreach(var orderProduct in order.OrderProducts)
+            {
+                totalPrice += orderProduct.UnitPrice * orderProduct.Quantity;
+            }
+            return totalPrice;
+
         }
 
-        public Task<PaymentDetail> GetOrderPaymentDetailAsync(int orderId)
+        public async Task<PaymentDetail> PayOrderAsync(int orderId, PaymentDetail paymentDetail)
         {
-            throw new NotImplementedException();
+            var order = await _repository.GetOrderByIdAsync(orderId);
+            if (order == null) throw new NotFoundException("Order not found");
+            var addedPaymentDetail = await _paymentDetailsService.AddPaymentDetailsAsync(paymentDetail);
+            //Retire du stock, les produits quand on paye la commande.
+            List<Product> dbProductsToUpdate = new List<Product>();
+            foreach (var op in order.OrderProducts)
+            {
+                var productDb = await _productService.GetProductByIdAsync(op.ProductId);
+                productDb.Stock -= op.Quantity;
+                productDb.ReservedStock -= op.Quantity;
+                dbProductsToUpdate.Add(productDb);
+            }
+            dbProductsToUpdate.ForEach(async x => await _productService.UpdateProductAsync(x));
+
+            return paymentDetail;
         }
 
-        public Task<double> GetOrderTotalPriceAsync(int id)
+        public Task<Order> ShipOrderAsync(int orderId, int deliveryPartnerId, int artisanId)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<PaymentDetail> PayOrderAsync(int orderId, PaymentDetail paymentDetail)
-        {
-            //Retire du stock, les produits car quand on paye la commande.
-            //Et Passer le reserveStock a zero quoi
-            throw new NotImplementedException();
-        }
-
-        public Task<Order> ShipOrderAsync(int orderId, int deliveryPartnerId)
-        {
-            //Traitement de faire un shipment etc choisir un delivery guy etc
+            //Traitement de faire un shipment etc choisir un delivery guy etc par artiste ATTENTION ARTISTE PEUT SHIPPER 
+            //QUE LES PRODUITS QUI LUI APPARTIENT DONC PRENDRE UNIQUEMENT PRODUIT LUI APPARTENANT
             throw new NotImplementedException();
         }
 
