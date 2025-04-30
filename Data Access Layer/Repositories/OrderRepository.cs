@@ -20,8 +20,22 @@ namespace Data_Access_Layer.Repositories
 
             //OUVRIR LE ORDER PRODUCT ET RAJOUTER DES TRUCS DEDANS
             var orderAdded = await _context.Orders.AddAsync(order);
+            var orderAddedEntity = orderAdded.Entity;
+
+            foreach(var op in order.OrderProducts)
+            {
+                await _context.OrderProducts.AddAsync(new OrderProduct
+                {
+                    OrderId = orderAddedEntity.Id,
+                    ProductId = op.ProductId,
+                    Quantity = op.Quantity,
+                    UnitPrice = op.UnitPrice,
+                });
+            }
+            
+            
             await _context.SaveChangesAsync();
-            return orderAdded.Entity;
+            return orderAddedEntity;
         }
 
         public async Task<bool> DeleteOrderAsync(int id)
@@ -101,8 +115,7 @@ namespace Data_Access_Layer.Repositories
             orderToUpdated.ShippingOption = order.ShippingOption;
             orderToUpdated.PaymentDetail = order.PaymentDetail;
             orderToUpdated.UpdatedAt = DateTime.Now;
-
-            //Ouvrir le ORDER PRODUCT ET LE MODIFIER
+            orderToUpdated.OrderProducts = order.OrderProducts;
 
             await _context.SaveChangesAsync();
             return orderToUpdated;
