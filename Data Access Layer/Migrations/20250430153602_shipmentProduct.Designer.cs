@@ -4,6 +4,7 @@ using Data_Access_Layer.AppDbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data_Access_Layer.Migrations
 {
     [DbContext(typeof(ArtMarketPlaceDbContext))]
-    partial class ArtMarketPlaceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250430153602_shipmentProduct")]
+    partial class shipmentProduct
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -455,6 +458,9 @@ namespace Data_Access_Layer.Migrations
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("ShippingDate")
                         .HasColumnType("datetime2");
 
@@ -477,6 +483,8 @@ namespace Data_Access_Layer.Migrations
                     b.HasIndex("DeliveryPartnerId");
 
                     b.HasIndex("OrderId");
+
+                    b.HasIndex("ProductId");
 
                     b.ToTable("Shipments");
                 });
@@ -545,21 +553,6 @@ namespace Data_Access_Layer.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("ProductShipment", b =>
-                {
-                    b.Property<int>("ProductsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ShipmentsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProductsId", "ShipmentsId");
-
-                    b.HasIndex("ShipmentsId");
-
-                    b.ToTable("ProductShipment");
                 });
 
             modelBuilder.Entity("Domain_Layer.Entities.Cart", b =>
@@ -713,6 +706,10 @@ namespace Data_Access_Layer.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("Domain_Layer.Entities.Product", null)
+                        .WithMany("Shipment")
+                        .HasForeignKey("ProductId");
+
                     b.Navigation("DeliveryPartner");
 
                     b.Navigation("Order");
@@ -757,21 +754,6 @@ namespace Data_Access_Layer.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ProductShipment", b =>
-                {
-                    b.HasOne("Domain_Layer.Entities.Product", null)
-                        .WithMany()
-                        .HasForeignKey("ProductsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain_Layer.Entities.Shipment", null)
-                        .WithMany()
-                        .HasForeignKey("ShipmentsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Domain_Layer.Entities.Cart", b =>
                 {
                     b.Navigation("Products");
@@ -798,6 +780,8 @@ namespace Data_Access_Layer.Migrations
                     b.Navigation("OrderProducts");
 
                     b.Navigation("Reviews");
+
+                    b.Navigation("Shipment");
                 });
 
             modelBuilder.Entity("Domain_Layer.Entities.User", b =>

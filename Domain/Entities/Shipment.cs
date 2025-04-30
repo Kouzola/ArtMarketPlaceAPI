@@ -22,6 +22,7 @@ namespace Domain_Layer.Entities
         public int OrderId { get; set; }
         public User DeliveryPartner { get; set; } = null!;
         public int DeliveryPartnerId { get; set; }
+        public ICollection<Product> Products { get; set; } = new List<Product>();
     }
 
     public enum ShipmentStatus

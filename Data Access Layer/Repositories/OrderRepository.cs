@@ -71,6 +71,7 @@ namespace Data_Access_Layer.Repositories
             var order = await _context.Orders
                 .Include(o => o.Customer)
                 .Include(o => o.OrderProducts)
+                    .ThenInclude(op => op.Product)
                 .Include(o => o.Shipments)
                 .FirstOrDefaultAsync(o => o.Id == id);
 

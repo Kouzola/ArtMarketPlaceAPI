@@ -84,11 +84,14 @@ namespace Business_Layer.Services
             {
                 case ShipmentStatus.PENDING_PICKUP:
                     if (shipmentStatus == ShipmentStatus.IN_TRANSIT)
-                    {
-                        await _orderService.UpdateOrderStatus(shipment.OrderId, OrderStatus.SHIPPED);
+                    {                        
                         shipment.Status = ShipmentStatus.IN_TRANSIT;
                         shipment.ShippingDate = DateTime.Now;
                         shipment.EstimatedArrivalDate = DateTime.Now.AddDays(3).Date;
+
+                        //Si tous les packets sont en transit, on peut update la order au status de SHIPPED
+                        var shipmentsOfAnOrder = await GetAllShipmentOfAnOrder(shipment.OrderId);
+                        if (shipmentsOfAnOrder.All(s => s.Status == ShipmentStatus.IN_TRANSIT)) await _orderService.UpdateOrderStatus(shipment.OrderId, OrderStatus.SHIPPED);
                     }
                     else if (shipmentStatus == ShipmentStatus.LOST) shipment.Status = ShipmentStatus.LOST;
                     break;
@@ -105,8 +108,11 @@ namespace Business_Layer.Services
                     if(shipmentStatus == ShipmentStatus.DELIVERED)
                     {
                         shipment.Status = ShipmentStatus.DELIVERED;
-                        await _orderService.UpdateOrderStatus(shipment.OrderId, OrderStatus.DELIVERED);
                         shipment.ArrivalDate = DateTime.Now;
+
+                        //Si tous les packets sont delivered, on peut update la order au status de DELIVERED
+                        var shipmentsOfAnOrder = await GetAllShipmentOfAnOrder(shipment.OrderId);
+                        if (shipmentsOfAnOrder.All(s => s.Status == ShipmentStatus.DELIVERED)) await _orderService.UpdateOrderStatus(shipment.OrderId, OrderStatus.DELIVERED);
                     }
                     break;
 

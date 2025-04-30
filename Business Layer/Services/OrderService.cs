@@ -3,6 +3,7 @@ using Domain_Layer.Entities;
 using Domain_Layer.Interfaces.Order;
 using Domain_Layer.Interfaces.PaymentDetails;
 using Domain_Layer.Interfaces.Product;
+using Domain_Layer.Interfaces.Shipment;
 using Domain_Layer.Interfaces.User;
 using System;
 using System.Collections.Generic;
@@ -12,19 +13,22 @@ using System.Threading.Tasks;
 
 namespace Business_Layer.Services
 {
-    public class OrderService(IOrderRepository repository, IUserService userService, IProductService productService, IPaymentDetailsService paymentDetailsService) : IOrderService
+    public class OrderService(IOrderRepository repository, IUserService userService, 
+        IProductService productService, IPaymentDetailsService paymentDetailsService,
+        IShipmentService shipmentService) : IOrderService
     {
         private readonly IOrderRepository _repository = repository;
         private readonly IUserService _userService = userService;
         private readonly IProductService _productService = productService;
         private readonly IPaymentDetailsService _paymentDetailsService = paymentDetailsService;
-        //DES METHODES VONT SUREMENT ETRE SUPPRIMER
+        private readonly IShipmentService _shipmentService = shipmentService;
         //TODO AFFICHER STOCK - RESERVE STOCK SUR L'UI
 
         public async Task<Order> AddOrderAsync(Order order)
         {
             //Checker avec les quantité des produit d'orderProduct est augmenté la reserver stock
             var customer = await _userService.GetUserByIdAsync(order.CustomerId); //Si customer existe pas le GetUserById lance une exception
+            order.Status = OrderStatus.NOT_PAYED;
             //Verifier les produits s'ils existent et s'ils sont en stock , si oui on reserve la quantité demandé de produit
             var orderProducts = order.OrderProducts.ToList();
             List<Product> dbProductsToUpdate = new List<Product>();
@@ -109,37 +113,87 @@ namespace Business_Layer.Services
             }
             dbProductsToUpdate.ForEach(async x => await _productService.UpdateProductAsync(x));
 
+            await UpdateOrderStatusAsync(orderId,OrderStatus.PENDING);
+
             return paymentDetail;
         }
 
-        public Task<Order> ShipOrderAsync(int orderId, int deliveryPartnerId, int artisanId)
+        public async Task<bool> ShipOrderAsync(int orderId, int deliveryPartnerId, int artisanId)
         {
-            //Traitement de faire un shipment etc choisir un delivery guy etc par artiste ATTENTION ARTISTE PEUT SHIPPER 
-            //QUE LES PRODUITS QUI LUI APPARTIENT DONC PRENDRE UNIQUEMENT PRODUIT LUI APPARTENANT
-            throw new NotImplementedException();
+            var order = await _repository.GetOrderByIdAsync(orderId);
+            if (order == null) throw new NotFoundException("Order not found!");
+            var deliveryPartner = await _userService.GetUserByIdAsync(deliveryPartnerId);
+            var artisan = await _userService.GetUserByIdAsync(artisanId);
+            var artisanProduct = order.OrderProducts.Where(p => p.Product.ArtisanId == artisanId).Select(op => op.Product).ToList();
+            //création du Shipment avec les produits valider par l'artisan
+            if(!artisanProduct.Any()) throw new BusinessException("No products to ship for this artisan in the order.");
+            var shipment = await _shipmentService.AddShipmentAsync(new Shipment
+            {
+                Status = ShipmentStatus.PENDING_PICKUP,
+                OrderId = orderId,
+                DeliveryPartnerId = deliveryPartnerId,
+                Products = artisanProduct
+            });
+
+            return true;
         }
 
-        public Task<Order> UpdateOrderStatus(int orderId, OrderStatus status)
+        public async Task<Order> UpdateOrderStatusAsync(int orderId, OrderStatus status)
         {
-            throw new NotImplementedException();
+            //Switch Case avec les états
+            var order = await _repository.GetOrderByIdAsync(orderId);
+            if (order == null) throw new NotFoundException("Order not found!");
+            var actualOrderStatus = order.Status;
+            switch (actualOrderStatus)
+            {
+                case OrderStatus.NOT_PAYED:
+                    if (status == OrderStatus.PENDING) actualOrderStatus = OrderStatus.PENDING;
+                    else if (status == OrderStatus.CANCEL) actualOrderStatus = OrderStatus.CANCEL;
+                    break;
+                case OrderStatus.PENDING:
+                    if (status == OrderStatus.CONFIRM) actualOrderStatus = OrderStatus.CONFIRM;
+                    break;
+                case OrderStatus.CONFIRM:
+                    if (status == OrderStatus.SHIPPED) actualOrderStatus = OrderStatus.SHIPPED;
+                    break;
+                case OrderStatus.SHIPPED:
+                    if (status == OrderStatus.DELIVERED) actualOrderStatus = OrderStatus.DELIVERED;
+                    break;
+
+                case OrderStatus.DELIVERED:
+                    break;
+
+                case OrderStatus.CANCEL:
+                    break;
+            }
+            var updatedOrder = await UpdateOrderAsync(order);
+            return updatedOrder;
         }
 
-        public Task ValidateAndProcessOrderAsync(Order order)
+        public async Task ValidateAndProcessOrderAsync(Order order)
         {
-            //Checker si tous les produits sont validés et passer en order CONFIRM
-            throw new NotImplementedException();
+            //Checker si tous les produits sont validés et passer en order CONFIRM et UPDATE EN CONFIRM
+            var arrAllProductConfirmed = order.OrderProducts.All(op => op.IsValidatedByArtisan);
+            if(arrAllProductConfirmed) await UpdateOrderStatusAsync(order.Id, OrderStatus.CONFIRM);
         }
 
-        public Task<bool> CancelOrderAsync(int id)
+        public async Task<bool> CancelOrderAsync(int id)
         {
-            //CANCEL DONC UPDATE SON STATUS
-            throw new NotImplementedException();
-        }
+            //CANCEL DONC UPDATE SON STATUS en cancel et retire les reserved stock etc etc
+            var order = await _repository.GetOrderByIdAsync(id);
+            if (order == null) throw new NotFoundException("Order not found!");
+            if (order.Status != OrderStatus.NOT_PAYED) throw new BusinessException("Cannot cancel an order already payed!");
+            //Remettre les reserved stock a jour
+            List<Product> dbProductsToUpdate = new List<Product>();
+            foreach (var op in order.OrderProducts)
+            {
+                var productDb = await _productService.GetProductByIdAsync(op.ProductId);
+                productDb.ReservedStock -= op.Quantity;
+                dbProductsToUpdate.Add(productDb);
+            }
+            dbProductsToUpdate.ForEach(async x => await _productService.UpdateProductAsync(x));
 
-        public Task<bool> ConfirmOrderAsync(int id)
-        {
-            //METTRE DANS UPDATE STATUS
-            throw new NotImplementedException();
+            return true;
         }
 
         public async Task<bool> ValidateProductsInOrderAsync(int orderId, int artisanId)
