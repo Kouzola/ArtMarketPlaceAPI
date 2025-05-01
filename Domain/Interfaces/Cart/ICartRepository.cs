@@ -11,7 +11,7 @@ namespace Domain_Layer.Interfaces.Cart
         Task<Entities.Cart?> GetCartByUserIdAsync(int userId);
         Task<Entities.Cart?> GetCartByIdAsync(int cartId);
         Task<Entities.Cart> AddCartAsync(Entities.Cart cart);
-        Task<Entities.Cart> UpdateCartAsync(Entities.Cart cart);
+        Task<Entities.Cart?> UpdateCartAsync(Entities.Cart cart);
         Task<bool> DeleteCartAsync(int cartId);
     }
 }

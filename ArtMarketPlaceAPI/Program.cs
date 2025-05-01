@@ -7,7 +7,10 @@ using Data_Access_Layer.Repositories;
 using Domain_Layer.Interfaces.Category;
 using Domain_Layer.Interfaces.Customization;
 using Domain_Layer.Interfaces.Inquiry;
+using Domain_Layer.Interfaces.Order;
+using Domain_Layer.Interfaces.PaymentDetails;
 using Domain_Layer.Interfaces.Product;
+using Domain_Layer.Interfaces.Shipment;
 using Domain_Layer.Interfaces.User;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -34,6 +37,9 @@ builder.Services.AddScoped<IInquiryRepository,InquiryRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICustomizationRepository,CustomizationRepository>();
+builder.Services.AddScoped<IShipmentRepository, ShipmentRepository>();
+builder.Services.AddScoped<IPaymentDetailsRepository, PaymentDetailsRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 //Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IInquiryService, InquiryService>();
@@ -41,8 +47,12 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<ICustomizationService, CustomizationService>();
+builder.Services.AddScoped<IShipmentService,ShipmentService>();
+builder.Services.AddScoped<IPaymentDetailsService,PaymentDetailService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 //ExceptionHandler
 builder.Services.AddExceptionHandler<NotFoundExceptionHandler>();
+builder.Services.AddExceptionHandler<BusinessExceptionHandler>();
 builder.Services.AddExceptionHandler<AlreadyExistsExceptionHandler>();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 //Validators

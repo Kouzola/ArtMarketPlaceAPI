@@ -14,7 +14,7 @@ namespace Domain_Layer.Interfaces.Order
         Task<Entities.Order> GetOrderOfAnShipmentAsync(int shipmentId);
         Task<Entities.Order> GetOrderByIdAsync(int id);
         Task<Entities.Order> GetOrderByCodeAsync(string code);
-        Task<Entities.Order> AddOrderAsync(Entities.Order order);
+        Task<Entities.Order> CreateOrderFromCartAsync(int cartId, int customerId);
         Task<Entities.Order> UpdateOrderAsync(Entities.Order order);
         Task<bool> DeleteOrderAsync(int id);
         Task<double> GetOrderTotalPriceAsync(int id);

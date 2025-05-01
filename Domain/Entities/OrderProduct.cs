@@ -13,7 +13,7 @@ namespace Domain_Layer.Entities
         public Order Order { get; set; } = null!;
         public Product Product { get; set; } = null!;
         public int Quantity { get; set; }
-        public int UnitPrice { get; set; }
+        public double UnitPrice { get; set; }
 
         public bool IsValidatedByArtisan { get; set; }
     }

@@ -1,6 +1,7 @@
 ﻿using Data_Access_Layer.AppDbContext;
 using Domain_Layer.Entities;
 using Domain_Layer.Interfaces.Cart;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,29 +14,46 @@ namespace Data_Access_Layer.Repositories
     {
         private readonly ArtMarketPlaceDbContext _context = context;
 
-        public Task<Cart> AddCartAsync(Cart cart)
+        public async Task<Cart> AddCartAsync(Cart cart)
         {
-            throw new NotImplementedException();
+            var addedCart = await _context.Carts.AddAsync(cart);
+            await _context.SaveChangesAsync();
+            return addedCart.Entity;
         }
 
-        public Task<bool> DeleteCartAsync(int cartId)
+        public async Task<bool> DeleteCartAsync(int cartId)
         {
-            throw new NotImplementedException();
+            var cart = await _context.Carts.FindAsync(cartId);
+            if (cart == null) return false;
+            _context.Remove(cart);
+            return await _context.SaveChangesAsync() > 0;
         }
 
-        public Task<Cart?> GetCartByIdAsync(int cartId)
+        public async Task<Cart?> GetCartByIdAsync(int cartId)
         {
-            throw new NotImplementedException();
+            var cart = await _context.Carts.Include(c => c.Products).ThenInclude(ci => ci.Product).FirstOrDefaultAsync(c => c.Id == cartId);
+            if (cart == null) return null;
+            return cart;
         }
 
-        public Task<Cart?> GetCartByUserIdAsync(int userId)
+        public async Task<Cart?> GetCartByUserIdAsync(int userId)
         {
-            throw new NotImplementedException();
+            var cart = await _context.Carts.Include(c => c.Products).ThenInclude(ci => ci.Product).FirstOrDefaultAsync(c => c.UserId == userId);
+            if (cart == null) return null;
+            return cart;
         }
 
-        public Task<Cart> UpdateCartAsync(Cart cart)
+        public async Task<Cart?> UpdateCartAsync(Cart cart)
         {
-            throw new NotImplementedException();
+            var cartToUpdate = await _context.Carts.FindAsync(cart.Id);
+            if (cartToUpdate == null) return null;
+
+            cartToUpdate.Products = cart.Products;
+            cartToUpdate.UpdatedAt = DateTime.Now;
+
+            await _context.SaveChangesAsync();
+            return cartToUpdate;
+
         }
     }
 }

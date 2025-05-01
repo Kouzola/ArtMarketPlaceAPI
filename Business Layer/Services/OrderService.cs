@@ -1,47 +1,62 @@
 ﻿using Business_Layer.Exceptions;
 using Domain_Layer.Entities;
+using Domain_Layer.Interfaces.Cart;
 using Domain_Layer.Interfaces.Order;
 using Domain_Layer.Interfaces.PaymentDetails;
 using Domain_Layer.Interfaces.Product;
 using Domain_Layer.Interfaces.Shipment;
 using Domain_Layer.Interfaces.User;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Business_Layer.Services
 {
     public class OrderService(IOrderRepository repository, IUserService userService, 
         IProductService productService, IPaymentDetailsService paymentDetailsService,
-        IShipmentService shipmentService) : IOrderService
+        IShipmentService shipmentService, ICartService cartService) : IOrderService
     {
         private readonly IOrderRepository _repository = repository;
         private readonly IUserService _userService = userService;
         private readonly IProductService _productService = productService;
         private readonly IPaymentDetailsService _paymentDetailsService = paymentDetailsService;
         private readonly IShipmentService _shipmentService = shipmentService;
+        private readonly ICartService _cartService = cartService;
         //TODO AFFICHER STOCK - RESERVE STOCK SUR L'UI
-
-        public async Task<Order> AddOrderAsync(Order order)
+        //Les appel de GET avec des services vérifient dèja l'existence de l'entité
+        public async Task<Order> CreateOrderFromCartAsync(int cartId, int customerId)
         {
             //Checker avec les quantité des produit d'orderProduct est augmenté la reserver stock
-            var customer = await _userService.GetUserByIdAsync(order.CustomerId); //Si customer existe pas le GetUserById lance une exception
-            order.Status = OrderStatus.NOT_PAYED;
-            //Verifier les produits s'ils existent et s'ils sont en stock , si oui on reserve la quantité demandé de produit
-            var orderProducts = order.OrderProducts.ToList();
+            var customer = await _userService.GetUserByIdAsync(customerId);
+            var cart = await _cartService.GetCartByIdAsync(cartId);
+            List<OrderProduct> orderProducts = new List<OrderProduct>();
             List<Product> dbProductsToUpdate = new List<Product>();
-            foreach (var orderProduct in orderProducts)
+            foreach (var cartItem in cart!.Products)
             {
-                var productDb = await _productService.GetProductByIdAsync(orderProduct.ProductId);
-                if (orderProduct.Quantity > productDb.Stock - productDb.ReservedStock) throw new BusinessException($"The {productDb.Name} is Out Of Stock!");
+                //Rajoute le orderProduct
+                var orderProduct = new OrderProduct
+                {
+                    ProductId = cartItem.ProductId,
+                    Quantity = cartItem.Quantity,
+                    UnitPrice = cartItem.Product.Price
+                };
+                orderProducts.Add(orderProduct);
+
+                //Ajoute les reservedStock
+                var productDb = await _productService.GetProductByIdAsync(cartItem.ProductId);
+                if (cartItem.Quantity > productDb.Stock - productDb.ReservedStock) throw new BusinessException($"The {productDb.Name} is Out Of Stock!");
                 productDb.ReservedStock += orderProduct.Quantity;
                 dbProductsToUpdate.Add(productDb); //On met les produits dans une liste pour les update après les vérifications de stocks.
             }
 
+            //update les reservedStock des produits
             dbProductsToUpdate.ForEach(async x => await _productService.UpdateProductAsync(x));
 
+            var order = new Order
+            {
+                CustomerId = customerId,
+                Code = Guid.NewGuid().ToString("N").Substring(0, 16),
+                Status = OrderStatus.NOT_PAYED,
+                OrderProducts = orderProducts,
+            };
+          
             return await _repository.AddOrderAsync(order);
         }
 
