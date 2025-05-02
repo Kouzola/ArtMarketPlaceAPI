@@ -116,6 +116,8 @@ namespace Business_Layer.Services
         {
             var order = await _repository.GetOrderByIdAsync(orderId);
             if (order == null) throw new NotFoundException("Order not found");
+            double orderTotalPrice = await GetOrderTotalPriceAsync(orderId);
+            if (paymentDetail.Amount != orderTotalPrice) throw new BusinessException("The amount of the payment does not match the price of the order!");
             var addedPaymentDetail = await _paymentDetailsService.AddPaymentDetailsAsync(paymentDetail);
             //Retire du stock, les produits quand on paye la commande.
             List<Product> dbProductsToUpdate = new List<Product>();

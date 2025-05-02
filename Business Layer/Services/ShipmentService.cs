@@ -91,7 +91,7 @@ namespace Business_Layer.Services
 
                         //Si tous les packets sont en transit, on peut update la order au status de SHIPPED
                         var shipmentsOfAnOrder = await GetAllShipmentOfAnOrder(shipment.OrderId);
-                        if (shipmentsOfAnOrder.All(s => s.Status == ShipmentStatus.IN_TRANSIT)) await _orderService.UpdateOrderStatus(shipment.OrderId, OrderStatus.SHIPPED);
+                        if (shipmentsOfAnOrder.All(s => s.Status == ShipmentStatus.IN_TRANSIT)) await _orderService.UpdateOrderStatusAsync(shipment.OrderId, OrderStatus.SHIPPED);
                     }
                     else if (shipmentStatus == ShipmentStatus.LOST) shipment.Status = ShipmentStatus.LOST;
                     break;
@@ -112,7 +112,7 @@ namespace Business_Layer.Services
 
                         //Si tous les packets sont delivered, on peut update la order au status de DELIVERED
                         var shipmentsOfAnOrder = await GetAllShipmentOfAnOrder(shipment.OrderId);
-                        if (shipmentsOfAnOrder.All(s => s.Status == ShipmentStatus.DELIVERED)) await _orderService.UpdateOrderStatus(shipment.OrderId, OrderStatus.DELIVERED);
+                        if (shipmentsOfAnOrder.All(s => s.Status == ShipmentStatus.DELIVERED)) await _orderService.UpdateOrderStatusAsync(shipment.OrderId, OrderStatus.DELIVERED);
                     }
                     break;
 
