@@ -8,7 +8,7 @@ namespace Domain_Layer.Interfaces.Order
 {
     public interface IOrderRepository
     {
-        Task<IEnumerable<Entities.Order>> GetAllOrdersAsync();
+        Task<IEnumerable<Entities.Order>> GetAllOrderForAnArtisanAsync(int artisanId);
         Task<IEnumerable<Entities.Order>> GetAllOrderOfCustomerAsync(int customerId);
         Task<Entities.Order?> GetOrderOfAnShipmentAsync(int shipmentId);
         Task<Entities.Order?> GetOrderByIdAsync(int id);

@@ -5,7 +5,7 @@ namespace ArtMarketPlaceAPI.Dto.Mappers
 {
     public static class ShipmentMapper
     {
-        public static ShipmentResponseDto MapToDto(Shipment shipment)
+        public static ShipmentResponseDto MapToDto(this Shipment shipment)
         {
             return new ShipmentResponseDto
             {

@@ -73,7 +73,7 @@ namespace Business_Layer.Services
             return await _repository.GetAllOrderOfCustomerAsync(customerId);
         }
 
-        public async Task<IEnumerable<Order>> GetAllOrdersAsync()
+        public async Task<IEnumerable<Order>> GetAllOrderForAnArtisanAsync(int artisanId)
         {
             return await _repository.GetAllOrdersAsync();
         }

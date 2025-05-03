@@ -22,20 +22,25 @@ namespace Business_Layer.Services
             return await _repository.AddCartAsync(cart);
         }
 
-        public async Task<Cart?> AddItemToCartAsync(int cartId, int productId, int quantity)
+        public async Task<Cart> AddItemToCartAsync(int customerId, int productId, int quantity)
         {
-            var cart = await _repository.GetCartByIdAsync(cartId);
-            if (cart == null) throw new NotFoundException("Cart not found!");
+            var cart = await _repository.GetCartByUserIdAsync(customerId);
+            if (cart == null) cart = await AddCartAsync(new Cart
+            {
+                UserId = customerId,
+            });
             List<CartItem> items = cart.Items;
             //Vérification de l'existence des produits ajouter
             var product = await _productService.GetProductByIdAsync(productId);
             items.Add(new CartItem
             {
-                CartId = cartId,
+                CartId = cart.Id,
                 ProductId = productId,
                 Quantity = quantity
             });
-            return await _repository.UpdateCartAsync(cart);        
+            var updatedCart = await _repository.UpdateCartAsync(cart);
+            if (updatedCart == null) throw new NotFoundException("Cart not found!");
+            return updatedCart;
         }
 
         public async Task<bool> DeleteCartAsync(int id)
@@ -43,21 +48,21 @@ namespace Business_Layer.Services
             return await _repository.DeleteCartAsync(id);
         }
 
-        public async Task<Cart?> GetCartByIdAsync(int id)
+        public async Task<Cart> GetCartByIdAsync(int id)
         {
             var cart = await _repository.GetCartByIdAsync(id);
             if (cart == null) throw new NotFoundException("Cart not found!");
             return cart;
         }
 
-        public async Task<Cart?> GetCartByUserIdAsync(int userId)
+        public async Task<Cart> GetCartByUserIdAsync(int userId)
         {
             var cart = await _repository.GetCartByUserIdAsync(userId);
             if (cart == null) throw new NotFoundException("Cart not found!");
             return cart;
         }
 
-        public async Task<Cart?> RemoveItemFromCartAsync(int cartId, int productId, int quantity)
+        public async Task<Cart> RemoveItemFromCartAsync(int cartId, int productId, int quantity)
         {
             var cart = await _repository.GetCartByIdAsync(cartId);
             if (cart == null) throw new NotFoundException("Cart not found!");
@@ -66,7 +71,9 @@ namespace Business_Layer.Services
             if (itemToUpdate == null) throw new NotFoundException("Product not found in the cart!");
             if (itemToUpdate.Quantity == quantity) items.Remove(itemToUpdate);
             else itemToUpdate.Quantity -= quantity;
-            return await _repository.UpdateCartAsync(cart);
+            var updatedCart = await _repository.UpdateCartAsync(cart);
+            if (updatedCart == null) throw new NotFoundException("Cart not found!");
+            return updatedCart;
         }
     }
 }

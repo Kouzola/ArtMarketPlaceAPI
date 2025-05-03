@@ -57,11 +57,13 @@ namespace Data_Access_Layer.Repositories
             return orders;
         }
 
-        public async Task<IEnumerable<Order>> GetAllOrdersAsync()
+        public async Task<IEnumerable<Order>> GetAllOrderForAnArtisanAsync(int artisanId)
         {
             var orders = await _context.Orders
                 .Include(o => o.Customer)
                 .Include(o => o.OrderProducts)
+                    .ThenInclude(op => op.Product)
+                    .Where(o => o.OrderProducts.Any(op => op.Product.ArtisanId == artisanId))
                 .Include(o => o.Shipments)
                 .ToListAsync();
 
