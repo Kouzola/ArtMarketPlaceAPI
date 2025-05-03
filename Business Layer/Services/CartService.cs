@@ -26,7 +26,7 @@ namespace Business_Layer.Services
         {
             var cart = await _repository.GetCartByIdAsync(cartId);
             if (cart == null) throw new NotFoundException("Cart not found!");
-            List<CartItem> items = cart.Products;
+            List<CartItem> items = cart.Items;
             //Vérification de l'existence des produits ajouter
             var product = await _productService.GetProductByIdAsync(productId);
             items.Add(new CartItem
@@ -61,7 +61,7 @@ namespace Business_Layer.Services
         {
             var cart = await _repository.GetCartByIdAsync(cartId);
             if (cart == null) throw new NotFoundException("Cart not found!");
-            List<CartItem> items = cart.Products;
+            List<CartItem> items = cart.Items;
             var itemToUpdate = items.First(item => item.ProductId == productId);
             if (itemToUpdate == null) throw new NotFoundException("Product not found in the cart!");
             if (itemToUpdate.Quantity == quantity) items.Remove(itemToUpdate);

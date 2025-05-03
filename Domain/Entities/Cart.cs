@@ -1,3 +1,9 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
 namespace Domain_Layer.Entities
 {
     public class Cart
@@ -8,6 +14,6 @@ namespace Domain_Layer.Entities
 
         public User User { get; set; } = null!;
         public int UserId { get; set; }
-        public List<CartItem> Products { get; set; } = new List<CartItem>();
+        public List<CartItem> Items { get; set; } = new List<CartItem>();
     }
 }

@@ -10,6 +10,7 @@ using Domain_Layer.Interfaces.Inquiry;
 using Domain_Layer.Interfaces.Order;
 using Domain_Layer.Interfaces.PaymentDetails;
 using Domain_Layer.Interfaces.Product;
+using Domain_Layer.Interfaces.Review;
 using Domain_Layer.Interfaces.Shipment;
 using Domain_Layer.Interfaces.User;
 using FluentValidation;
@@ -40,6 +41,7 @@ builder.Services.AddScoped<ICustomizationRepository,CustomizationRepository>();
 builder.Services.AddScoped<IShipmentRepository, ShipmentRepository>();
 builder.Services.AddScoped<IPaymentDetailsRepository, PaymentDetailsRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 //Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IInquiryService, InquiryService>();
@@ -50,6 +52,7 @@ builder.Services.AddScoped<ICustomizationService, CustomizationService>();
 builder.Services.AddScoped<IShipmentService,ShipmentService>();
 builder.Services.AddScoped<IPaymentDetailsService,PaymentDetailService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
 //ExceptionHandler
 builder.Services.AddExceptionHandler<NotFoundExceptionHandler>();
 builder.Services.AddExceptionHandler<BusinessExceptionHandler>();
@@ -65,6 +68,8 @@ builder.Services.AddValidatorsFromAssemblyContaining<UserSelfUpdateValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<CategoryRequestValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<ProductRequestValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<CustomizationRequestValidtor>();
+builder.Services.AddValidatorsFromAssemblyContaining<CartRequestValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<ReviewRequestValidator>();
 
 //Authentification
 builder.Services.AddAuthentication(opt => {

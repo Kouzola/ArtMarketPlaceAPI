@@ -23,7 +23,7 @@ namespace Domain_Layer.Interfaces.Order
         Task<Entities.Order> UpdateOrderStatusAsync(int orderId, OrderStatus status);
         Task<bool> ShipOrderAsync(int orderId, int deliveryPartnerId, int artisanId);
         //Payment
-        Task<PaymentDetail> PayOrderAsync(int orderId, PaymentDetail paymentDetail);
+        Task<PaymentDetail> PayOrderAsync(int orderId, PaymentDetail paymentDetail, int cartId);
         //Validation
         Task<bool> CancelOrderAsync(int orderId);
         Task ValidateAndProcessOrderAsync(Entities.Order order); //Condition OK => Processus lancer paiement etc

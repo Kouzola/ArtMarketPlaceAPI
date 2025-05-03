@@ -14,8 +14,8 @@
         public DateTime UpdatedAt { get; set; }
         public UserResponseDto Artisan { get; set; } = null!;
         public string Category { get; set; } = string.Empty;
-        //Review
-        //Customization
+        public List<ReviewResponseDto> Reviews { get; set; } = new List<ReviewResponseDto>();
+        public List<CustomizationResponseDto> Customizations { get; set; } = new List<CustomizationResponseDto>();
 
     }
 }

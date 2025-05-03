@@ -28,7 +28,7 @@ namespace Business_Layer.Services
             var cart = await _cartService.GetCartByIdAsync(cartId);
             List<OrderProduct> orderProducts = new List<OrderProduct>();
             List<Product> dbProductsToUpdate = new List<Product>();
-            foreach (var cartItem in cart!.Products)
+            foreach (var cartItem in cart!.Items)
             {
                 //Rajoute le orderProduct
                 var orderProduct = new OrderProduct
@@ -112,7 +112,7 @@ namespace Business_Layer.Services
 
         }
 
-        public async Task<PaymentDetail> PayOrderAsync(int orderId, PaymentDetail paymentDetail)
+        public async Task<PaymentDetail> PayOrderAsync(int orderId, PaymentDetail paymentDetail, int cartId)
         {
             var order = await _repository.GetOrderByIdAsync(orderId);
             if (order == null) throw new NotFoundException("Order not found");
@@ -131,6 +131,9 @@ namespace Business_Layer.Services
             dbProductsToUpdate.ForEach(async x => await _productService.UpdateProductAsync(x));
 
             await UpdateOrderStatusAsync(orderId,OrderStatus.PENDING);
+
+            //Deleting Cart
+            await _cartService.DeleteCartAsync(cartId);
 
             return paymentDetail;
         }

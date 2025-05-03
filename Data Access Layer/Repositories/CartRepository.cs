@@ -31,14 +31,14 @@ namespace Data_Access_Layer.Repositories
 
         public async Task<Cart?> GetCartByIdAsync(int cartId)
         {
-            var cart = await _context.Carts.Include(c => c.Products).ThenInclude(ci => ci.Product).FirstOrDefaultAsync(c => c.Id == cartId);
+            var cart = await _context.Carts.Include(c => c.Items).ThenInclude(ci => ci.Product).FirstOrDefaultAsync(c => c.Id == cartId);
             if (cart == null) return null;
             return cart;
         }
 
         public async Task<Cart?> GetCartByUserIdAsync(int userId)
         {
-            var cart = await _context.Carts.Include(c => c.Products).ThenInclude(ci => ci.Product).FirstOrDefaultAsync(c => c.UserId == userId);
+            var cart = await _context.Carts.Include(c => c.Items).ThenInclude(ci => ci.Product).FirstOrDefaultAsync(c => c.UserId == userId);
             if (cart == null) return null;
             return cart;
         }
@@ -48,7 +48,7 @@ namespace Data_Access_Layer.Repositories
             var cartToUpdate = await _context.Carts.FindAsync(cart.Id);
             if (cartToUpdate == null) return null;
 
-            cartToUpdate.Products = cart.Products;
+            cartToUpdate.Items = cart.Items;
             cartToUpdate.UpdatedAt = DateTime.Now;
 
             await _context.SaveChangesAsync();
