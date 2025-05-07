@@ -11,11 +11,10 @@ using System.Threading.Tasks;
 
 namespace Business_Layer.Services
 {
-    public class CartService(ICartRepository repository, IProductService productService, IUserService userService) : ICartService
+    public class CartService(ICartRepository repository, IProductService productService) : ICartService
     {
         private readonly ICartRepository _repository = repository;
         private readonly IProductService _productService = productService;
-        private readonly IUserService _userService = userService;
 
         public async Task<Cart> AddCartAsync(Cart cart)
         {
@@ -32,6 +31,7 @@ namespace Business_Layer.Services
             List<CartItem> items = cart.Items;
             //Vérification de l'existence des produits ajouter
             var product = await _productService.GetProductByIdAsync(productId);
+            if (quantity > product.Stock) throw new BusinessException("Not enough stock!");
             items.Add(new CartItem
             {
                 CartId = cart.Id,

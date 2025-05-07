@@ -21,19 +21,6 @@ namespace Data_Access_Layer.Repositories
             //OUVRIR LE ORDER PRODUCT ET RAJOUTER DES TRUCS DEDANS
             var orderAdded = await _context.Orders.AddAsync(order);
             var orderAddedEntity = orderAdded.Entity;
-
-            foreach(var op in order.OrderProducts)
-            {
-                await _context.OrderProducts.AddAsync(new OrderProduct
-                {
-                    OrderId = orderAddedEntity.Id,
-                    ProductId = op.ProductId,
-                    Quantity = op.Quantity,
-                    UnitPrice = op.UnitPrice,
-                });
-            }
-            
-            
             await _context.SaveChangesAsync();
             return orderAddedEntity;
         }
@@ -51,6 +38,7 @@ namespace Data_Access_Layer.Repositories
             var orders = await _context.Orders.Where(o => o.CustomerId == customerId)
                 .Include(o => o.Customer)
                 .Include(o => o.OrderProducts)
+                .Include(o => o.PaymentDetail)
                 .Include(o => o.Shipments)
                 .ToListAsync();
 
@@ -61,6 +49,7 @@ namespace Data_Access_Layer.Repositories
         {
             var orders = await _context.Orders
                 .Include(o => o.Customer)
+                .Include(o => o.PaymentDetail)
                 .Include(o => o.OrderProducts)
                     .ThenInclude(op => op.Product)
                     .Where(o => o.OrderProducts.Any(op => op.Product.ArtisanId == artisanId))
@@ -75,6 +64,7 @@ namespace Data_Access_Layer.Repositories
             var order = await _context.Orders
                 .Include(o => o.Customer)
                 .Include(o => o.OrderProducts)
+                .Include(o => o.PaymentDetail)
                 .Include(o => o.Shipments)
                 .FirstOrDefaultAsync(o => o.Code == code);
 
@@ -86,6 +76,7 @@ namespace Data_Access_Layer.Repositories
         {
             var order = await _context.Orders
                 .Include(o => o.Customer)
+                .Include(o => o.PaymentDetail)
                 .Include(o => o.OrderProducts)
                     .ThenInclude(op => op.Product)
                 .Include(o => o.Shipments)
@@ -99,6 +90,7 @@ namespace Data_Access_Layer.Repositories
         {
             var order = await _context.Orders
                 .Include(o => o.Customer)
+                .Include(o => o.PaymentDetail)
                 .Include(o => o.OrderProducts)
                 .Include(o => o.Shipments)
                 .FirstOrDefaultAsync(o => o.Shipments.Any(s => s.Id == shipmentId));

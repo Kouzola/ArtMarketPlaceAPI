@@ -12,7 +12,7 @@ namespace ArtMarketPlaceAPI.Dto.Response
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public PaymentDetailResponseDto? PaymentDetail { get; set; }
-        public List<ShipmentResponseDto> Shipments { get; set; } = new List<ShipmentResponseDto>();
+        public List<int> Shipments { get; set; } = new List<int>();
         public UserResponseDto Customer { get; set; } = null!;
     }
 

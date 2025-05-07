@@ -14,6 +14,6 @@ namespace ArtMarketPlaceAPI.Dto.Response
         public DateTime UpdatedAt { get; set; }
         public string OrderCode { get; set; } = string.Empty;
         public UserResponseDto DeliveryPartner { get; set; } = null!;
-        public List<ProductResponseDto> Products { get; set; } = null!;
+        public List<int> Products { get; set; } = new List<int>();
     }
 }

@@ -11,7 +11,7 @@ namespace ArtMarketPlaceAPI.Dto.Mappers
             {
                 PaymentMethod = paymentDetail.PaymentMethod,
                 PaymentDate = paymentDetail.PaymentDate,
-                Amout = paymentDetail.Amount
+                Amount = paymentDetail.Amount
             };
         }
     }

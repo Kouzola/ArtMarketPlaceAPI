@@ -19,7 +19,7 @@ namespace ArtMarketPlaceAPI.Dto.Mappers
                 UpdatedAt = shipment.UpdatedAt,
                 OrderCode = shipment.Order.Code,
                 DeliveryPartner = shipment.DeliveryPartner.MapToDto(),
-                Products = shipment.Products.Select(p => p.MapToDto()).ToList(),
+                Products = shipment.Products.Select(p => p.Id).ToList(),
             };
         }
     }

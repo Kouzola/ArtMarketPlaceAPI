@@ -33,6 +33,7 @@ namespace Data_Access_Layer.Repositories
             var shipments = await _context.Shipments
                 .Where(s => s.DeliveryPartnerId == deliveryPartnerId)
                 .Include(s => s.Order)
+                .Include(s => s.Products)
                 .Include(s => s.DeliveryPartner)
                 .ToListAsync();
 
@@ -45,6 +46,7 @@ namespace Data_Access_Layer.Repositories
                 .Where(s => s.OrderId == orderId)
                 .Include(s => s.Order)
                 .Include(s => s.DeliveryPartner)
+                .Include(s => s.Products)
                 .ToListAsync();
 
             return shipments;
@@ -55,6 +57,7 @@ namespace Data_Access_Layer.Repositories
             var shipment = await _context.Shipments
                 .Include(s => s.Order)
                 .Include(s => s.DeliveryPartner)
+                .Include(s => s.Products)
                 .FirstOrDefaultAsync(s => s.Id == id);
             if(shipment == null) return null;
             return shipment;
@@ -65,6 +68,7 @@ namespace Data_Access_Layer.Repositories
             var shipment = await _context.Shipments
                 .Include(s => s.Order)
                 .Include(s => s.DeliveryPartner)
+                .Include(s => s.Products)
                 .FirstOrDefaultAsync(s => s.TrackingNumber == trackingNumber);
             if (shipment == null) return null;
             return shipment;
@@ -75,6 +79,7 @@ namespace Data_Access_Layer.Repositories
             var shipmentToUpdate = await _context.Shipments
                 .Include(s => s.Order)
                 .Include(s => s.DeliveryPartner)
+                .Include(s => s.Products)
                 .FirstOrDefaultAsync(s => s.Id == shipment.Id);
 
             if(shipmentToUpdate == null) return null;
