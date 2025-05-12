@@ -3,6 +3,7 @@ using Domain_Layer.Entities;
 using Domain_Layer.Interfaces.Order;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ArtMarketPlaceAPI.Controllers
 {
@@ -18,7 +19,10 @@ namespace ArtMarketPlaceAPI.Controllers
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> GetAllShipmentOfAnOrder(int orderId)
         {
-            //TODO : Check identité du customer
+            var currentUserId = User.FindFirst("id")?.Value;
+            var order = await _orderService.GetOrderByIdAsync(orderId);
+            if (currentUserId != order.CustomerId.ToString()) return Forbid();
+
             var shipments = await _orderService.GetAllShipmentOfAnOrderAsync(orderId);
             return Ok(shipments.Select(s => s.MapToDto()));
         }
@@ -27,19 +31,26 @@ namespace ArtMarketPlaceAPI.Controllers
         [Authorize(Roles = "Delivery")]
         public async Task<IActionResult> GetAllShipmentOfADeliveryPartner(int deliveryPartner)
         {
-            //TODO : Check identité du Delivery
+            var currentUserId = User.FindFirst("id")?.Value;
+            if (currentUserId != deliveryPartner.ToString()) return Forbid();
+
             var shipments = await _orderService.GetAllShipmentOfAnDeliveryPartnerAsync(deliveryPartner);
             return Ok(shipments.Select(s => s.MapToDto()));
         }
 
         [HttpGet("{id:int}")]
+        [Authorize(Roles = "Delivery")]
         public async Task<IActionResult> GetShipmentById(int id)
         {
-            //TODO : Check identité du customer, delivery
             var shipment = await _orderService.GetShipmentByIdAsync(id);
+
+            var currentUserId = User.FindFirst("id")?.Value;
+            if (currentUserId != shipment.DeliveryPartnerId.ToString()) return Forbid();
+
             return Ok(shipment.MapToDto());
         }
 
+        //Supprimer ??
         [HttpGet("by-tracking")]
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> GetShipmentById(string trackingNumber)
@@ -55,8 +66,12 @@ namespace ArtMarketPlaceAPI.Controllers
         [Authorize(Roles = "Delivery")]
         public async Task<IActionResult> UpdateShipmentDeliveryStatus(int shipmentId, ShipmentStatus status)
         {
-            //TODO : Check identité du customer
-            var shipment = await _orderService.UpdateShipmentDeliveryStatusAsync(shipmentId, status);
+            var shipment = await _orderService.GetShipmentByIdAsync(shipmentId);
+
+            var currentUserId = User.FindFirst("id")?.Value;
+            if (currentUserId != shipment.DeliveryPartnerId.ToString()) return Forbid();
+
+            shipment = await _orderService.UpdateShipmentDeliveryStatusAsync(shipmentId, status);
             return Ok(shipment.MapToDto());
         }
 
@@ -64,8 +79,12 @@ namespace ArtMarketPlaceAPI.Controllers
         [Authorize(Roles = "Delivery")]
         public async Task<IActionResult> UpdateEstimatedTimeArrival(int shipmentId, DateTime estimatedTime)
         {
-            //TODO : Check identité du customer
-            var shipment = await _orderService.UpdateEstimatedTimeArrivalAsync(shipmentId, estimatedTime);
+            var shipment = await _orderService.GetShipmentByIdAsync(shipmentId);
+
+            var currentUserId = User.FindFirst("id")?.Value;
+            if (currentUserId != shipment.DeliveryPartnerId.ToString()) return Forbid();
+
+            shipment = await _orderService.UpdateEstimatedTimeArrivalAsync(shipmentId, estimatedTime);
             return Ok(shipment.MapToDto());
         }
 

@@ -34,14 +34,14 @@ namespace ArtMarketPlaceAPI.Controllers
         public async Task<IActionResult> AddAReviewToAProduct(int productId,ReviewRequestDto request)
         {
             var customerId = User.FindFirst("id")?.Value;
-            if(customerId == null) return BadRequest("Invalid User ID");
+
             var review = await _reviewService.AddReviewAsync(new Domain_Layer.Entities.Review
             {
                 ProductId = productId,
                 Title = request.Title,
                 Description = request.Description,
                 Score = request.Score,
-                CustomerId = int.Parse(customerId)
+                CustomerId = int.Parse(customerId!)
             });
             return Ok(review.MapToDto());
         }

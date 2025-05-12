@@ -1,11 +1,13 @@
 ﻿using ArtMarketPlaceAPI.Dto.Mappers;
 using ArtMarketPlaceAPI.Dto.Request;
+using Azure.Core;
 using Domain_Layer.Entities;
 using Domain_Layer.Interfaces.Category;
 using Domain_Layer.Interfaces.Customization;
 using Domain_Layer.Interfaces.Product;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ArtMarketPlaceAPI.Controllers
 {
@@ -126,6 +128,9 @@ namespace ArtMarketPlaceAPI.Controllers
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> AddProduct([FromForm] ProductRequestDto request)
         {
+            var currentUserId = User.FindFirst("id")?.Value;
+            if (currentUserId != request.ArtisanId.ToString()) return Forbid();
+
             var product = await _productService.AddProductAsync(new Domain_Layer.Entities.Product
             {
                 Name = request.Name,
@@ -148,6 +153,11 @@ namespace ArtMarketPlaceAPI.Controllers
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> UpdateProduct(int id, [FromForm] ProductRequestDto request)
         {
+
+            var currentUserId = User.FindFirst("id")?.Value;
+            if (currentUserId != request.ArtisanId.ToString()) return Forbid();
+
+            //Pq l'erreur ici regarder pq après
             var productToUpdate = await _productService.GetProductByIdAsync(id);
             if (productToUpdate == null) return NotFound("Product not found!");
             var updatedProduct = new Domain_Layer.Entities.Product
@@ -181,6 +191,9 @@ namespace ArtMarketPlaceAPI.Controllers
         public async Task<IActionResult> DeleteProductById(int id)
         {
             var product = await _productService.GetProductByIdAsync(id);
+            var currentUserId = User.FindFirst("id")?.Value;
+            if (currentUserId != product.ArtisanId.ToString() && User.FindFirstValue(ClaimTypes.Role) != "admin") return Forbid();
+
             var response = await _productService.DeleteProductAsync(product);
             if (!response) return NotFound("Product not found!");
              _fileService.DeleteImageFileAsync(product.Image);
@@ -195,6 +208,8 @@ namespace ArtMarketPlaceAPI.Controllers
             foreach (var id in ids)
             {
                 var product = await _productService.GetProductByIdAsync(id);
+                var currentUserId = User.FindFirst("id")?.Value;
+                if (currentUserId != product.ArtisanId.ToString() && User.FindFirstValue(ClaimTypes.Role) != "admin") return Forbid();
                 productToDelete.Add(product);
             }
             var response = await _productService.DeleteProductsAsync(productToDelete);

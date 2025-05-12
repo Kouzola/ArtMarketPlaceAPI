@@ -1,5 +1,6 @@
 ﻿using ArtMarketPlaceAPI.Dto.Mappers;
 using ArtMarketPlaceAPI.Dto.Request;
+using Domain_Layer.Entities;
 using Domain_Layer.Interfaces.Inquiry;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -45,6 +46,11 @@ namespace ArtMarketPlaceAPI.Controllers
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> AddInquiry(InquiryRequestDto request)
         {
+
+            var currentUserId = User.FindFirst("id")?.Value;
+
+            if (currentUserId != request.CustomerId.ToString()) return Forbid();
+
             var inquiry = await _service.AddInquiryAsync(new Domain_Layer.Entities.Inquiry
             {
                 Title = request.Title,
@@ -60,8 +66,12 @@ namespace ArtMarketPlaceAPI.Controllers
         #region PUT
         [HttpPut("customer/{id:int}")]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> AddInquiry(InquiryRequestDto request, int id)
+        public async Task<IActionResult> UpdateInquiry(InquiryRequestDto request, int id)
         {
+            var currentUserId = User.FindFirst("id")?.Value;
+
+            if (currentUserId != request.CustomerId.ToString()) return Forbid();
+
             var inquiry = await _service.UpdateInquiryAsync(new Domain_Layer.Entities.Inquiry
             {
                 Id = id,
@@ -93,6 +103,10 @@ namespace ArtMarketPlaceAPI.Controllers
         [Authorize(Roles = "Customer, Admin")]
         public async Task<IActionResult> DeleteInquiry(int id)
         {
+            var inquiryTodelete = await _service.GetInquiriesByIdAsync(id);
+            var currentUserId = User.FindFirst("id")?.Value;
+
+            if (currentUserId != inquiryTodelete.CustomerId.ToString() && User.FindFirstValue(ClaimTypes.Role) != "admin") return Forbid();
             var inquiry = await _service.DeleteInquiryAsync(id);
             return inquiry ? Ok("Inquiry Deleted") : NotFound();
         }
@@ -101,6 +115,13 @@ namespace ArtMarketPlaceAPI.Controllers
         [Authorize(Roles = "Customer, Admin")]
         public async Task<IActionResult> DeleteInquiries([FromQuery] List<int> ids)
         {
+            foreach (var id in ids)
+            {
+                var inquiryTodelete = await _service.GetInquiriesByIdAsync(id);
+                var currentUserId = User.FindFirst("id")?.Value;
+
+                if (currentUserId != inquiryTodelete.CustomerId.ToString() && User.FindFirstValue(ClaimTypes.Role) != "admin") return Forbid();
+            }            
             var inquiry = await _service.DeleteInquiriesAsync(ids);
             return inquiry ? Ok("Inquiries Deleted") : NotFound();
         }

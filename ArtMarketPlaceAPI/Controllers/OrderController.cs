@@ -1,5 +1,6 @@
 ﻿using ArtMarketPlaceAPI.Dto.Mappers;
 using ArtMarketPlaceAPI.Dto.Request;
+using Azure.Core;
 using Domain_Layer.Entities;
 using Domain_Layer.Interfaces.Order;
 using Microsoft.AspNetCore.Authorization;
@@ -19,6 +20,8 @@ namespace ArtMarketPlaceAPI.Controllers
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> GetAllCustomerOrder(int customerId)
         {
+            var currentUserId = User.FindFirst("id")?.Value;
+            if (currentUserId != customerId.ToString()) return Forbid();
             var orders = await _orderService.GetAllOrderOfCustomerAsync(customerId);
             return Ok(orders.Select(o => o.MapToDto()));
         }
@@ -38,6 +41,8 @@ namespace ArtMarketPlaceAPI.Controllers
         public async Task<IActionResult> GetOrderById(int id)
         {
             var order = await _orderService.GetOrderByIdAsync(id);
+            var currentUserId = User.FindFirst("id")?.Value;
+            if (currentUserId != order.CustomerId.ToString()) return Forbid();
             return Ok(order.MapToDto());
         }
 
@@ -46,6 +51,8 @@ namespace ArtMarketPlaceAPI.Controllers
         public async Task<IActionResult> GetOrderByCode(string code)
         {
             var order = await _orderService.GetOrderByCodeAsync(code);
+            var currentUserId = User.FindFirst("id")?.Value;
+            if (currentUserId != order.CustomerId.ToString()) return Forbid();
             return Ok(order.MapToDto());
         }
 
@@ -53,6 +60,10 @@ namespace ArtMarketPlaceAPI.Controllers
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> GetOrderTotalPrice(int orderId)
         {
+            var order = await _orderService.GetOrderByIdAsync(orderId);
+            var currentUserId = User.FindFirst("id")?.Value;
+            if (currentUserId != order.CustomerId.ToString()) return Forbid();
+
             var price = await _orderService.GetOrderTotalPriceAsync(orderId);
             return Ok(price);
         }
@@ -64,7 +75,9 @@ namespace ArtMarketPlaceAPI.Controllers
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> CreateOrderFromCart([FromBody] int cartId, int customerId)
         {
-            //Check Cart ID Appartient au gars
+            var currentUserId = User.FindFirst("id")?.Value;
+            if (currentUserId != customerId.ToString()) return Forbid();
+
             var order = await _orderService.CreateOrderFromCartAsync(cartId, customerId);
             return Ok(order.MapToDto());
         }
@@ -115,7 +128,11 @@ namespace ArtMarketPlaceAPI.Controllers
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> CancelOrder(int orderId)
         {
-            //TODO CHECK USER
+            var order = await _orderService.GetOrderByIdAsync(orderId);
+
+            var currentUserId = User.FindFirst("id")?.Value;
+            if (currentUserId != order.CustomerId.ToString()) return Forbid();
+
             var isCancel = await _orderService.CancelOrderAsync(orderId);
             if (isCancel) return Ok("Order Cancel");
             return BadRequest("Error: Order not cancel");

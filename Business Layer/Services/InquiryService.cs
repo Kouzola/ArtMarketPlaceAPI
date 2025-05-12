@@ -40,7 +40,7 @@ namespace Business_Layer.Services
             return (await _repository.GetAllInquiriesAsync()).Where(i => i.CustomerId == customerId);
         }
 
-        public async Task<Inquiry?> GetInquiriesByIdAsync(int id)
+        public async Task<Inquiry> GetInquiriesByIdAsync(int id)
         {
             var inquiry = await _repository.GetInquiriesByIdAsync(id);
             if (inquiry == null) throw new NotFoundException("Inquiry not found!");
