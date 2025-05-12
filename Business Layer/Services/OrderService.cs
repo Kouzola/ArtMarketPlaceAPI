@@ -113,14 +113,14 @@ namespace Business_Layer.Services
             {
                 totalPrice += orderProduct.UnitPrice * orderProduct.Quantity;
             }
-            return totalPrice;
+            return Math.Round(totalPrice, 2);
 
         }
 
         public async Task<PaymentDetail> PayOrderAsync(int orderId, PaymentDetail paymentDetail, int cartId)
         {
             var order = await _repository.GetOrderByIdAsync(orderId);
-            if (order == null) throw new NotFoundException("Order not found");
+            if (order == null || order.Status != OrderStatus.NOT_PAYED) throw new NotFoundException("Order not found");
             double orderTotalPrice = await GetOrderTotalPriceAsync(orderId);
             if (paymentDetail.Amount != orderTotalPrice) throw new BusinessException("The amount of the payment does not match the price of the order!");
             var addedPaymentDetail = await AddPaymentDetailsAsync(paymentDetail);

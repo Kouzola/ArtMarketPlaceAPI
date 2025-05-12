@@ -30,7 +30,7 @@ namespace ArtMarketPlaceAPI.Controllers
             var currentUserId = User.FindFirst("id")?.Value;
             if (currentUserId != artisanId.ToString()) return Forbid();
             var orders = await _orderService.GetAllOrderForAnArtisanAsync(artisanId);
-            return Ok(orders.Select(o => o.MapToDto()));
+            return Ok(orders.Select(o => o.MapToDtoForArtisan(artisanId)));
         }
 
         [HttpGet("{id:int}")]

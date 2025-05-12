@@ -14,7 +14,8 @@
     {
         public int Id { get; set; }
         public int CartId { get; set; }
-        public ProductResponseDto Product { get; set; } = null!;
+        public string ProductName { get; set; } = string.Empty;
+        public double ProductPrice { get; set; }
         public int Quantity { get; set; }
     }
 }

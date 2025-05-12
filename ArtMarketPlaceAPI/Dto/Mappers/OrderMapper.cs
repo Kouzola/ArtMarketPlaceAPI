@@ -23,7 +23,7 @@ namespace ArtMarketPlaceAPI.Dto.Mappers
             };
         }
 
-        public static OrderResponseForArtisanDto MapToDtoForArtisan(this Order order)
+        public static OrderResponseForArtisanDto MapToDtoForArtisan(this Order order, int artisanId)
         {
             return new OrderResponseForArtisanDto
             {
@@ -33,7 +33,7 @@ namespace ArtMarketPlaceAPI.Dto.Mappers
                 CreatedAt = order.CreatedAt,
                 UpdatedAt = order.UpdatedAt,
                 Customer = order.Customer.MapToDto(),
-                ProductsOrderedInfo = order.OrderProducts.Select(op => op.MapToDtoForProductInfo()).ToList(),
+                ProductsOrderedInfo = order.OrderProducts.Where(op => op.Product.ArtisanId == artisanId).Select(op => op.MapToDtoForProductInfo()).ToList()
             };
         }
 

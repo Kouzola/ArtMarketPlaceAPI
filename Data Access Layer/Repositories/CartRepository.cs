@@ -45,7 +45,7 @@ namespace Data_Access_Layer.Repositories
 
         public async Task<Cart?> UpdateCartAsync(Cart cart)
         {
-            var cartToUpdate = await _context.Carts.FindAsync(cart.Id);
+            var cartToUpdate = await _context.Carts.Include(c => c.Items).ThenInclude(ci => ci.Product).FirstOrDefaultAsync(c => c.Id == cart.Id);
             if (cartToUpdate == null) return null;
 
             cartToUpdate.Items = cart.Items;
