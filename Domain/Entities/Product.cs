@@ -14,6 +14,7 @@ namespace Domain_Layer.Entities
         public string Reference { get; set; } = null!;
         public double Price { get; set; }
         public int Stock { get; set; }
+        public int ReservedStock { get; set; }
         public string Image { get; set; } = null!;
         public bool Available { get; set; } = true;
         public DateTime CreatedAt { get; private set; }
@@ -27,5 +28,6 @@ namespace Domain_Layer.Entities
         public ICollection<Review> Reviews { get; } = new List<Review>();
         public ICollection<Customization> Customizations { get; } = new List<Customization>();
         public ICollection<OrderProduct> OrderProducts { get; } = new List<OrderProduct>();
+        public ICollection<Shipment> Shipments { get; set; } = new List<Shipment>();
     }
 }

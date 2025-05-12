@@ -20,13 +20,14 @@ namespace Domain_Layer.Entities
         public User Customer { get; set; } = null!;
         public int CustomerId { get; set; }
         public ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
-        public PaymentDetail PaymentDetail { get; set; } = null!;
+        public PaymentDetail? PaymentDetail { get; set; }
         public ICollection<Shipment> Shipments { get; } = new List<Shipment>();
 
     }
 
     public enum OrderStatus
     {
+        NOT_PAYED,
         PENDING,
         CONFIRM,
         SHIPPED,

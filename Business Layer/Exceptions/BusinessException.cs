@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Business_Layer.Exceptions
 {
-    internal class BusinessException
+    public class BusinessException(string message) : Exception(message)
     {
     }
 }

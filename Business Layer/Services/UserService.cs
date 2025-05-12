@@ -27,8 +27,6 @@ namespace Business_Layer.Services
 
         public async Task<User> AddUserAsync(User user)
         {
-            var salt = "" + user.FirstName.ElementAt(0) + user.LastName.ElementAt(0) + user.LastName.ElementAt(user.LastName.Length - 1) + DateTime.Now.DayOfWeek;
-            user.Password = HashPassword(user.Password, salt);
             return await _userRepository.AddUserAsync(user);
         }
 
@@ -74,7 +72,7 @@ namespace Business_Layer.Services
             throw loginException;
         }
 
-        public async Task<bool> Register(string username, string firstName, string lastName, string email, string password, Role role)
+        public async Task<bool> Register(string username, string firstName, string lastName, string email, string password, Role role, Address address)
         {
             //Test pour voir si userName existe déja ?
             if (await _userRepository.GetUserByUsernameAsync(username) != null)
@@ -96,7 +94,8 @@ namespace Business_Layer.Services
                 FirstName = firstName, 
                 LastName = lastName, 
                 Email = email, 
-                Role = role, 
+                Role = role,
+                Address = address
             };
 
             if (await AddUserAsync(newUser) != null) return true;

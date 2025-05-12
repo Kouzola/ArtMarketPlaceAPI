@@ -15,8 +15,7 @@ namespace Domain_Layer.Interfaces.User
         Task<Entities.User> AddUserAsync(Entities.User user);
         Task<Entities.User> UpdateUserAsync(Entities.User user);
         Task<bool> DeleteUserAsync(int id);
-
         Task<string> Login(string username, string password);
-        Task<bool> Register(string username, string firstName, string lastName, string email, string password, Role role);
+        Task<bool> Register(string username, string firstName, string lastName, string email, string password, Role role, Address address);
     }
 }

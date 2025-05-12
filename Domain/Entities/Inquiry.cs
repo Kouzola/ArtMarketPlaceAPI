@@ -11,6 +11,7 @@ namespace Domain_Layer.Entities
         public string Title { get; set; } = null!;
         public string Description { get; set; } = null!;
         public bool WantConsultation { get; set; }
+        public string? ArtisanResponse { get; set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; set; }
 

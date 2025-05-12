@@ -28,6 +28,9 @@ namespace Domain_Layer.Entities
         public ICollection<Order> Orders { get; } = new List<Order>();
         public ICollection<Shipment> Shipments { get; } = new List<Shipment>(); //TODO: Verif métier pour uniquement les delivery guys
 
+        public Cart Cart { get; set; } = null!;
+        public int CartId   { get; set; }
+
         public string FullName
         {
             get { return $"{FirstName} {LastName}"; }

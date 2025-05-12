@@ -22,6 +22,63 @@ namespace Data_Access_Layer.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Domain_Layer.Entities.Cart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Carts");
+                });
+
+            modelBuilder.Entity("Domain_Layer.Entities.CartItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CartId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CartId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("CartItems");
+                });
+
             modelBuilder.Entity("Domain_Layer.Entities.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -54,7 +111,7 @@ namespace Data_Access_Layer.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Category");
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Domain_Layer.Entities.Customization", b =>
@@ -94,7 +151,7 @@ namespace Data_Access_Layer.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Customization");
+                    b.ToTable("Customizations");
                 });
 
             modelBuilder.Entity("Domain_Layer.Entities.Inquiry", b =>
@@ -107,6 +164,9 @@ namespace Data_Access_Layer.Migrations
 
                     b.Property<int>("ArtisanId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ArtisanResponse")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -187,7 +247,7 @@ namespace Data_Access_Layer.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Order");
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Domain_Layer.Entities.OrderProduct", b =>
@@ -198,17 +258,20 @@ namespace Data_Access_Layer.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsValidatedByArtisan")
+                        .HasColumnType("bit");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int>("UnitPrice")
-                        .HasColumnType("int");
+                    b.Property<double>("UnitPrice")
+                        .HasColumnType("float");
 
                     b.HasKey("OrderId", "ProductId");
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderProduct");
+                    b.ToTable("OrderProducts");
                 });
 
             modelBuilder.Entity("Domain_Layer.Entities.PaymentDetail", b =>
@@ -249,7 +312,7 @@ namespace Data_Access_Layer.Migrations
                     b.HasIndex("OrderId")
                         .IsUnique();
 
-                    b.ToTable("PaymentDetail");
+                    b.ToTable("PaymentDetails");
                 });
 
             modelBuilder.Entity("Domain_Layer.Entities.Product", b =>
@@ -293,6 +356,9 @@ namespace Data_Access_Layer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int>("ReservedStock")
+                        .HasColumnType("int");
+
                     b.Property<int>("Stock")
                         .HasColumnType("int");
 
@@ -313,7 +379,7 @@ namespace Data_Access_Layer.Migrations
                     b.HasIndex("Reference")
                         .IsUnique();
 
-                    b.ToTable("Product");
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("Domain_Layer.Entities.Review", b =>
@@ -361,7 +427,7 @@ namespace Data_Access_Layer.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Review");
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("Domain_Layer.Entities.Shipment", b =>
@@ -372,7 +438,7 @@ namespace Data_Access_Layer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("ArrivalDate")
+                    b.Property<DateTime?>("ArrivalDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("CreatedAt")
@@ -383,13 +449,13 @@ namespace Data_Access_Layer.Migrations
                     b.Property<int>("DeliveryPartnerId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("EstimatedArrivalDate")
+                    b.Property<DateTime?>("EstimatedArrivalDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("ShippingDate")
+                    b.Property<DateTime?>("ShippingDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Status")
@@ -412,7 +478,7 @@ namespace Data_Access_Layer.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("Shipment");
+                    b.ToTable("Shipments");
                 });
 
             modelBuilder.Entity("Domain_Layer.Entities.User", b =>
@@ -427,6 +493,9 @@ namespace Data_Access_Layer.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
+
+                    b.Property<int>("CartId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -478,6 +547,51 @@ namespace Data_Access_Layer.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("ProductShipment", b =>
+                {
+                    b.Property<int>("ProductsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ShipmentsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductsId", "ShipmentsId");
+
+                    b.HasIndex("ShipmentsId");
+
+                    b.ToTable("ProductShipment");
+                });
+
+            modelBuilder.Entity("Domain_Layer.Entities.Cart", b =>
+                {
+                    b.HasOne("Domain_Layer.Entities.User", "User")
+                        .WithOne("Cart")
+                        .HasForeignKey("Domain_Layer.Entities.Cart", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain_Layer.Entities.CartItem", b =>
+                {
+                    b.HasOne("Domain_Layer.Entities.Cart", "Cart")
+                        .WithMany("Items")
+                        .HasForeignKey("CartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain_Layer.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Cart");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("Domain_Layer.Entities.Customization", b =>
                 {
                     b.HasOne("Domain_Layer.Entities.Product", "Product")
@@ -524,7 +638,7 @@ namespace Data_Access_Layer.Migrations
                     b.HasOne("Domain_Layer.Entities.Order", "Order")
                         .WithMany("OrderProducts")
                         .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain_Layer.Entities.Product", "Product")
@@ -643,6 +757,26 @@ namespace Data_Access_Layer.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ProductShipment", b =>
+                {
+                    b.HasOne("Domain_Layer.Entities.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain_Layer.Entities.Shipment", null)
+                        .WithMany()
+                        .HasForeignKey("ShipmentsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain_Layer.Entities.Cart", b =>
+                {
+                    b.Navigation("Items");
+                });
+
             modelBuilder.Entity("Domain_Layer.Entities.Category", b =>
                 {
                     b.Navigation("Products");
@@ -652,8 +786,7 @@ namespace Data_Access_Layer.Migrations
                 {
                     b.Navigation("OrderProducts");
 
-                    b.Navigation("PaymentDetail")
-                        .IsRequired();
+                    b.Navigation("PaymentDetail");
 
                     b.Navigation("Shipments");
                 });
@@ -669,6 +802,9 @@ namespace Data_Access_Layer.Migrations
 
             modelBuilder.Entity("Domain_Layer.Entities.User", b =>
                 {
+                    b.Navigation("Cart")
+                        .IsRequired();
+
                     b.Navigation("InquiriesAsArtisan");
 
                     b.Navigation("InquiriesAsCustomer");

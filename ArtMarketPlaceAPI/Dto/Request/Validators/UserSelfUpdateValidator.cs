@@ -24,6 +24,12 @@ namespace ArtMarketPlaceAPI.Dto.Request.Validators
                     .Matches(@"[a-z]").WithMessage("The password must contains at least 1 lowercase character!")
                     .Matches(@"[0-9]").WithMessage("The password must contains at least 1 digit!")
                     .Matches(@"[^\w\d\s]").WithMessage("The password must contains at least 1 special character!");
+
+            RuleFor(u => u.Street).NotEmpty().WithMessage("An valid address is required!");
+            RuleFor(u => u.City).NotEmpty().WithMessage("An valid address is required!");
+            RuleFor(u => u.Country).NotEmpty().WithMessage("An valid address is required!");
+            RuleFor(u => u.PostalCode).Matches(@"^\d+$").WithMessage("Postal Code Invalid!");
+
         }
     }
 }

@@ -26,7 +26,7 @@ namespace Data_Access_Layer.Configurations
             .HasForeignKey(op => op.ProductId).OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(op => op.Order).WithMany(p => p.OrderProducts)
-            .HasForeignKey(op => op.OrderId).OnDelete(DeleteBehavior.NoAction);
+            .HasForeignKey(op => op.OrderId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -20,12 +20,12 @@ namespace Data_Access_Layer.Repositories
             _context = context;
         }
 
-        public async Task<User?> AddUserAsync(User user)
+        public async Task<User> AddUserAsync(User user)
         {
             user.Active = true;
-            await _context.Users.AddAsync(user);
-            if (await _context.SaveChangesAsync() > 0) return user;
-            else return null;
+            var userToAdd = await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
+            return userToAdd.Entity;
         }
 
         public async Task<bool> DeleteUserAsync(int id)

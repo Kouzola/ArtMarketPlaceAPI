@@ -20,6 +20,11 @@ namespace ArtMarketPlaceAPI.Dto.Request.Validators
                 .EmailAddress().WithMessage("An valid email address is required!");
 
             RuleFor(u => u.Role).Must(role => role != Role.Admin).WithMessage("You must choose a valid role!");
+
+            RuleFor(u => u.Street).NotEmpty().WithMessage("An valid address is required!");
+            RuleFor(u => u.City).NotEmpty().WithMessage("An valid address is required!");
+            RuleFor(u => u.Country).NotEmpty().WithMessage("An valid address is required!");
+            RuleFor(u => u.PostalCode).Matches(@"^\d+$").WithMessage("Postal Code Invalid!");
         }
     }
 }
