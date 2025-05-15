@@ -124,6 +124,16 @@ builder.Services.AddSwaggerGen(option => {
                         });
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200").AllowAnyHeader();
+        });
+
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -134,6 +144,8 @@ if (app.Environment.IsDevelopment())
 }
 app.UseExceptionHandler(_ => { });
 app.UseHttpsRedirection();
+
+
 
 app.UseStaticFiles(new StaticFileOptions
 {
@@ -146,5 +158,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseCors();
 
 app.Run();
