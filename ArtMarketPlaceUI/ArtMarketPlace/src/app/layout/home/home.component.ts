@@ -1,12 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, inject, input, OnInit } from '@angular/core';
+import { SideBarComponent } from "../side-bar/side-bar.component";
+import { RouterOutlet } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [],
+  imports: [SideBarComponent, RouterOutlet],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export class HomeComponent {
+export class HomeComponent{
+
+  authService = inject(AuthService);
+  userName =  "";
+
+  ngOnInit(): void {
+    this.userName = this.authService.getActualUserInfo().name;
+    console.log(this.userName);
+  }
 
 }

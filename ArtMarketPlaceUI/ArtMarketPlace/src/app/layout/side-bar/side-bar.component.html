@@ -1,0 +1,48 @@
+<div class="d-flex flex-column flex-shrink-0 p-3 bg-light sidebar">
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+        <img class="bi me-2" src="ArtMarketPlaceLogo.png" width="42" height="42">
+        <span class="fs-4">Art MarketPlace</span>
+    </a>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+      <li class="nav-item">
+        <a
+        routerLink="/home/products" routerLinkActive="active" 
+        class="nav-link link-dark">
+          <i class="bi bi-shop"></i>
+          Products
+        </a>
+      </li>
+      <li>
+        <a routerLink="/home/orders" routerLinkActive="active"  class="nav-link link-dark">
+          <i class="bi bi-bag"></i>
+          My Orders
+        </a>
+      </li>
+      <li>
+        <a routerLink="/home/shipments" routerLinkActive="active" class="nav-link link-dark">
+          <i class="bi bi-truck"></i>
+          My Shipments
+        </a>
+      </li>
+      <li>
+        <a routerLink="/home/inquiries" routerLinkActive="active" class="nav-link link-dark">
+          <i class="bi bi-question-circle"></i>
+          My Inquiries
+        </a>
+      </li>
+      <li>
+        <a routerLink="/home/cart" routerLinkActive="active" class="nav-link link-dark">
+          <i class="bi bi-cart"></i>
+          My Cart
+        </a>
+      </li>
+    </ul>
+    <hr>
+    <div class="nav-link link-dark d-flex flex-row justify-content-between bottom-side-bar">
+        <a routerLink="/home/profile" routerLinkActive="active" class="nav-link link-dark">
+            {{userName()}}
+        </a>
+        <a class="nav-link link-dark" (click)="onSignOut()"><i class="bi bi-box-arrow-right"></i></a>     
+    </div>
+</div>

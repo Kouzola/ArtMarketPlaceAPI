@@ -38,7 +38,7 @@ namespace ArtMarketPlaceAPI.Controllers
                     PostalCode = registerRequest.PostalCode,
                     Country = registerRequest.Country,
                 });
-            if (response) return Ok("Register succesfully!");
+            if (response) return Ok(new { message = "Register succesfully!" });
             else return BadRequest("Register failed!");
         }
     }

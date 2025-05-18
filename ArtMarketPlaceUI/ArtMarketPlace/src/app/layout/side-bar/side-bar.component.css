@@ -1,0 +1,35 @@
+.sidebar{
+    width: 280px;
+    background-color: #D96C3B !important;
+    color:black;
+    height: 100vh;
+}
+
+a{
+    cursor: pointer;
+}
+
+ul li a:hover {
+    background-color: #E07A4F;
+}
+
+ul li .active{
+    background-color: #B45024;
+    color: white !important;
+}
+
+ul li a.active:hover {
+  background-color: #B45024 !important;
+}
+
+
+.bottom-side-bar a{
+    padding: 6px 10px;
+    border-radius: 8px;
+}
+
+.bottom-side-bar a:hover{
+    background-color: #E07A4F;
+    
+    transition: background-color 0.3s;
+}

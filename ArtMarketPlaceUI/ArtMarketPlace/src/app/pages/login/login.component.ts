@@ -27,7 +27,10 @@ export class LoginComponent {
   onSignIn(){
     const userLoginData = this.loginForm.value;
     this.authService.login(userLoginData.userName,userLoginData.password).subscribe({
-      next: (token) => sessionStorage.setItem('jwt',token),
+      next: (response) => {
+        sessionStorage.setItem('jwt',response.token);
+        this.router.navigate(['/home/products']);
+      },
       error: (e) => alert("Wrong username or password"),//TODO : ADD TOAST PASSWORD INCORRECT
     });
   }
