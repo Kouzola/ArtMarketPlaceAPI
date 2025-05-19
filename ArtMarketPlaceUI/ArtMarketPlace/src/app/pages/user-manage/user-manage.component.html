@@ -1,1 +1,110 @@
-<p>user-manage works!</p>
+<body>
+    <h1>Account Information</h1>
+    <hr>
+    @if(user$ | async ; as user){  
+    <form [formGroup]="updateForm" (ngSubmit)="onUpdateUserData(user.id)">
+        <div class="mb-3 form-floating">
+            <input type="text" id="userName" class="form-control" placeholder="Username" required="true" formControlName="userName"
+            [ngClass]="{'is-invalid': updateForm.get('userName')?.touched && updateForm.get('userName')?.invalid}">
+            <label for="userName">Username</label>
+            @if(updateForm.get('userName')?.touched && updateForm.get('userName')?.invalid){
+                <div class="invalid-feedback d-block">
+                    <strong>Field required.</strong>
+                </div>
+            }  
+        </div>
+        <div class="d-flex flex-row justify-content-center">
+            <div class="mb-3 form-floating me-2 flex-grow-1">
+                <input type="text" id="firstName" class="form-control" placeholder="Firstname" required="true" formControlName="firstName"
+                [ngClass]="{'is-invalid': updateForm.get('firstName')?.touched && updateForm.get('firstName')?.invalid}">
+                <label for="firstName">FirstName</label>
+                @if(updateForm.get('firstName')?.touched && updateForm.get('firstName')?.invalid){
+                <div class="invalid-feedback d-block">
+                    <strong>Field required.</strong>
+                </div>
+            }  
+            </div>
+            <div class="mb-3 form-floating ms-2 flex-grow-1">
+                <input type="text" id="lastName" class="form-control" placeholder="Lastname" required="true" formControlName="lastName"
+                [ngClass]="{'is-invalid': updateForm.get('lastName')?.touched && updateForm.get('lastName')?.invalid}">
+                <label for="lastName">Lastname</label>
+                @if(updateForm.get('lastName')?.touched && updateForm.get('lastName')?.invalid){
+                <div class="invalid-feedback d-block">
+                    <strong>Field required.</strong>
+                </div>
+            }  
+            </div>
+        </div>
+        <div class="mb-3 form-floating">
+            <input type="text" id="email" class="form-control" placeholder="Email" required="true" formControlName="email"
+            [ngClass]="{'is-invalid': updateForm.get('email')?.touched && updateForm.get('email')?.invalid}">
+            <label for="email">Email</label>
+            @if(updateForm.get('email')?.touched && updateForm.get('email')?.invalid){
+                <div class="invalid-feedback d-block">
+                    <strong>Field required.</strong>
+                </div>
+            }  
+        </div>
+        <div class="d-flex flex-row justify-content-center">
+            <div class="mb-3 form-floating me-2 flex-grow-1">
+                <input type="text" id="street" class="form-control" placeholder="Street" required="true" formControlName="street"
+                [ngClass]="{'is-invalid': updateForm.get('street')?.touched && updateForm.get('street')?.invalid}">
+                <label for="street">Street</label>
+                @if(updateForm.get('street')?.touched && updateForm.get('street')?.invalid){
+                <div class="invalid-feedback d-block">
+                    <strong>Field required.</strong>
+                </div>
+            }  
+            </div>
+            <div class="mb-3 form-floating ms-2 flex-grow-1">
+                <input type="text" id="city" class="form-control" placeholder="City" required="true" formControlName="city"
+                [ngClass]="{'is-invalid': updateForm.get('city')?.touched && updateForm.get('city')?.invalid}">
+                <label for="city">City</label>
+                @if(updateForm.get('city')?.touched && updateForm.get('city')?.invalid){
+                <div class="invalid-feedback d-block">
+                    <strong>Field required.</strong>
+                </div>
+            }  
+            </div>
+        </div>
+        <div class="d-flex flex-row justify-content-center">
+            <div class="mb-3 form-floating me-2 flex-grow-1">
+                <input type="text" id="postalCode" class="form-control" placeholder="Postalcode" required="true" formControlName="postalCode"
+                [ngClass]="{'is-invalid': updateForm.get('postalCode')?.touched && updateForm.get('postalCode')?.invalid}">
+                <label for="postalCode">Postal Code</label>
+                @if(updateForm.get('postalCode')?.touched && updateForm.get('postalCode')?.invalid){
+                <div class="invalid-feedback d-block">
+                    <strong>Field required.</strong>
+                </div>
+            }   
+            </div>
+            <div class="mb-3 form-floating ms-2 flex-grow-1">
+                <input type="text" id="country" class="form-control" placeholder="Country" required="true" formControlName="country"
+                [ngClass]="{'is-invalid': updateForm.get('country')?.touched && updateForm.get('country')?.invalid}">
+                <label for="country">Country</label>
+                @if(updateForm.get('country')?.touched && updateForm.get('country')?.invalid){
+                <div class="invalid-feedback d-block">
+                    <strong>Field required.</strong>
+                </div>
+            }     
+            </div>            
+        </div>
+        @if(changePassword){
+        <div class="mb-3 form-floating">
+            <input type="password" id="password" class="form-control" placeholder="Password" required="true" formControlName="password"
+            [ngClass]="{'is-invalid': updateForm.get('password')?.touched && updateForm.get('password')?.invalid}">
+            <label for="Password">Password</label>
+            @if(updateForm.get('password')?.touched && updateForm.get('password')?.invalid){
+                <div class="invalid-feedback d-block">
+                    <strong>Password must be minimum 10 characters and at least 1 uppercase, 1 lowercase, 1 digits and 1 special character.</strong>
+                </div>
+            }    
+        </div>
+        } @else {
+            <button class="btn btn-danger py-2 mb-3" (click)="onChangePasswordClicked()" type="button">Change Password</button>
+        }    
+        <button [disabled]="updateForm.invalid" class="btn btn-primary w-100 py-2" type="submit">Update</button>
+    </form>
+}
+</body>
+

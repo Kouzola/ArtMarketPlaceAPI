@@ -2,6 +2,7 @@ import { Component, inject, input, OnInit } from '@angular/core';
 import { SideBarComponent } from "../side-bar/side-bar.component";
 import { RouterOutlet } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-home',
@@ -12,12 +13,12 @@ import { AuthService } from '../../services/auth.service';
 })
 export class HomeComponent{
 
-  authService = inject(AuthService);
+  userService = inject(UserService);
   userName =  "";
   role!: 'Customer' | 'Artisan' | 'Delivery' | 'Admin';
 
   ngOnInit(): void {
-    const user = this.authService.getActualUserInfo();
+    const user = this.userService.getUserTokenInfo();
     this.userName = user.name;
     this.role = user.role;
     console.log(this.userName);

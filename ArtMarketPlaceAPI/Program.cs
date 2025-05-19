@@ -129,7 +129,7 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(
         policy =>
         {
-            policy.WithOrigins("http://localhost:4200").AllowAnyHeader();
+            policy.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
         });
 
 });
@@ -154,10 +154,11 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/Contents"
 });
 
+app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.UseCors();
+
 
 app.Run();

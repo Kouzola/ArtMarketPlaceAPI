@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import {jwtDecode} from 'jwt-decode';
-import { User } from '../model/user.model';
+import { UserTokenInfo } from '../model/userTokenInfo.model';
 import { userRegister } from '../model/userRegister.model';
 
 @Injectable({
@@ -22,13 +22,4 @@ export class AuthService {
     return this.http.post(this.URL + '/Register',userRegisterInfo);
   }
 
-  getActualUserInfo() : User{
-    const token = sessionStorage.getItem('jwt') ?? "";
-    const decodedToken: any = jwtDecode(token);
-    return {
-      name: decodedToken['name'],
-      id: decodedToken['id'],
-      role: decodedToken['role'],
-    };
-  }
 }

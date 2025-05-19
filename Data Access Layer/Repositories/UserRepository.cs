@@ -69,6 +69,7 @@ namespace Data_Access_Layer.Repositories
             userToUpdate.Active = user.Active;
             userToUpdate.UpdatedAt = DateTime.Now;
             userToUpdate.Role = user.Role;
+            userToUpdate.Address = user.Address;
 
             await _context.SaveChangesAsync();
             return userToUpdate;
