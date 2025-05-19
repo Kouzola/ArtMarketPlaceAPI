@@ -1,5 +1,5 @@
 export interface User{
     name: string,
     id: number,
-    role: string,
+    role: 'Customer' | 'Artisan' | 'Delivery' | 'Admin',
 }

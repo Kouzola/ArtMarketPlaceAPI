@@ -5,38 +5,15 @@
     </a>
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
-      <li class="nav-item">
-        <a
-        routerLink="/home/products" routerLinkActive="active" 
-        class="nav-link link-dark">
-          <i class="bi bi-shop"></i>
-          Products
-        </a>
-      </li>
-      <li>
-        <a routerLink="/home/orders" routerLinkActive="active"  class="nav-link link-dark">
-          <i class="bi bi-bag"></i>
-          My Orders
-        </a>
-      </li>
-      <li>
-        <a routerLink="/home/shipments" routerLinkActive="active" class="nav-link link-dark">
-          <i class="bi bi-truck"></i>
-          My Shipments
-        </a>
-      </li>
-      <li>
-        <a routerLink="/home/inquiries" routerLinkActive="active" class="nav-link link-dark">
-          <i class="bi bi-question-circle"></i>
-          My Inquiries
-        </a>
-      </li>
-      <li>
-        <a routerLink="/home/cart" routerLinkActive="active" class="nav-link link-dark">
-          <i class="bi bi-cart"></i>
-          My Cart
-        </a>
-      </li>
+      @for(role of rolesLayout[role()]; track role.route){
+        <li class="nav-item">
+          <a [routerLink]="role.route" routerLinkActive="active" 
+          class="nav-link link-dark">
+            <i [class]="role.logo"></i>
+            {{role.title}}
+          </a>
+        </li>
+      }   
     </ul>
     <hr>
     <div class="nav-link link-dark d-flex flex-row justify-content-between bottom-side-bar">

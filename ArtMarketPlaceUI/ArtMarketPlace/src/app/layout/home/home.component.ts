@@ -14,9 +14,12 @@ export class HomeComponent{
 
   authService = inject(AuthService);
   userName =  "";
+  role!: 'Customer' | 'Artisan' | 'Delivery' | 'Admin';
 
   ngOnInit(): void {
-    this.userName = this.authService.getActualUserInfo().name;
+    const user = this.authService.getActualUserInfo();
+    this.userName = user.name;
+    this.role = user.role;
     console.log(this.userName);
   }
 
