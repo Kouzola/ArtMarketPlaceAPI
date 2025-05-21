@@ -5,6 +5,7 @@ export interface User{
     lastName: string,
     email?: string,
     role?: string,
+    active?: boolean,
     fullName: string,
     address?: Address,
     password?:string,

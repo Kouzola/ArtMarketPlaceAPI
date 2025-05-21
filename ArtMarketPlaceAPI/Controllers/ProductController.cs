@@ -247,7 +247,7 @@ namespace ArtMarketPlaceAPI.Controllers
         #region POST
         [HttpPost("Customizations")]
         [Authorize(Roles = "Artisan")]
-        public async Task<IActionResult> UpdateCustomization(CustomizationRequestDto request)
+        public async Task<IActionResult> AddCustomization(CustomizationRequestDto request)
         {
             var customization = await _customizationService.AddCustomizationAsync(new Customization
             {
