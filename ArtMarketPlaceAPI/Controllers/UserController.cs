@@ -25,7 +25,7 @@ namespace ArtMarketPlaceAPI.Controllers
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _userService.GetAllUsersAsync();
-            return Ok(users);
+            return Ok(users.Select(u => u.MapToDto()));
         }
 
         [HttpGet("admin/users/{id:int}")]
@@ -33,7 +33,7 @@ namespace ArtMarketPlaceAPI.Controllers
         public async Task<IActionResult> GetUserByIdForAdmin(int id)
         {
             var user = await _userService.GetUserByIdAsync(id);
-            return Ok(user);
+            return Ok(user.MapToSelfResponseDto()); ;
         }
 
         [HttpGet("{username}")]

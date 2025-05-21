@@ -25,6 +25,13 @@ export class UserService {
     );
   }
 
+  getUserByUsername(userName: string){
+    const finalUrl = this.URL + `/${userName}`;
+    return this.http.get<User>(finalUrl).pipe(
+      tap(u => this.user.next(u))
+    );
+  }
+
   getUserTokenInfo() : UserTokenInfo{
       const token = sessionStorage.getItem('jwt') ?? "";
       const decodedToken: any = jwtDecode(token);

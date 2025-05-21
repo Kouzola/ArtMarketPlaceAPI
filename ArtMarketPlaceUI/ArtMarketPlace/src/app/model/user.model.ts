@@ -3,10 +3,10 @@ export interface User{
     userName: string,
     firstName: string,
     lastName: string,
-    email: string,
+    email?: string,
     role?: string,
     fullName: string,
-    address: Address,
+    address?: Address,
     password?:string,
 }
 

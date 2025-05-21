@@ -83,16 +83,17 @@ export class UserManageComponent implements OnInit{
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
-          street: user.address.street,
-          city: user.address.city,
-          postalCode: user.address.postalCode,
-          country: user.address.country,
+          street: user.address!.street,
+          city: user.address!.city,
+          postalCode: user.address!.postalCode,
+          country: user.address!.country,
         })
       }});
   }
 
   reloadPage(){
     const currentUrl = this.router.url;
+    //Aller vers / sans changer l'url de la barre du navigateur pour après revenir sur l'url actuel pour trigger un reload de component
     this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
     this.router.navigate([currentUrl]);
   });
