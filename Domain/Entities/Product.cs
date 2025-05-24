@@ -25,8 +25,8 @@ namespace Domain_Layer.Entities
         public int ArtisanId { get; set; }
         public Category Category { get; set; } = null!;
         public int CategoryId { get; set; }
-        public ICollection<Review> Reviews { get; } = new List<Review>();
-        public ICollection<Customization> Customizations { get; } = new List<Customization>();
+        public ICollection<Review> Reviews { get; set; } = new List<Review>();
+        public ICollection<Customization> Customizations { get; set; } = new List<Customization>();
         public ICollection<OrderProduct> OrderProducts { get; } = new List<OrderProduct>();
         public ICollection<Shipment> Shipments { get; set; } = new List<Shipment>();
     }

@@ -1,0 +1,43 @@
+.product-area{
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.product-area img{
+    width: 50%;
+    height: 50%;
+    border-radius: 8px;
+}
+
+.product-info{
+    font-size: 1.5rem;
+    flex:1;
+}
+
+.stock-price{
+    gap:3rem;
+}
+
+.btn {
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+    width: 100%;
+    background-color: #D4A373;
+    color: #fff;
+    border-radius: 8px;
+    }
+
+.btn:hover {
+    text-decoration: none;
+    background-color: #B97D50;
+    color: #fff;
+    cursor: pointer;
+}
+
+.quantity-cart-button select{
+    width: 25%;
+    margin-right: 20px;
+}

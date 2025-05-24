@@ -11,6 +11,7 @@ import { ShipmentsListComponent } from './pages/shipment/shipments-list/shipment
 import { InquiriesListComponent } from './pages/inquiry/inquiries-list/inquiries-list.component';
 import { CartComponent } from './pages/cart/cart.component';
 import { UserManageComponent } from './pages/user-manage/user-manage.component';
+import { ProductComponent } from './pages/product/product.component';
 
 export const routes: Routes = [
     {
@@ -30,6 +31,7 @@ export const routes: Routes = [
         children:[
             { path: '', redirectTo: 'products', pathMatch: 'full' },
             {path: 'products', component: ProductListComponent},
+            {path: 'products/view/:productId', component: ProductComponent},
             {path: 'orders', component: OrderComponent},
             {path: 'shipments', component: ShipmentsListComponent},
             {path: 'inquiries', component: InquiriesListComponent},

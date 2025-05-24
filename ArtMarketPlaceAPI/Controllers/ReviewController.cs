@@ -31,13 +31,13 @@ namespace ArtMarketPlaceAPI.Controllers
         #region POST
         [HttpPost]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> AddAReviewToAProduct(int productId,ReviewRequestDto request)
+        public async Task<IActionResult> AddAReviewToAProduct(ReviewRequestDto request)
         {
             var customerId = User.FindFirst("id")?.Value;
 
             var review = await _reviewService.AddReviewAsync(new Domain_Layer.Entities.Review
             {
-                ProductId = productId,
+                ProductId = request.ProductId,
                 Title = request.Title,
                 Description = request.Description,
                 Score = request.Score,

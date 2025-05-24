@@ -4,7 +4,7 @@ export type Review = {
     description: string,
     score: number,
     artisanAnswer?: string,
-    productId: number,
+    productId?: number,
     createdAt: Date,
     updateAt: Date,
 }

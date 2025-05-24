@@ -38,7 +38,7 @@ namespace ArtMarketPlaceAPI.Controllers
         }
 
         [HttpGet("Categories/{name}")]
-        public async Task<IActionResult> GetCategoryById(string name)
+        public async Task<IActionResult> GetCategoryByName(string name)
         {
             var category = await _categoryService.GetCategoryByNameAsync(name);
             return Ok(category.MapToDto());

@@ -6,6 +6,7 @@ namespace ArtMarketPlaceAPI.Dto.Request.Validators
     {
         public ReviewRequestValidator()
         {
+            RuleFor(r => r.ProductId).GreaterThan(0).WithMessage("Invalid product Id");
             RuleFor(r => r.Title).NotEmpty().WithMessage("A title is required!");
             RuleFor(r => r.Description).NotEmpty().WithMessage("A description is required!");
             RuleFor(r => r.Score).GreaterThan(0).LessThan(6).WithMessage("The score must be between 1 and 5");

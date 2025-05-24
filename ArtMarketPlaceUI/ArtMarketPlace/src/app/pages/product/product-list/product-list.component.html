@@ -1,1 +1,45 @@
-<p>product-list works!</p>
+<script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
+<body>
+    <header>
+        @if(categories$ | async; as categories){
+            <select class="form-select-sm p-2" [(ngModel)]="selectedCategory" (change)="onCategorySelected()">
+                <option [ngValue]="'All Categories'" selected>All Categories</option>
+                @for(category of categories; track category.id;){
+                    <option [ngValue]="category.name">{{category.name}}</option>
+                }             
+            </select>
+        }
+        <div class="search-bar">
+            <input type="text" class="search-input" placeholder="Search..." [(ngModel)]="search" (ngModelChange)="onSearch()"/>
+            <i class="bi bi-search"></i>
+        </div>
+        <select class="form-select-sm p-2" [(ngModel)]="selectedOption" (change)="onSortingOptionSelected()">
+            <option [ngValue]="0" selected>Most relevant</option>
+            <option [ngValue]="1">Less expensive</option>
+            <option [ngValue]="2">Most expensive</option>
+            <option [ngValue]="3">Most recent</option>
+        </select>        
+    </header>
+    <hr>
+    @if(products$ | async ; as products){
+    <main class="d-flex flex-wrap justify-content-center">
+        @for(product of products; track product.id){
+            <app-card class="me-5 mt-5 mb-5" (click)="onProductClicked(product.id)">
+                <div class="product-image">
+                    <img [src]="apiUrl +'/Contents/'+product.image"/>
+                </div>
+                <div class="card-header">
+                    {{product.name}}
+                </div>
+                <div class="card-content text-end me-3">
+                    Score: {{product.reviews.length === 0 ? "No Reviews" : getProductScore(product.reviews) + "/ 5"}} 
+                </div>
+                <div class="card-content text-start ms-3 py-2">
+                    {{product.price}} €
+                </div>
+                <a (click)="addToCart()" class="card-button">Add to Cart</a>
+            </app-card>
+        }
+    </main>
+    } 
+</body>
