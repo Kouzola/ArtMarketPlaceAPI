@@ -1,4 +1,5 @@
 ﻿using ArtMarketPlaceAPI.Dto.Mappers;
+using ArtMarketPlaceAPI.Dto.Request;
 using Domain_Layer.Interfaces.Cart;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +14,7 @@ namespace ArtMarketPlaceAPI.Controllers
         private readonly ICartService _cartService = cartService;
 
         #region GET
-        [HttpGet]
+        [HttpGet("{customerId:int}")]
         public async Task<IActionResult> GetCustomerCart(int customerId)
         {
             var currentUserId = User.FindFirst("id")?.Value;
@@ -26,26 +27,26 @@ namespace ArtMarketPlaceAPI.Controllers
 
         #region POST
         [HttpPost]
-        public async Task<IActionResult> AddItemToCart(int customerId, int productId, int quantity)
+        public async Task<IActionResult> AddItemToCart(CartRequestDto request)
         {
             var currentUserId = User.FindFirst("id")?.Value;
-            if (currentUserId != customerId.ToString()) return Forbid();
+            if (currentUserId != request.UserId.ToString()) return Forbid();
 
-            var cart = await _cartService.AddItemToCartAsync(customerId, productId, quantity);
+            var cart = await _cartService.AddItemToCartAsync(request.UserId, request.ProductId, request.Quantity);
             return Ok(cart.MapToDto());
         }
         #endregion
 
         #region PUT
-        [HttpPut("{id:int}")]
-        public async Task<IActionResult> RemoveItemInCart(int cartId, int productId,int quantity)
+        [HttpPut("{cartId:int}")]
+        public async Task<IActionResult> RemoveItemInCart(int cartId, CartRequestDto request)
         {
             var cartToUpdate = await _cartService.GetCartByIdAsync(cartId);
 
             var currentUserId = User.FindFirst("id")?.Value;
             if (currentUserId != cartToUpdate.UserId.ToString()) return Forbid();
 
-            var cart = await _cartService.RemoveItemFromCartAsync(cartId, productId, quantity);
+            var cart = await _cartService.RemoveItemFromCartAsync(cartId, request.ProductId, request.Quantity);
             return Ok(cart.MapToDto());
         }
 

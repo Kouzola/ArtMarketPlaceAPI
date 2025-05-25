@@ -3,6 +3,8 @@
     background-color: #D96C3B !important;
     color:black;
     height: 100vh;
+    position: sticky;
+    top:0;
 }
 
 a{

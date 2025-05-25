@@ -67,12 +67,13 @@ namespace Business_Layer.Services
             var cart = await _repository.GetCartByIdAsync(cartId);
             if (cart == null) throw new NotFoundException("Cart not found!");
             List<CartItem> items = cart.Items;
-            var itemToUpdate = items.First(item => item.ProductId == productId);
+            var itemToUpdate = items.FirstOrDefault(item => item.ProductId == productId);
             if (itemToUpdate == null) throw new NotFoundException("Product not found in the cart!");
             if (itemToUpdate.Quantity == quantity) items.Remove(itemToUpdate);
             else itemToUpdate.Quantity -= quantity;
             var updatedCart = await _repository.UpdateCartAsync(cart);
             if (updatedCart == null) throw new NotFoundException("Cart not found!");
+            if(updatedCart.Items.Count == 0) await DeleteCartAsync(cartId);
             return updatedCart;
         }
     }

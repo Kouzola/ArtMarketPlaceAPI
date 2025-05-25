@@ -9,15 +9,24 @@
                 <p>{{product.price}} €</p>
             </div>
             <div class="quantity-cart-button d-flex align-items-center">
-                <select class="form-select" [(ngModel)]="quantity" (change)="onQuantityChanged()">
+                <select class="form-select" [(ngModel)]="selectedQuantity">
                      <option *ngFor="let i of index" [ngValue]="i">{{ i }}</option>
                 </select>
-                <button type="button" class="btn btn-lg" [disabled]="quantity > product.stock">Ajouter au Panier</button>
+                <button type="button" class="btn btn-lg" [disabled]="selectedQuantity > product.stock" (click)="addToCart(product.id)">Add to cart</button>
             </div>
         </div>
     </div>
     <hr>
     <div class="review-info">
         <h1>Reviews</h1>
+        @if(reviews$ | async; as reviews){
+            @for(review of reviews; track review.id){
+                <h2>{{review.title}}</h2>
+                <p>{{review.description}}</p>
+                <p>Rating: {{review.score}} / 5</p>
+                Artisan Response: <p>{{review.artisanAnswer ?? "No Response"}}</p>
+                <hr>
+            }   
+        }
     </div>
 }

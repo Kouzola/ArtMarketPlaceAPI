@@ -5,6 +5,8 @@ import { ReviewService } from '../../services/review.service';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CartService } from '../../services/cart.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-product',
@@ -17,9 +19,12 @@ export class ProductComponent implements OnInit{
   apiUrl = environment.apiUrl;
   productService = inject(ProductService);
   reviewService = inject(ReviewService);
+  cartService = inject(CartService);
+  userService = inject(UserService);
   product$ = this.productService.product$;
+  reviews$ = this.reviewService.reviews$;
   private readonly route = inject(ActivatedRoute)
-  quantity: number = 1;
+  selectedQuantity: number = 1;
 
   index: number[] = [];
   
@@ -31,13 +36,22 @@ export class ProductComponent implements OnInit{
     this.index.push(i);
     }
     this.route.paramMap.subscribe(params => {
-      this.productService.getProductById(Number(params.get('productId')!)).subscribe()
+      this.productService.getProductById(Number(params.get('productId')!)).subscribe(),
+      this.reviewService.getAllReviewOfAProduct(Number(params.get('productId')!)).subscribe()
     })
+
+    
   }
 
-  onQuantityChanged(){
-
+  addToCart(productId: number){
+    this.cartService.AddItemToCart(
+      {userId: this.userService.getUserTokenInfo().id, productId: productId, quantity: this.selectedQuantity }
+    ).subscribe({
+      next: (v) => console.log(v)
+    });
   }
+
+
 
 
 }

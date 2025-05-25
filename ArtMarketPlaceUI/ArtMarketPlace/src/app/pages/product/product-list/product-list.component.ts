@@ -9,6 +9,8 @@ import { Product } from '../../../model/product.model';
 import { map } from 'rxjs';
 import { CategoryService } from '../../../services/category.service';
 import { Review } from '../../../model/review.model';
+import { CartService } from '../../../services/cart.service';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-product-list',
@@ -23,6 +25,8 @@ export class ProductListComponent implements OnInit{
   private readonly router = inject(Router);
   productService = inject(ProductService);
   categoryService = inject(CategoryService);
+  cartService = inject(CartService);
+  userService = inject(UserService);
   products$ = this.productService.products$;
   categories$ = this.categoryService.categories$;
   selectedOption: number = 0;
@@ -58,8 +62,12 @@ export class ProductListComponent implements OnInit{
     }
   }
 
-  addToCart(){
-    
+  addToCart(productId: number){
+    this.cartService.AddItemToCart(
+      {userId: this.userService.getUserTokenInfo().id, productId: productId, quantity: 1 }
+    ).subscribe({
+      next: (v) => console.log(v)
+    });
   }
 
   onCategorySelected(){

@@ -10,8 +10,8 @@ import { Review } from '../model/review.model';
 export class ReviewService {
 
   apiUrl = environment.apiUrl;
-  private review = new BehaviorSubject<Review[] | null>(null);
-  public review$ = this.review.asObservable();
+  private reviews = new BehaviorSubject<Review[] | null>(null);
+  public reviews$ = this.reviews.asObservable();
 
   constructor(private http: HttpClient) { }
 
@@ -20,7 +20,7 @@ export class ReviewService {
   getAllReviewOfAProduct(productId: number){
     const finalUrl = this.URL + `/${productId}`;
     return this.http.get<Review[]>(finalUrl).pipe(
-      tap(r => this.review.next(r))
+      tap(r => this.reviews.next(r))
     );
   }
 

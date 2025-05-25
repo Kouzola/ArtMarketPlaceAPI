@@ -37,7 +37,7 @@
                 <div class="card-content text-start ms-3 py-2">
                     {{product.price}} €
                 </div>
-                <a (click)="addToCart()" class="card-button">Add to Cart</a>
+                <a (click)="addToCart(product.id); $event.stopPropagation()" class="card-button">Add to Cart</a>
             </app-card>
         }
     </main>
