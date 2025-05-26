@@ -4,24 +4,33 @@ import { CartService } from '../../services/cart.service';
 import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
 import { Cart, CartItem } from '../../model/cart.model';
+import { Router } from '@angular/router';
+import { OrderService } from '../../services/order.service';
+import { ShippingOption } from '../../model/order.model';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,FormsModule],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.css'
 })
 export class CartComponent implements OnInit{
   
   apiUrl= environment.apiUrl;
+  private readonly router = inject(Router);
   cartService = inject(CartService);
   userService = inject(UserService);
+  orderService = inject(OrderService);
   cart$ = this.cartService.cart$;
+  userId:number  = 0;
+  selectedShippingOption: ShippingOption = ShippingOption.NORMAL;
   
   
   ngOnInit(): void {
-    this.cartService.GetCustomerCart(this.userService.getUserTokenInfo().id).subscribe();
+    this.userId = this.userService.getUserTokenInfo().id;
+    this.cartService.GetCustomerCart(this.userId).subscribe();
   }
 
   getTotalPrice(cart: Cart){
@@ -32,8 +41,11 @@ export class CartComponent implements OnInit{
     return parseFloat(totalPrice.toFixed(2));
   }
 
-  confirmOrder(){
-
+  confirmOrder(cartId: number){
+    this.orderService.createOrderFromCart({cartId: cartId, customerId: this.userId, shippingOption: this.selectedShippingOption}).subscribe({
+      next: o => this.router.navigate(['home/payment',o.id])
+    })
+    
   }
 
   deleteItem(cartId: number,item: CartItem){

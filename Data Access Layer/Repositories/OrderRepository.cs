@@ -38,6 +38,7 @@ namespace Data_Access_Layer.Repositories
             var orders = await _context.Orders.Where(o => o.CustomerId == customerId)
                 .Include(o => o.Customer)
                 .Include(o => o.OrderProducts)
+                    .ThenInclude(op => op.Product)
                 .Include(o => o.PaymentDetail)
                 .Include(o => o.Shipments)
                 .ToListAsync();

@@ -20,10 +20,9 @@ namespace Business_Layer.Services
         private readonly IPaymentDetailsRepository _paymentDetailsRepository = paymentDetailRepository;
         private readonly IShipmentRepository _shipmentRepository = shipmentRepository;
         private readonly ICartService _cartService = cartService;
-        //TODO AFFICHER STOCK - RESERVE STOCK SUR L'UI
         //Les appel de GET avec des services vérifient dèja l'existence de l'entité
         #region ORDER
-        public async Task<Order> CreateOrderFromCartAsync(int cartId, int customerId)
+        public async Task<Order> CreateOrderFromCartAsync(int cartId, int customerId, ShippingOption shippingOption)
         {
             //Checker avec les quantité des produit d'orderProduct est augmenté la reserver stock
             var customer = await _userService.GetUserByIdAsync(customerId);
@@ -60,7 +59,10 @@ namespace Business_Layer.Services
                 Code = Guid.NewGuid().ToString("N").Substring(0, 16),
                 Status = OrderStatus.NOT_PAYED,
                 OrderProducts = orderProducts,
+                ShippingOption = shippingOption,
             };
+
+            await _cartService.DeleteCartAsync(cartId);
 
             return await _repository.AddOrderAsync(order);
         }
@@ -117,7 +119,7 @@ namespace Business_Layer.Services
 
         }
 
-        public async Task<PaymentDetail> PayOrderAsync(int orderId, PaymentDetail paymentDetail, int cartId)
+        public async Task<PaymentDetail> PayOrderAsync(int orderId, PaymentDetail paymentDetail)
         {
             var order = await _repository.GetOrderByIdAsync(orderId);
             if (order == null || order.Status != OrderStatus.NOT_PAYED) throw new NotFoundException("Order not found");
@@ -139,9 +141,6 @@ namespace Business_Layer.Services
             }
 
             await UpdateOrderStatusAsync(orderId, OrderStatus.PENDING);
-
-            //Deleting Cart
-            await _cartService.DeleteCartAsync(cartId);
 
             return paymentDetail;
         }

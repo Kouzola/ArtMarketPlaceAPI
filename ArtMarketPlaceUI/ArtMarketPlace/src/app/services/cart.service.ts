@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, tap } from 'rxjs';
+import { BehaviorSubject, catchError, of, tap } from 'rxjs';
 import { Cart, CartItem } from '../model/cart.model';
 import { environment } from '../../environments/environment';
 
@@ -20,6 +20,10 @@ export class CartService {
   GetCustomerCart(customerId: number){
     const finalUrl = this.URL + `/${customerId}`;
     return this.http.get<Cart>(finalUrl).pipe(
+      catchError(err => {
+      console.error('Erreur panier :', err);
+      return of(null);
+    }),
       tap(c => this.cart.next(c))
     );
   }

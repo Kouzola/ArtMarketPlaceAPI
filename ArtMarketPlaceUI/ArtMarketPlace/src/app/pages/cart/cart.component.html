@@ -26,8 +26,12 @@
             
             </table>
         <hr>
+    <select class="form-select-sm p-2" [(ngModel)]="selectedShippingOption">
+        <option [ngValue]="0">NORMAL SHIPPING</option>
+        <option [ngValue]="1">FAST SHIPPING</option>
+    </select>
     <p>Total Price: {{getTotalPrice(cart)}} €</p>
-    <button class="btn btn-lg pay" (click)="confirmOrder()">Confirm order and pay</button>
+    <button class="btn btn-lg pay" (click)="confirmOrder(cart.id)">Confirm order</button>
         } @else {
             <p>Your cart is empty</p>
         }

@@ -22,7 +22,13 @@ export class SideBarComponent {
       {route: '/home/inquiries', title: 'My Inquiries', logo: 'bi bi-question-circle'},
       {route: '/home/cart', title: 'My Cart', logo: 'bi bi-cart'}
     ],
-    Artisan: [],
+    Artisan: [
+      {route: '/home/dashboard', title: 'My Dashboard', logo: 'bi bi-info-circle'},
+      {route: '/home/myProducts', title: 'My Products', logo: 'bi bi-shop'},
+      {route: '/home/orders', title: 'My Orders', logo: 'bi bi-bag'},
+      {route: '/home/shipments', title: 'My Shipments', logo: 'bi bi-truck'},
+      {route: '/home/inquiries', title: 'My Inquiries', logo: 'bi bi-question-circle'},
+    ],
     Delivery: [],
     Admin: []
   };

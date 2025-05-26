@@ -1,1 +1,40 @@
-<p>order works!</p>
+<body>
+    <h1>My Order</h1>
+    <hr>
+    @if(orders$ | async ; as orders){
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Code</th>
+                <th scope="col">Date</th>
+                <th scope="col">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(order of orders; track order.id){
+            <tr (click)="onOrderClicked(order.id)">
+                <td>{{order.code}}</td>
+                <td>{{order.orderDate | date : 'EEEE, d MMMM y'}}</td>
+                <td>{{order.status! | status}}</td>
+            </tr>
+            <table class="table order-info" [id]="'order-info-' + order.id">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for(product of order.productsOrderedInfo; track product.reference){
+                    <tr>
+                        <td>{{product.name}}</td>
+                        <td>{{product.quantity}}</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+            }
+        </tbody>
+    </table>
+    }   
+</body>

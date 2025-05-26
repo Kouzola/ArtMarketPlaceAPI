@@ -1,0 +1,36 @@
+import { PaymentDetail } from "./paymentDetail.model";
+import { User } from "./user.model";
+
+export type Order = {
+    id: number,
+    code: string,
+    orderDate?: Date,
+    status?: Status,
+    shippingOption: ShippingOption,
+    createdAt: Date,
+    updatedAt: Date,
+    paymentDetail?: PaymentDetail,
+    shipments?: number[],
+    customer: User,
+    productsOrderedInfo?: ProductsOrderedInfo[]
+}
+
+export type ProductsOrderedInfo = {
+    name: string,
+    reference: string,
+    quantity: number,
+}
+
+export enum Status {
+    NOT_PAYED,
+    PENDING,
+    CONFIRM,
+    SHIPPED,
+    DELIVERED,
+    CANCEL
+}
+
+export enum ShippingOption{
+    NORMAL,
+    FAST
+}

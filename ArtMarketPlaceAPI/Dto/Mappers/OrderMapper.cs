@@ -20,6 +20,7 @@ namespace ArtMarketPlaceAPI.Dto.Mappers
                 Customer = order.Customer.MapToDto(),
                 PaymentDetail = order.PaymentDetail?.MapToDto(),
                 Shipments = order.Shipments.Select(s => s.Id).ToList(),
+                ProductsOrderedInfo = order.OrderProducts.Select(op => op.MapToDtoForProductInfo()).ToList()
             };
         }
 

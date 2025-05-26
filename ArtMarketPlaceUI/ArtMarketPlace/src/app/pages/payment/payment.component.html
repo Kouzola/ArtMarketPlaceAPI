@@ -1,1 +1,15 @@
-<p>payment works!</p>
+<body>
+    <h1>Payment</h1>
+    <hr>
+    <select class="form-select-sm p-2" [(ngModel)]="selectedPaymentMethod">
+        <option value="BANCONTACT" selected>BANCONTACT</option>
+        <option value="VISA">VISA</option>
+        <option value="MASTERCARD">MASTERCARD</option>
+    </select>
+    <p>Price to Pay: {{price}} €</p>
+    <hr>
+    <div class="d-flex">
+        <button class="btn btn-lg" (click)="payOrder()">Pay</button>
+        <button class="btn btn-lg" (click)="cancelOrder()">Cancel</button>
+    </div>
+</body>

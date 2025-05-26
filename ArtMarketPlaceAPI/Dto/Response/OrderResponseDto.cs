@@ -14,6 +14,7 @@ namespace ArtMarketPlaceAPI.Dto.Response
         public PaymentDetailResponseDto? PaymentDetail { get; set; }
         public List<int> Shipments { get; set; } = new List<int>();
         public UserResponseDto Customer { get; set; } = null!;
+        public List<ProductOrderInfoDto> ProductsOrderedInfo { get; set; } = new List<ProductOrderInfoDto>();
     }
 
     public class OrderResponseForArtisanDto

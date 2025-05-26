@@ -12,6 +12,7 @@ import { InquiriesListComponent } from './pages/inquiry/inquiries-list/inquiries
 import { CartComponent } from './pages/cart/cart.component';
 import { UserManageComponent } from './pages/user-manage/user-manage.component';
 import { ProductComponent } from './pages/product/product.component';
+import { PaymentComponent } from './pages/payment/payment.component';
 
 export const routes: Routes = [
     {
@@ -36,6 +37,7 @@ export const routes: Routes = [
             {path: 'shipments', component: ShipmentsListComponent},
             {path: 'inquiries', component: InquiriesListComponent},
             {path: 'cart', component: CartComponent},
+            {path: 'payment/:orderId',component: PaymentComponent},
             {path: 'profile', component: UserManageComponent}
         ]
     },
