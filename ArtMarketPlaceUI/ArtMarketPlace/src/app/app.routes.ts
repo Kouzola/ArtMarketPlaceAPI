@@ -13,6 +13,10 @@ import { CartComponent } from './pages/cart/cart.component';
 import { UserManageComponent } from './pages/user-manage/user-manage.component';
 import { ProductComponent } from './pages/product/product.component';
 import { PaymentComponent } from './pages/payment/payment.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { MyProductComponent } from './pages/product/my-product/my-product.component';
+import { artisanGuard } from './guard/artisan.guard';
+import { mainPageGuard } from './guard/main-page.guard';
 
 export const routes: Routes = [
     {
@@ -30,19 +34,21 @@ export const routes: Routes = [
         component: HomeComponent,
         canActivate: [AuthGuard],
         children:[
-            { path: '', redirectTo: 'products', pathMatch: 'full' },
-            {path: 'products', component: ProductListComponent},
+            {path: '', redirectTo: 'products', pathMatch: 'full'},
+            {path: 'products', component: ProductListComponent, canActivate: [mainPageGuard]},
             {path: 'products/view/:productId', component: ProductComponent},
             {path: 'orders', component: OrderComponent},
             {path: 'shipments', component: ShipmentsListComponent},
             {path: 'inquiries', component: InquiriesListComponent},
             {path: 'cart', component: CartComponent},
             {path: 'payment/:orderId',component: PaymentComponent},
-            {path: 'profile', component: UserManageComponent}
+            {path: 'profile', component: UserManageComponent},
+            {path: 'dashboard', component: DashboardComponent, canActivate: [artisanGuard]},
+            {path: 'myProducts', component: MyProductComponent, canActivate: [artisanGuard]},
         ]
     },
     {
         path: '**',
-        redirectTo: 'home/products'
+        redirectTo: 'home/products',
     }
 ];
