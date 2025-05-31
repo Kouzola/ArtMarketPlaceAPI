@@ -63,7 +63,9 @@ export class OrderService {
 
   validateProductInAOrder(orderId: number, artisanId: number){
     const finalUrl = this.URL + `/productValidate/${orderId}`;
-    return this.http.put(finalUrl,artisanId);
+    return this.http.put(finalUrl,artisanId, {
+      headers: { 'Content-Type': 'application/json' }
+      });
   }
 
   cancelOrder(orderId: number){

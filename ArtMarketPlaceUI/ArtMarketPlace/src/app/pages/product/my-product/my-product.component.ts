@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { UserService } from '../../../services/user.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-my-product',
@@ -20,6 +21,7 @@ export class MyProductComponent implements OnInit{
   productService = inject(ProductService);
   $products = this.productService.products$;
   userService = inject(UserService);
+  toastService = inject(ToastService);
   
 
   ngOnInit(): void {
@@ -30,6 +32,34 @@ export class MyProductComponent implements OnInit{
   refreshProductList(){
     const artisanId = this.userService.getUserTokenInfo().id;
     this.productService.getProductsByArtisan(artisanId).subscribe();
+  }
+
+  deleteProduct(productId: number){
+    this.productService.deleteProduct(productId).subscribe({
+      next: () => {
+        this.toastService.showSuccesToast("Product Deleted!");
+        this.refreshProductList();
+      },
+      error: () => this.toastService.showErrorToast("Product cannot be deleted because it's probably in an order!")
+    }
+    );
+    
+  }
+
+  onAddButtonClicked(){
+    this.router.navigate(['/home/myProducts/add'])
+  }
+
+  onCategoryButtonClicked(){
+    this.router.navigate(['/home/categories/add'])
+  }
+
+  editProduct(productId: number){
+    this.router.navigate(['/home/myProducts/edit',productId]);
+  }
+
+  editCustomization(productId: number){
+    this.router.navigate(['/home/customizations',productId]);
   }
   
 }

@@ -1,0 +1,18 @@
+@if(success()){
+<ngb-toast
+    [class]="'bg-success text-light toast-container position-fixed top-0 end-0 p-3'"
+    [autohide]="true"
+    [delay]="5000"
+>
+		Operation successful: {{message()}}		
+</ngb-toast>
+} @else {
+<ngb-toast
+    [class]="'btn btn-danger toast-container position-fixed top-0 end-0 p-3 me-3 mt-3'"
+    [autohide]="true"
+    [delay]="5000"
+>
+        An error occurred : {{message()}}
+</ngb-toast>
+}
+

@@ -1,0 +1,37 @@
+<body>
+    <h1>Add Category</h1>
+    <hr>
+    <form [formGroup]="addCustomizationForm" (ngSubmit)="addCustomization()">
+        <div class="mb-3 form-floating">
+            <input type="text" id="name" class="form-control" placeholder="Name" required="true" formControlName="name"
+            [ngClass]="{'is-invalid': addCustomizationForm.get('name')?.touched && addCustomizationForm.get('name')?.invalid}">
+            <label for="name">Name</label>
+            @if(addCustomizationForm.get('name')?.touched && addCustomizationForm.get('name')?.invalid){
+                <div class="invalid-feedback d-block">
+                    <strong>Field required.</strong>
+                </div>
+            }
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label text-align-left">Description</label>     
+            <textarea type="textarea" id="description" class="form-control" required="true" formControlName="description"
+            [ngClass]="{'is-invalid': addCustomizationForm.get('description')?.touched && addCustomizationForm.get('description')?.invalid}" rows="5" cols="33"></textarea>         
+            @if(addCustomizationForm.get('description')?.touched && addCustomizationForm.get('description')?.invalid){
+                <div class="invalid-feedback d-block">
+                    <strong>Field required.</strong>
+                </div>
+            }  
+        </div>
+        <div class="mb-3 form-floating">
+                <input type="number" id="price" class="form-control" placeholder="Price" required="true" formControlName="price"
+                [ngClass]="{'is-invalid': addCustomizationForm.get('price')?.touched && addCustomizationForm.get('price')?.invalid}" step="0.01">
+                <label for="price">Price</label>
+                @if(addCustomizationForm.get('price')?.touched && addCustomizationForm.get('price')?.invalid){
+                <div class="invalid-feedback d-block">
+                    <strong>Field required</strong>
+                </div>
+            }
+        </div>  
+        <button [disabled]="addCustomizationForm.invalid" class="btn btn-primary w-100 py-2" type="submit">Add Category</button>  
+    </form>
+</body>

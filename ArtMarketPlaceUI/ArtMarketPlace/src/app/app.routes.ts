@@ -17,6 +17,16 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { MyProductComponent } from './pages/product/my-product/my-product.component';
 import { artisanGuard } from './guard/artisan.guard';
 import { mainPageGuard } from './guard/main-page.guard';
+import { ProductAddFormComponent } from './pages/product/product-add-form/product-add-form.component';
+import { ProductEditFormComponent } from './pages/product/product-edit-form/product-edit-form.component';
+import { CategoryAddFormComponent } from './pages/category/category-add-form/category-add-form.component';
+import { CustomizationComponent } from './pages/customization/customization.component';
+import { CustomizationAddFormComponent } from './pages/customization/customization-add-form/customization-add-form.component';
+import { CustomizationEditFormComponent } from './pages/customization/customization-edit-form/customization-edit-form.component';
+import { OrderShipmentComponent } from './pages/order/order-shipment/order-shipment.component';
+import { deliveryPartnerGuard } from './guard/delivery-partner.guard';
+import { dashboardGuard } from './guard/dashboard.guard';
+import { ShipmentComponent } from './pages/shipment/shipment.component';
 
 export const routes: Routes = [
     {
@@ -38,13 +48,20 @@ export const routes: Routes = [
             {path: 'products', component: ProductListComponent, canActivate: [mainPageGuard]},
             {path: 'products/view/:productId', component: ProductComponent},
             {path: 'orders', component: OrderComponent},
-            {path: 'shipments', component: ShipmentsListComponent},
+            {path: 'orders/shipment/:orderId', component: OrderShipmentComponent},
+            {path: 'shipments', component: ShipmentComponent},
             {path: 'inquiries', component: InquiriesListComponent},
             {path: 'cart', component: CartComponent},
             {path: 'payment/:orderId',component: PaymentComponent},
             {path: 'profile', component: UserManageComponent},
-            {path: 'dashboard', component: DashboardComponent, canActivate: [artisanGuard]},
+            {path: 'dashboard', component: DashboardComponent, canActivate: [dashboardGuard]},
             {path: 'myProducts', component: MyProductComponent, canActivate: [artisanGuard]},
+            {path: 'myProducts/edit/:productId', component: ProductEditFormComponent, canActivate: [artisanGuard]},
+            {path: 'myProducts/add', component: ProductAddFormComponent, canActivate: [artisanGuard]},
+            {path: 'categories/add', component: CategoryAddFormComponent, canActivate: [artisanGuard]},
+            {path: 'customizations/:productId', component: CustomizationComponent, canActivate: [artisanGuard]},
+            {path: 'customizations/:productId/add', component: CustomizationAddFormComponent, canActivate: [artisanGuard]},
+            {path: 'customizations/:productId/edit/:customizationId', component: CustomizationEditFormComponent, canActivate: [artisanGuard]},
         ]
     },
     {

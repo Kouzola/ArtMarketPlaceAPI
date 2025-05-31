@@ -131,6 +131,16 @@ namespace ArtMarketPlaceAPI.Controllers
             var currentUserId = User.FindFirst("id")?.Value;
             if (currentUserId != request.ArtisanId.ToString()) return Forbid();
 
+            if (request.ImageFile == null || request.ImageFile.Length == 0)
+                return BadRequest("Image file is required.");
+
+            if (request.ImageFile.Length > 1 * 1024 * 1024)
+                return BadRequest("File size must be less than 1MB.");
+
+            var ext = Path.GetExtension(request.ImageFile.FileName).ToLower();
+            if (ext != ".jpg" && ext != ".jpeg" && ext != ".png")
+                return BadRequest("Only jpg, jpeg and png files are allowed.");
+
             var product = await _productService.AddProductAsync(new Domain_Layer.Entities.Product
             {
                 Name = request.Name,
@@ -156,8 +166,17 @@ namespace ArtMarketPlaceAPI.Controllers
 
             var currentUserId = User.FindFirst("id")?.Value;
             if (currentUserId != request.ArtisanId.ToString()) return Forbid();
+            
+            if(request.ImageFile != null)
+            {
+                if (request.ImageFile.Length > 1 * 1024 * 1024)
+                    return BadRequest("File size must be less than 1MB.");
 
-            //Pq l'erreur ici regarder pq après
+                var ext = Path.GetExtension(request.ImageFile.FileName).ToLower();
+                if (ext != ".jpg" && ext != ".jpeg" && ext != ".png")
+                    return BadRequest("Only jpg, jpeg and png files are allowed.");
+            }
+
             var productToUpdate = await _productService.GetProductByIdAsync(id);
             if (productToUpdate == null) return NotFound("Product not found!");
             var updatedProduct = new Domain_Layer.Entities.Product
@@ -172,7 +191,7 @@ namespace ArtMarketPlaceAPI.Controllers
                 Image = productToUpdate.Image,
             };
             //Check si même image, si pas on remplace et on supprime l'ancienne
-            if (productToUpdate.Image != request.ImageFile.FileName)
+            if (request.ImageFile != null && productToUpdate.Image != request.ImageFile.FileName)
             {
                 _fileService.DeleteImageFileAsync(productToUpdate.Image);
                 updatedProduct.Image = await _fileService.SaveImageFileAsync(request.ImageFile);
@@ -196,8 +215,8 @@ namespace ArtMarketPlaceAPI.Controllers
 
             var response = await _productService.DeleteProductAsync(product);
             if (!response) return NotFound("Product not found!");
-             _fileService.DeleteImageFileAsync(product.Image);
-            return Ok("Product deleted.");
+            _fileService.DeleteImageFileAsync(product.Image);
+            return Ok(new { message = "Product deleted!" });
         }
 
         [HttpDelete("Products")]
@@ -286,8 +305,8 @@ namespace ArtMarketPlaceAPI.Controllers
         public async Task<IActionResult> DeleteCustomization(int id)
         {
             var response = await _customizationService.DeleteCustomizationAsync(id);
-            if (!response) return NotFound("Customization not found!");
-            return Ok("Customization Deleted");
+            if (!response) return NotFound();
+            return Ok();
         }
         #endregion
         #endregion

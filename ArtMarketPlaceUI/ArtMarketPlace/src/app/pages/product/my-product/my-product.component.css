@@ -64,7 +64,7 @@ ul .badge.badge-success:hover{
   background-color: #157347 !important;
 }
 
-.badge.badge-danger:hover {
+ul .badge.badge-danger:hover {
   background-color: #bb2d3b !important;
 }
 

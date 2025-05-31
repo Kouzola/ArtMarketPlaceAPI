@@ -53,12 +53,12 @@ export class ProductService {
     );
   }
 
-  addProduct(product: Product){
+  addProduct(product: FormData){
     return this.http.post<Product>(this.URL,product);
   }
 
-  updateProduct(product: Product){
-    const finalUrl = this.URL + `/${product.id}`;
+  updateProduct(product: FormData){
+    const finalUrl = this.URL + `/${product.get('id')}`;
     return this.http.put<Product>(finalUrl,product);
   }
 

@@ -8,12 +8,12 @@ export interface userRegister{
     city: string,
     postalCode: string,
     country: string,
-    role: Role,
+    role: 'Customer' | 'Artisan' | 'Delivery' | 'Admin',
 }
 
 enum Role {
-    Customer,
-    Artisan,
-    Delivery,
-    Admin
+    Customer = 'Customer',
+    Artisan = 'Artisan',
+    Delivery = 'Delivery',
+    Admin = 'Admin'
 }

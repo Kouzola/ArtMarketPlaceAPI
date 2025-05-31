@@ -1,1 +1,35 @@
-<p>shipment works!</p>
+<body>
+    <h1>My Shipment</h1>
+    <hr>
+    @if(shipments$ | async ; as shipments){
+    <table class="table table-hover shipments">
+        <thead>
+            <tr>
+                <th scope="col">Tracking Number</th>
+                <th scope="col">Shipping Date</th>
+                <th scope="col">Estimated Arrival Date</th>
+                <th scope="col">Arrival Date</th>
+                <th scope="col">Status</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(shipment of shipments; track shipment.id){
+            <tr>
+                <td>{{shipment.trackingNumber}}</td>
+                <td>{{shipment.shippingDate | date : 'EEEE, d MMMM y'}}</td>
+                <td>{{shipment.estimatedArrivalDate | date : 'EEEE, d MMMM y'}}</td>
+                <td>{{shipment.arrivalDate | date : 'EEEE, d MMMM y'}}</td>
+                <td>{{shipment.status | shippingStatus}}</td>
+                <td>
+                    @if(shipment.status == 0){<a (click)="updateShippingStatus(shipment.id,1)" class="badge badge-success">Pick Shipment</a>}
+                    @else if(shipment.status == 1){<a (click)="updateShippingStatus(shipment.id,2)" class="badge badge-success">Packet Out For Delivery</a>}
+                    @else if(shipment.status == 2){<a (click)="updateShippingStatus(shipment.id,3)" class="badge badge-success">Confirm packet delivered</a>}
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+    }   
+</body>
+

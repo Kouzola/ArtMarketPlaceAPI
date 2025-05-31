@@ -5,4 +5,5 @@ export type Customization = {
     price: number,
     createdAt: Date,
     updateAt: Date,
+    productId: number,
 }

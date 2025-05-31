@@ -1,7 +1,7 @@
 <header class="d-flex">
     <h1 class="me-auto p-2">My Product</h1>
-    <button class="btn art-button me-3">Add Product</button>
-    <button class="btn art-button">Add Category</button>
+    <button class="btn art-button me-3" (click)="onAddButtonClicked()">Add Product</button>
+    <button class="btn art-button" (click)="onCategoryButtonClicked()">Add Category</button>
 </header>
 <hr>
 @if($products | async ; as products){
@@ -27,9 +27,9 @@
                     <td>{{product.price}}</td>
                     <td>
                         <ul class="action-list">
-                            <li><a href="#" class="badge badge-info">Edit</a></li>
-                            <li><a href="#" class="badge badge-danger">Delete</a></li>
-                            <li><a href="#" class="badge badge-success">+ Customization</a></li>
+                            <li><a (click)="editProduct(product.id)" class="badge badge-info">Edit</a></li>
+                            <li><a (click)="deleteProduct(product.id)" class="badge badge-danger">Delete</a></li>
+                            <li><a (click)="editCustomization(product.id)" class="badge badge-success">Customization</a></li>
                         </ul>
                     </td>
                 </tr>

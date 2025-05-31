@@ -24,6 +24,7 @@
     @if(products$ | async ; as products){
     <main class="d-flex flex-wrap justify-content-center">
         @for(product of products; track product.id){
+            @if(product.available){
             <app-card class="me-5 mt-5 mb-5" (click)="onProductClicked(product.id)">
                 <div class="product-image">
                     <img [src]="apiUrl +'/Contents/'+product.image"/>
@@ -39,6 +40,7 @@
                 </div>
                 <a (click)="addToCart(product.id); $event.stopPropagation()" class="card-button">Add to Cart</a>
             </app-card>
+            }
         }
     </main>
     } 

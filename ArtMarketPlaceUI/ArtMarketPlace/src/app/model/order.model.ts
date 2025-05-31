@@ -12,11 +12,12 @@ export type Order = {
     paymentDetail?: PaymentDetail,
     shipments?: number[],
     customer: User,
-    productsOrderedInfo?: ProductsOrderedInfo[]
+    productsOrderedInfo: ProductsOrderedInfo[]
 }
 
 export type ProductsOrderedInfo = {
     name: string,
+    id: number,
     reference: string,
     quantity: number,
 }

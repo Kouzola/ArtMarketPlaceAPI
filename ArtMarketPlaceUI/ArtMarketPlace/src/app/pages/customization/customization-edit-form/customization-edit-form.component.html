@@ -1,0 +1,38 @@
+<body>
+    <h1>Edit Category</h1>
+    <hr>
+    <form [formGroup]="editCustomizationForm" (ngSubmit)="updateCustomization()">
+        <div class="mb-3 form-floating">
+            <input type="text" id="name" class="form-control" placeholder="Name" required="true" formControlName="name"
+            [ngClass]="{'is-invalid': editCustomizationForm.get('name')?.touched && editCustomizationForm.get('name')?.invalid}">
+            <label for="name">Name</label>
+            @if(editCustomizationForm.get('name')?.touched && editCustomizationForm.get('name')?.invalid){
+                <div class="invalid-feedback d-block">
+                    <strong>Field required.</strong>
+                </div>
+            }
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label text-align-left">Description</label>     
+            <textarea type="textarea" id="description" class="form-control" required="true" formControlName="description"
+            [ngClass]="{'is-invalid': editCustomizationForm.get('description')?.touched && editCustomizationForm.get('description')?.invalid}" rows="5" cols="33"></textarea>         
+            @if(editCustomizationForm.get('description')?.touched && editCustomizationForm.get('description')?.invalid){
+                <div class="invalid-feedback d-block">
+                    <strong>Field required.</strong>
+                </div>
+            }  
+        </div>
+        <div class="mb-3 form-floating">
+                <input type="number" id="price" class="form-control" placeholder="Price" required="true" formControlName="price"
+                [ngClass]="{'is-invalid': editCustomizationForm.get('price')?.touched && editCustomizationForm.get('price')?.invalid}" step="0.01">
+                <label for="price">Price</label>
+                @if(editCustomizationForm.get('price')?.touched && editCustomizationForm.get('price')?.invalid){
+                <div class="invalid-feedback d-block">
+                    <strong>Field required</strong>
+                </div>
+            }
+        </div>  
+        <button [disabled]="editCustomizationForm.invalid" class="btn btn-primary w-100 py-2" type="submit">Edit Category</button>  
+    </form>
+</body>
+

@@ -22,6 +22,7 @@ namespace ArtMarketPlaceAPI.Dto.Response
         public int Id { get; set; }
         public string Code { get; set; } = string.Empty;
         public ShippingOption ShippingOption { get; set; }
+        public OrderStatus Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public UserResponseDto Customer { get; set; } = null!;

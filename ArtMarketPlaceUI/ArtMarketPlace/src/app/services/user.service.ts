@@ -13,6 +13,9 @@ export class UserService {
   private user = new BehaviorSubject<User | null>(null);
   public user$ = this.user.asObservable();
 
+  private users = new BehaviorSubject<User[] | null>([]);
+  public users$ = this.users.asObservable();
+
   constructor(private http: HttpClient) { }
 
   URL = 'https://localhost:7166/api/User'
@@ -47,6 +50,13 @@ export class UserService {
     return this.http.put<User>(finalUrl,user).pipe(
       tap(u => this.user.next(u))
     );
+  }
+
+  getAllDeliveryGuy(){
+    const finalUrl = this.URL + '/deliveryPartner';
+    return this.http.get<User[]>(finalUrl).pipe(
+      tap(u => this.users.next(u))
+    )
   }
 
 }

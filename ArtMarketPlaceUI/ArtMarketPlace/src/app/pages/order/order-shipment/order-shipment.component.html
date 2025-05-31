@@ -1,0 +1,12 @@
+<h1>Ship my products</h1>
+<hr>
+<select [(ngModel)]="selectedDeliveryPartnerId">
+    @if(deliveryPartners$ | async ; as deliveryPartners){
+        <option [ngValue]="0" disabled>Choose a delivery Partner</option>
+        @for(deliveryPartner of deliveryPartners ; track deliveryPartner.id){
+            <option [ngValue]="deliveryPartner.id">{{deliveryPartner.fullName}}</option>
+        }
+    }
+</select>
+<hr>
+<button class="btn btn-lg" (click)="selectDeliveryPartner()" [disabled]="selectedDeliveryPartnerId == 0">Ship Product(s)</button>

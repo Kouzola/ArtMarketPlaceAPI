@@ -18,7 +18,7 @@ namespace Business_Layer.Services
             var contentPath = _environment.ContentRootPath;
             var fileToDelete = Path.Combine(contentPath,"Images",fileName);
             Console.WriteLine(fileToDelete);
-            if(File.Exists(fileToDelete)) throw new NotFoundException("File Not found!");
+            if(!File.Exists(fileToDelete)) throw new NotFoundException("File Not found!");
             File.Delete(fileToDelete);
         }
 

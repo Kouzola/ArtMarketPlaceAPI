@@ -16,4 +16,5 @@ namespace ArtMarketPlaceAPI.Dto.Response
         public UserResponseDto DeliveryPartner { get; set; } = null!;
         public List<int> Products { get; set; } = new List<int>();
     }
+
 }

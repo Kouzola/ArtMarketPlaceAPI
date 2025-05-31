@@ -24,8 +24,7 @@ namespace Data_Access_Layer.Repositories
         public async Task<bool> DeleteProductAsync(Product product)
         {
             _context.Products.Remove(product);
-            await _context.SaveChangesAsync();
-            return true;
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> DeleteProductsAsync(List<Product> products)

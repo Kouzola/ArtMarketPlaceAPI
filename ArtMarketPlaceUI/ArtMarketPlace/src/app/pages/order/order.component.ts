@@ -3,22 +3,36 @@ import { OrderService } from '../../services/order.service';
 import { UserService } from '../../services/user.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import { StatusPipe } from '../../shared/status.pipe';
+import { ToastService } from '../../services/toast.service';
+import { Status } from '../../model/order.model';
+import { Router } from '@angular/router';
+import { ShipmentService } from '../../services/shipment.service';
+import { catchError, map, Observable, of } from 'rxjs';
+import { Shipment } from '../../model/shipment.model';
+import { ShippinStatusPipe } from "../../shared/shippingStatus.pipe";
 
 @Component({
   selector: 'app-order',
   standalone: true,
-  imports: [CommonModule, StatusPipe],
+  imports: [CommonModule, StatusPipe, ShippinStatusPipe],
   templateUrl: './order.component.html',
   styleUrl: './order.component.css'
 })
 export class OrderComponent implements OnInit{
-  
+  private readonly router = inject(Router);
   orderService = inject(OrderService);
   orders$ = this.orderService.orders$;
   userService = inject(UserService);
+  toastService = inject(ToastService);
+  shipmentService = inject(ShipmentService);
+  userRole = this.userService.getUserTokenInfo().role;
+  userId = this.userService.getUserTokenInfo().id;
+  pendingStatus: Status = Status.PENDING;
+  shipmentMap = new Map<number, Shipment[]>();
+
 
   ngOnInit(): void {
-    this.orderService.getAllCustomerOrder(this.userService.getUserTokenInfo().id).subscribe();
+    this.reloadPage();
   }
 
   onOrderClicked(orderId: number){
@@ -27,6 +41,46 @@ export class OrderComponent implements OnInit{
     else element!.style.display = 'none';
   }
 
-  //TODO Si Artiste changer comment on affiche order
+  confirmOrder(orderId: number){
+    this.orderService.validateProductInAOrder(orderId,this.userId).subscribe({
+      next: (x) => {
+        this.toastService.showSuccesToast("Order confirm!");
+        this.reloadPage();
+      },
+      error: (e) => this.toastService.showErrorToast("Cannot confirm order!")
+    })
+  }
+
+  shipOrder(orderId: number){
+    this.router.navigate(['/home/orders/shipment',orderId]);
+  }
+
+  reloadPage(){
+    if(this.userRole === 'Customer') this.orderService.getAllCustomerOrder(this.userId).subscribe({
+      next: (orders) => {
+        for (const order of orders) {
+          this.shipmentService.getAllShipmentOfAnOrder(order.id).subscribe(shipments => {
+          this.shipmentMap.set(order.id, shipments);});
+        }
+      }
+    });
+    else if (this.userRole === 'Artisan') {
+      this.orderService.getAllArtisanOrder(this.userId).subscribe();
+      
+    }
+  }
+
+  isAlreadyShipped(orderId: number, productId: number): Observable<boolean> {
+  return this.shipmentService.getShipmentByOrderAndProduct(orderId, productId).pipe(
+    map(shipments => shipments.length > 0),
+    catchError(() => of(false))
+  );
+}
+
+  getShipmentOfAnOrder(orderId: number): Observable<Shipment[]>{
+    return this.shipmentService.getAllShipmentOfAnOrder(orderId).pipe(
+      map((shipments: Shipment[]) => shipments)
+    );
+  }
 
 }

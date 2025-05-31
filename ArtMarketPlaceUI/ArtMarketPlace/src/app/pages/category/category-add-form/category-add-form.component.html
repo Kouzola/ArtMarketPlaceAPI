@@ -1,0 +1,27 @@
+<body>
+    <h1>Add Category</h1>
+    <hr>
+    <form [formGroup]="addCategoryForm" (ngSubmit)="addCategory()">
+        <div class="mb-3 form-floating">
+            <input type="text" id="name" class="form-control" placeholder="Name" required="true" formControlName="name"
+            [ngClass]="{'is-invalid': addCategoryForm.get('name')?.touched && addCategoryForm.get('name')?.invalid}">
+            <label for="name">Name</label>
+            @if(addCategoryForm.get('name')?.touched && addCategoryForm.get('name')?.invalid){
+                <div class="invalid-feedback d-block">
+                    <strong>Field required.</strong>
+                </div>
+            }
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label text-align-left">Description</label>     
+            <textarea type="textarea" id="description" class="form-control" required="true" formControlName="description"
+            [ngClass]="{'is-invalid': addCategoryForm.get('description')?.touched && addCategoryForm.get('description')?.invalid}" rows="5" cols="33"></textarea>         
+            @if(addCategoryForm.get('description')?.touched && addCategoryForm.get('description')?.invalid){
+                <div class="invalid-feedback d-block">
+                    <strong>Field required.</strong>
+                </div>
+            }  
+        </div>
+        <button [disabled]="addCategoryForm.invalid" class="btn btn-primary w-100 py-2" type="submit">Add Customization</button>  
+    </form>
+</body>

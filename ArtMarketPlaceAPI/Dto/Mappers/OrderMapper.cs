@@ -31,6 +31,7 @@ namespace ArtMarketPlaceAPI.Dto.Mappers
                 Id = order.Id,
                 Code = order.Code,
                 ShippingOption = order.ShippingOption,
+                Status = order.Status,
                 CreatedAt = order.CreatedAt,
                 UpdatedAt = order.UpdatedAt,
                 Customer = order.Customer.MapToDto(),
@@ -43,6 +44,7 @@ namespace ArtMarketPlaceAPI.Dto.Mappers
             return new ProductOrderInfoDto
             {
                 Name = orderProduct.Product.Name,
+                Id = orderProduct.Product.Id,
                 Reference = orderProduct.Product.Reference,
                 Quantity = orderProduct.Quantity
 

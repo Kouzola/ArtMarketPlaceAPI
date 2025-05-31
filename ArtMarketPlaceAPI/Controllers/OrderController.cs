@@ -105,8 +105,8 @@ namespace ArtMarketPlaceAPI.Controllers
             var currentUserId = User.FindFirst("id")?.Value;
             if (currentUserId != request.ArtisanId.ToString()) return Forbid();
             var isShipped = await _orderService.ShipOrderAsync(orderId, request.DeliveryPartnerId, request.ArtisanId);
-            if (isShipped) return Ok("Product(s) shipped!");
-            return BadRequest("Error: Product(s) not shipped!");
+            if (isShipped) return Ok();
+            return BadRequest();
         }
 
         [HttpPut("productValidate/{orderId:int}")]
@@ -117,8 +117,8 @@ namespace ArtMarketPlaceAPI.Controllers
             if (currentUserId != artisanId.ToString()) return Forbid();
 
             var isValidated = await _orderService.ValidateProductsInOrderAsync(orderId, artisanId);
-            if (isValidated) return Ok("Product(s) validated!");
-            return BadRequest("Error: Product(s) not validated");
+            if (isValidated) return Ok();
+            return BadRequest();
         }
         #endregion
 
