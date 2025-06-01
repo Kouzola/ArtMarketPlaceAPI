@@ -31,21 +31,25 @@ namespace Data_Access_Layer.Repositories
 
         public async Task<Cart?> GetCartByIdAsync(int cartId)
         {
-            var cart = await _context.Carts.Include(c => c.Items).ThenInclude(ci => ci.Product).FirstOrDefaultAsync(c => c.Id == cartId);
+            var cart = await _context.Carts
+                .Include(c => c.Items)
+                    .ThenInclude(ci => ci.Product)
+                    .ThenInclude(c => c.Customizations)
+                .FirstOrDefaultAsync(c => c.Id == cartId);
             if (cart == null) return null;
             return cart;
         }
 
         public async Task<Cart?> GetCartByUserIdAsync(int userId)
         {
-            var cart = await _context.Carts.Include(c => c.Items).ThenInclude(ci => ci.Product).FirstOrDefaultAsync(c => c.UserId == userId);
+            var cart = await _context.Carts.Include(c => c.Items).ThenInclude(ci => ci.Product).ThenInclude(c => c.Customizations).FirstOrDefaultAsync(c => c.UserId == userId);
             if (cart == null) return null;
             return cart;
         }
 
         public async Task<Cart?> UpdateCartAsync(Cart cart)
         {
-            var cartToUpdate = await _context.Carts.Include(c => c.Items).ThenInclude(ci => ci.Product).FirstOrDefaultAsync(c => c.Id == cart.Id);
+            var cartToUpdate = await _context.Carts.Include(c => c.Items).ThenInclude(ci => ci.Product).ThenInclude(c => c.Customizations).FirstOrDefaultAsync(c => c.Id == cart.Id);
             if (cartToUpdate == null) return null;
 
             cartToUpdate.Items = cart.Items;

@@ -1,6 +1,7 @@
 ﻿using Business_Layer.Exceptions;
 using Domain_Layer.Entities;
 using Domain_Layer.Interfaces.Cart;
+using Domain_Layer.Interfaces.Customization;
 using Domain_Layer.Interfaces.Product;
 using Domain_Layer.Interfaces.User;
 using System;
@@ -11,17 +12,18 @@ using System.Threading.Tasks;
 
 namespace Business_Layer.Services
 {
-    public class CartService(ICartRepository repository, IProductService productService) : ICartService
+    public class CartService(ICartRepository repository, IProductService productService, ICustomizationService customizationService) : ICartService
     {
         private readonly ICartRepository _repository = repository;
         private readonly IProductService _productService = productService;
+        private readonly ICustomizationService _customizationService = customizationService;
 
         public async Task<Cart> AddCartAsync(Cart cart)
         {
             return await _repository.AddCartAsync(cart);
         }
 
-        public async Task<Cart> AddItemToCartAsync(int customerId, int productId, int quantity)
+        public async Task<Cart> AddItemToCartAsync(int customerId, int productId, int quantity, int customizationId)
         {
             var cart = await _repository.GetCartByUserIdAsync(customerId);
             if (cart == null) cart = await AddCartAsync(new Cart
@@ -32,12 +34,28 @@ namespace Business_Layer.Services
             //Vérification de l'existence des produits ajouter
             var product = await _productService.GetProductByIdAsync(productId);
             if (quantity > product.Stock) throw new BusinessException("Not enough stock!");
-            items.Add(new CartItem
+            if (customizationId != 0)
             {
-                CartId = cart.Id,
-                ProductId = productId,
-                Quantity = quantity
-            });
+                var customization = await _customizationService.GetCustomizationByIdAsync(customizationId);
+                if (customization == null) throw new BusinessException("Customization does not exist");
+            }
+
+            //On check si on a pas déja le même item dans le cart pour augmenter sa quantité
+            var existingItem = cart.Items.FirstOrDefault(i => i.ProductId == productId && i.CustomizationId == (customizationId == 0 ? null : customizationId));
+            if (existingItem != null)
+            {
+                existingItem.Quantity += quantity;
+            }
+            else
+            {
+                items.Add(new CartItem
+                {
+                    CartId = cart.Id,
+                    ProductId = productId,
+                    Quantity = quantity,
+                    CustomizationId = (customizationId == 0 ? null : customizationId)
+                });
+            }       
             var updatedCart = await _repository.UpdateCartAsync(cart);
             if (updatedCart == null) throw new NotFoundException("Cart not found!");
             return updatedCart;

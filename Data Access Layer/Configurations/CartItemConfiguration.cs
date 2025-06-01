@@ -22,6 +22,7 @@ namespace Data_Access_Layer.Configurations
             builder.HasOne(ci => ci.Cart).WithMany(c => c.Items).HasForeignKey(ci => ci.CartId).OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(ci => ci.Product).WithMany().HasForeignKey(ci => ci.ProductId).OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(ci => ci.Customization).WithMany().HasForeignKey(ci => ci.CustomizationId).OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

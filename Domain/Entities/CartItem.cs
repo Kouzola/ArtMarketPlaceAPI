@@ -14,5 +14,7 @@ namespace Domain_Layer.Entities
         public int ProductId { get; set; }
         public Product Product { get; set; } = null!;
         public int Quantity { get; set; }
+        public int? CustomizationId { get; set; }
+        public Customization? Customization { get; set; }
     }
 }

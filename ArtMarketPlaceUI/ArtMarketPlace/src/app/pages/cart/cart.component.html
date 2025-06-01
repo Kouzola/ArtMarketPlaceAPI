@@ -3,7 +3,7 @@
     <hr>
     @if(cart$ | async; as cart){
         @if(cart.items.length > 0){    
-            <table class="table">
+            <table class="table cart">
                 <thead>
                     <tr>
                         <th scope="col">Product Name</th>
@@ -18,7 +18,7 @@
                     <tr>                  
                     <td>{{item.productName}}</td>
                     <td class="text-center">{{item.quantity}}</td>
-                    <td>{{item.productPrice * item.quantity}} €</td>
+                    <td>{{item.productPrice * item.quantity | number:'1.2-2'}} €</td>
                     <td><button class="btn btn-danger" (click)="deleteItem(cart.id,item)">Delete</button></td>
                     </tr>   
                     }                

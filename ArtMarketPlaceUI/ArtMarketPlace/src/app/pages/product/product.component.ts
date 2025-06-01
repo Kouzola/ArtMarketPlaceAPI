@@ -7,6 +7,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CartService } from '../../services/cart.service';
 import { UserService } from '../../services/user.service';
+import { CustomizationService } from '../../services/customization.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-product',
@@ -21,10 +23,15 @@ export class ProductComponent implements OnInit{
   reviewService = inject(ReviewService);
   cartService = inject(CartService);
   userService = inject(UserService);
+  customizationService = inject(CustomizationService);
+  toastService = inject(ToastService);
   product$ = this.productService.product$;
   reviews$ = this.reviewService.reviews$;
+  customizations$ = this.customizationService.customizations$;
   private readonly route = inject(ActivatedRoute)
   selectedQuantity: number = 1;
+  selectedCustomizationId: number = 0;
+  customizationPrice: number = 0;
 
   index: number[] = [];
   
@@ -37,7 +44,8 @@ export class ProductComponent implements OnInit{
     }
     this.route.paramMap.subscribe(params => {
       this.productService.getProductById(Number(params.get('productId')!)).subscribe(),
-      this.reviewService.getAllReviewOfAProduct(Number(params.get('productId')!)).subscribe()
+      this.reviewService.getAllReviewOfAProduct(Number(params.get('productId')!)).subscribe(),
+      this.customizationService.getCustomizationByProduct(Number(params.get('productId')!)).subscribe()
     })
 
     
@@ -45,10 +53,21 @@ export class ProductComponent implements OnInit{
 
   addToCart(productId: number){
     this.cartService.AddItemToCart(
-      {userId: this.userService.getUserTokenInfo().id, productId: productId, quantity: this.selectedQuantity }
+      {userId: this.userService.getUserTokenInfo().id, productId: productId, quantity: this.selectedQuantity, customizationId: this.selectedCustomizationId }
     ).subscribe({
-      next: (v) => console.log(v)
+      next: (v) => this.toastService.showSuccesToast("Product Added to Cart!")
     });
+  }
+
+  onCustomizationChanged(){
+    if(this.selectedCustomizationId != 0){
+      this.customizationService.getCustomizationById(this.selectedCustomizationId).subscribe({
+        next: (s) => this.customizationPrice = s.price
+    })
+    } else {
+      this.customizationPrice = 0;
+    }
+    
   }
 
 

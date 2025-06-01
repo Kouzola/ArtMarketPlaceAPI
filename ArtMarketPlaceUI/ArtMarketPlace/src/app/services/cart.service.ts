@@ -28,7 +28,7 @@ export class CartService {
     );
   }
 
-  AddItemToCart(item: {userId: number,productId: number,quantity: number}){
+  AddItemToCart(item: {userId: number,productId: number,quantity: number, customizationId: number}){
     return this.http.post<Cart>(this.URL,item);
   }
 

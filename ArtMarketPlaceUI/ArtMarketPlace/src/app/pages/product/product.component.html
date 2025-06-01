@@ -6,8 +6,18 @@
             <p>{{product.description}}</p>
             <div class="stock-price d-flex">
                 <p>Stock: {{product.stock}}</p>
-                <p>{{product.price}} €</p>
+                <p>{{product.price + customizationPrice | number:'1.2-2'}} €</p>
             </div>
+            @if(customizations$ | async ; as customizations){
+                @if(customizations.length > 0 ){
+                    <select class="form-select mb-3" [(ngModel)]="selectedCustomizationId" (change)="onCustomizationChanged()">
+                        <option [ngValue]="0">Without Customization</option>
+                        @for(customization of customizations; track customization.id){
+                            <option [ngValue]="customization.id">{{customization.name}}</option>
+                        }
+                    </select>
+                }
+            }
             <div class="quantity-cart-button d-flex align-items-center">
                 <select class="form-select" [(ngModel)]="selectedQuantity">
                      <option *ngFor="let i of index" [ngValue]="i">{{ i }}</option>

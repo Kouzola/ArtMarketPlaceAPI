@@ -36,7 +36,7 @@ namespace Business_Layer.Services
                 {
                     ProductId = cartItem.ProductId,
                     Quantity = cartItem.Quantity,
-                    UnitPrice = cartItem.Product.Price
+                    UnitPrice = cartItem.Product.Price + (cartItem.Customization == null ? 0 : cartItem.Customization.Price)
                 };
                 orderProducts.Add(orderProduct);
 
@@ -154,15 +154,21 @@ namespace Business_Layer.Services
             var artisanProduct = order.OrderProducts.Where(p => p.Product.ArtisanId == artisanId).Select(op => op.Product).ToList();
             //création du Shipment avec les produits valider par l'artisan
             if (!artisanProduct.Any()) throw new BusinessException("No products to ship for this artisan in the order.");
-            var shipment = await AddShipmentAsync(new Shipment
+            //Check si le shipment n'a pas déja été envoyé.
+            var existingShipment = await _shipmentRepository.GetAllShipmentOfAnOrder(orderId);
+            if (!existingShipment.Any(s => s.Products.Any(p => artisanProduct.Any(ap => ap.Id == p.Id))))
             {
-                Status = ShipmentStatus.PENDING_PICKUP,
-                OrderId = orderId,
-                DeliveryPartnerId = deliveryPartnerId,
-                Products = artisanProduct
-            });
+                var shipment = await AddShipmentAsync(new Shipment
+                {
+                    Status = ShipmentStatus.PENDING_PICKUP,
+                    OrderId = orderId,
+                    DeliveryPartnerId = deliveryPartnerId,
+                    Products = artisanProduct
+                });
+                return true;
+            }
 
-            return true;
+            return false;
         }
 
         public async Task<Order> UpdateOrderStatusAsync(int orderId, OrderStatus status)

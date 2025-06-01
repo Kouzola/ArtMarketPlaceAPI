@@ -34,10 +34,14 @@ export class OrderShipmentComponent implements OnInit{
   selectDeliveryPartner(){
     this.orderService.shipOrder(this.orderId,{deliveryPartnerId: this.selectedDeliveryPartnerId, artisanId: this.userService.getUserTokenInfo().id}).subscribe({
       next: (s) => {
+        sessionStorage.setItem(`shippedOrder_${this.orderId}_${this.userService.getUserTokenInfo().id}`, "true");
         this.toastService.showSuccesToast("Packet(s) ready to be shipped!")
         this.router.navigate(['home/orders']);
       },
-      error: (e) => this.toastService.showErrorToast("Packet(s) not ready!")
+      error: (e) => {
+        this.router.navigate(['home/orders']);
+        this.toastService.showErrorToast("Order already ready to be shipped!")
+      }
     });
   }
 

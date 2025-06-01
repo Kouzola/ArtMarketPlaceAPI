@@ -32,7 +32,7 @@ namespace ArtMarketPlaceAPI.Controllers
             var currentUserId = User.FindFirst("id")?.Value;
             if (currentUserId != request.UserId.ToString()) return Forbid();
 
-            var cart = await _cartService.AddItemToCartAsync(request.UserId, request.ProductId, request.Quantity);
+            var cart = await _cartService.AddItemToCartAsync(request.UserId, request.ProductId, request.Quantity,request.CustomizationId);
             return Ok(cart.MapToDto());
         }
         #endregion

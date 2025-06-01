@@ -13,6 +13,6 @@ namespace Domain_Layer.Interfaces.Cart
         Task<Entities.Cart> AddCartAsync(Entities.Cart cart);
         Task<bool> DeleteCartAsync(int cartId);
         Task<Entities.Cart> RemoveItemFromCartAsync(int cartId, int productId, int quantity);
-        Task<Entities.Cart> AddItemToCartAsync(int customerId, int productId, int quantity);
+        Task<Entities.Cart> AddItemToCartAsync(int customerId, int productId, int quantity, int customizationId);
     }
 }

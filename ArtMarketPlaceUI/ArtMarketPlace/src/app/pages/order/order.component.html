@@ -21,14 +21,8 @@
                 <td>{{order.status! | status}}</td>
                 @if (userRole === 'Artisan') {
                     <td>
-                    @if(order.status == 1){<a (click)="confirmOrder(order.id)" class="badge badge-success">Confirm Order</a>}
-                    @else if(order.status == 2){
-                        @if(isAlreadyShipped(order.id,order.productsOrderedInfo[0].id) | async ; as shipped){
-                            @if(!shipped){
-                        <a (click)="shipOrder(order.id)" class="badge badge-success">Ship Order</a>
-                        }
-                        }   
-                    }
+                    @if(order.status == 1 && !isOrderConfirmed(order.id)){<a (click)="confirmOrder(order.id)" class="badge badge-success" >Confirm Order</a>}
+                    @else if(order.status == 2 && !isOrderShipped(order.id)){<a (click)="shipOrder(order.id)" class="badge badge-success">Ship Order</a>}
                     </td>
                 }
             </tr>
@@ -37,8 +31,10 @@
                     <tr>
                         <th>Product</th>
                         <th>Quantity</th>
+                         @if(userRole === 'Customer'){
                         <th>Shipment Tracking Number</th>
                         <th>Shipment Status</th>
+                         }
                     </tr>
                 </thead>
                 <tbody>
@@ -46,10 +42,14 @@
                     <tr>
                         <td>{{product.name}}</td>
                         <td>{{product.quantity}}</td>
-                         @if(shipmentMap.get(order.id) ; as shipments){
-                            <td>{{shipments[i].trackingNumber}}</td>
-                            <td>{{shipments[i].status | shippingStatus}}</td> 
-                        }
+                         @if (shipmentMap.get(order.id) ; as shipments) {
+                            @if (getShipmentForProduct(shipments, product.id); as matchedShipment) {
+                                <td>{{ matchedShipment.trackingNumber }}</td>
+                                <td>{{ matchedShipment.status | shippingStatus }}</td>
+                            } @else {
+                                <td colspan="2">Non expédié</td>
+                            }
+                            }
                     </tr>
                     }
                 </tbody>

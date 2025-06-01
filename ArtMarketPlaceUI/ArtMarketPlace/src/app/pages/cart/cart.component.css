@@ -1,3 +1,8 @@
+.cart th,
+.cart td{
+    background-color: #F9F6F0 !important;
+}
+
 .btn.pay{
     text-decoration: none;
     display: flex;

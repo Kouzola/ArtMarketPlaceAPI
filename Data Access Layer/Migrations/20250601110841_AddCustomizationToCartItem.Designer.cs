@@ -4,6 +4,7 @@ using Data_Access_Layer.AppDbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data_Access_Layer.Migrations
 {
     [DbContext(typeof(ArtMarketPlaceDbContext))]
-    partial class ArtMarketPlaceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250601110841_AddCustomizationToCartItem")]
+    partial class AddCustomizationToCartItem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,7 +65,7 @@ namespace Data_Access_Layer.Migrations
                     b.Property<int>("CartId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CustomizationId")
+                    b.Property<int>("CustomizationId")
                         .HasColumnType("int");
 
                     b.Property<int>("ProductId")
@@ -257,20 +260,14 @@ namespace Data_Access_Layer.Migrations
 
             modelBuilder.Entity("Domain_Layer.Entities.OrderProduct", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsValidatedByArtisan")
-                        .HasColumnType("bit");
-
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsValidatedByArtisan")
+                        .HasColumnType("bit");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -278,9 +275,7 @@ namespace Data_Access_Layer.Migrations
                     b.Property<double>("UnitPrice")
                         .HasColumnType("float");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
+                    b.HasKey("OrderId", "ProductId");
 
                     b.HasIndex("ProductId");
 
@@ -597,7 +592,8 @@ namespace Data_Access_Layer.Migrations
                     b.HasOne("Domain_Layer.Entities.Customization", "Customization")
                         .WithMany()
                         .HasForeignKey("CustomizationId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("Domain_Layer.Entities.Product", "Product")
                         .WithMany()

@@ -11,6 +11,7 @@ import { CategoryService } from '../../../services/category.service';
 import { Review } from '../../../model/review.model';
 import { CartService } from '../../../services/cart.service';
 import { UserService } from '../../../services/user.service';
+import { ToastService } from '../../../services/toast.service';
 
 @Component({
   selector: 'app-product-list',
@@ -27,6 +28,7 @@ export class ProductListComponent implements OnInit{
   categoryService = inject(CategoryService);
   cartService = inject(CartService);
   userService = inject(UserService);
+  toastService = inject(ToastService);
   products$ = this.productService.products$;
   categories$ = this.categoryService.categories$;
   selectedOption: number = 0;
@@ -64,9 +66,9 @@ export class ProductListComponent implements OnInit{
 
   addToCart(productId: number){
     this.cartService.AddItemToCart(
-      {userId: this.userService.getUserTokenInfo().id, productId: productId, quantity: 1 }
+      {userId: this.userService.getUserTokenInfo().id, productId: productId, quantity: 1, customizationId: 0 }
     ).subscribe({
-      next: (v) => console.log(v)
+      next: (v) => this.toastService.showSuccesToast("Product Added to Cart!")
     });
   }
 

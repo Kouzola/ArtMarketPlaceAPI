@@ -44,6 +44,7 @@ export class OrderComponent implements OnInit{
   confirmOrder(orderId: number){
     this.orderService.validateProductInAOrder(orderId,this.userId).subscribe({
       next: (x) => {
+        sessionStorage.setItem(`confirmedOrder_${orderId}_${this.userId}`, "true");
         this.toastService.showSuccesToast("Order confirm!");
         this.reloadPage();
       },
@@ -70,17 +71,22 @@ export class OrderComponent implements OnInit{
     }
   }
 
-  isAlreadyShipped(orderId: number, productId: number): Observable<boolean> {
-  return this.shipmentService.getShipmentByOrderAndProduct(orderId, productId).pipe(
-    map(shipments => shipments.length > 0),
-    catchError(() => of(false))
-  );
-}
-
   getShipmentOfAnOrder(orderId: number): Observable<Shipment[]>{
     return this.shipmentService.getAllShipmentOfAnOrder(orderId).pipe(
       map((shipments: Shipment[]) => shipments)
     );
+  }
+
+  isOrderConfirmed(orderId: number): boolean {
+  return sessionStorage.getItem(`confirmedOrder_${orderId}_${this.userId}`) === "true";
+  }
+
+  isOrderShipped(orderId: number){
+    return sessionStorage.getItem(`shippedOrder_${orderId}_${this.userId}`)  === "true";
+  }
+
+  getShipmentForProduct(shipments: Shipment[], productRef: number): Shipment | null {
+  return shipments.find(s => s.products.includes(productRef)) ?? null;
   }
 
 }

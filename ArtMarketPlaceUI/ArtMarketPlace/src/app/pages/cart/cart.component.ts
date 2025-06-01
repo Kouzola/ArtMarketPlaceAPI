@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { OrderService } from '../../services/order.service';
 import { ShippingOption } from '../../model/order.model';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-cart',
@@ -23,6 +24,7 @@ export class CartComponent implements OnInit{
   cartService = inject(CartService);
   userService = inject(UserService);
   orderService = inject(OrderService);
+  toastService = inject(ToastService);
   cart$ = this.cartService.cart$;
   userId:number  = 0;
   selectedShippingOption: ShippingOption = ShippingOption.NORMAL;
@@ -43,7 +45,8 @@ export class CartComponent implements OnInit{
 
   confirmOrder(cartId: number){
     this.orderService.createOrderFromCart({cartId: cartId, customerId: this.userId, shippingOption: this.selectedShippingOption}).subscribe({
-      next: o => this.router.navigate(['home/payment',o.id])
+      next: o => this.router.navigate(['home/payment',o.id]),
+      error: o => this.toastService.showErrorToast("Product Out Of Stock!")
     })
     
   }

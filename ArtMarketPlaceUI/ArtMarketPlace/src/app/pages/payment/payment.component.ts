@@ -4,6 +4,7 @@ import { OrderService } from '../../services/order.service';
 import { PaymentDetail } from '../../model/paymentDetail.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-payment',
@@ -16,6 +17,7 @@ export class PaymentComponent implements OnInit{
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   orderService = inject(OrderService);
+  toastService = inject(ToastService);
   price: number = 0;
   selectedPaymentMethod: string = "BANCONTACT";
   orderId = 0;
@@ -29,8 +31,14 @@ export class PaymentComponent implements OnInit{
 
   payOrder(){
     const paymentDetail: PaymentDetail = {paymentMethod: this.selectedPaymentMethod, amount: this.price}
-    this.orderService.payOrder(this.orderId,paymentDetail).subscribe(v => console.log(v));
-    this.router.navigate(['/home/orders']);
+    this.orderService.payOrder(this.orderId,paymentDetail).subscribe({
+      next: s => {
+        this.toastService.showSuccesToast("Order Payed!");
+        this.router.navigate(['/home/orders']);
+      },
+      error: e => this.toastService.showErrorToast("Order not payed!")
+    });
+    
   }
 
   cancelOrder(){
