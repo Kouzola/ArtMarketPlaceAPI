@@ -10,5 +10,9 @@ export const mainPageGuard: CanActivateFn = (route, state) => {
     router.navigate(['/home/dashboard']);
     return false;
   }
+  else if(role === 'Admin'){
+    router.navigate(['/home/productsList']);
+    return false;
+  }
   return true;
 };

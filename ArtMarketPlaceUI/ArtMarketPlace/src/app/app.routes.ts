@@ -27,6 +27,12 @@ import { OrderShipmentComponent } from './pages/order/order-shipment/order-shipm
 import { deliveryPartnerGuard } from './guard/delivery-partner.guard';
 import { dashboardGuard } from './guard/dashboard.guard';
 import { ShipmentComponent } from './pages/shipment/shipment.component';
+import { ProductAdminComponent } from './pages/product/product-admin/product-admin.component';
+import { UserListAdminComponent } from './pages/user-manage/user-list-admin/user-list-admin.component';
+import { adminGuard } from './guard/admin.guard';
+import { UserManageAdminComponent } from './pages/user-manage/user-manage-admin/user-manage-admin.component';
+import { CategoryListComponent } from './pages/category/category-list/category-list.component';
+import { CategoryEditFormComponent } from './pages/category/category-edit-form/category-edit-form.component';
 
 export const routes: Routes = [
     {
@@ -62,6 +68,12 @@ export const routes: Routes = [
             {path: 'customizations/:productId', component: CustomizationComponent, canActivate: [artisanGuard]},
             {path: 'customizations/:productId/add', component: CustomizationAddFormComponent, canActivate: [artisanGuard]},
             {path: 'customizations/:productId/edit/:customizationId', component: CustomizationEditFormComponent, canActivate: [artisanGuard]},
+            {path: 'productsList', component: ProductAdminComponent, canActivate: [adminGuard]},
+            {path: 'userList/:userId', component: UserManageAdminComponent, canActivate: [adminGuard]},
+            {path: 'userList', component: UserListAdminComponent, canActivate: [adminGuard]},
+            {path: 'categories', component: CategoryListComponent, canActivate: [adminGuard]},
+            {path: 'categories/edit/:categoryId', component: CategoryEditFormComponent, canActivate: [adminGuard]},
+
         ]
     },
     {

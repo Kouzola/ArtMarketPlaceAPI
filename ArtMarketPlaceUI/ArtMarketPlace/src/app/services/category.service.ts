@@ -10,8 +10,11 @@ import { Category } from '../model/category.model';
 export class CategoryService {
 
   apiUrl = environment.apiUrl;
-  private categories = new BehaviorSubject<Category[] | null>(null);
+  private categories = new BehaviorSubject<Category[] | null>([]);
   public categories$ = this.categories.asObservable();
+
+  private category = new BehaviorSubject<Category| null>(null);
+  public category$ = this.category.asObservable();
 
   constructor(private http: HttpClient) { }
 
@@ -26,7 +29,9 @@ export class CategoryService {
 
   getCategoryById(id: number){
     const finalUrl = this.URL + `/${id}`
-    return this.http.get<Category>(finalUrl);
+    return this.http.get<Category>(finalUrl).pipe(
+      tap((c) => this.category.next(c))
+    )
   }
 
   addCategory(category: Category){

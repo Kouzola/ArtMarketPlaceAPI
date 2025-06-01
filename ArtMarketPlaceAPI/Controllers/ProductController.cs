@@ -80,7 +80,7 @@ namespace ArtMarketPlaceAPI.Controllers
         public async Task<IActionResult> DeleteCategory(int id)
         {
             var response = await _categoryService.DeleteCategorybyIdAsync(id);
-            if (response) return Ok($"Product with id : {id} deleted");
+            if (response) return Ok();
             return NotFound();
         }
         #endregion
@@ -91,8 +91,14 @@ namespace ArtMarketPlaceAPI.Controllers
         [HttpGet("Products")]
         public async Task<IActionResult> GetAllProducts()
         {
+            var currentUserRole = User.FindFirstValue(ClaimTypes.Role);
             var products = await _productService.GetAllProductsAsync();
-            return Ok(products.Select(p => p.MapToDto()));
+            if (currentUserRole == "Admin")
+            {               
+                return Ok(products.Select(p => p.MapToDto()));
+            }
+            return Ok(products.Where(p => p.Available && p.Artisan.Active).Select(p => p.MapToDto()));
+            
         }
 
         [HttpGet("Products/{id:int}")]
@@ -211,7 +217,7 @@ namespace ArtMarketPlaceAPI.Controllers
         {
             var product = await _productService.GetProductByIdAsync(id);
             var currentUserId = User.FindFirst("id")?.Value;
-            if (currentUserId != product.ArtisanId.ToString() && User.FindFirstValue(ClaimTypes.Role) != "admin") return Forbid();
+            if (currentUserId != product.ArtisanId.ToString() && User.FindFirstValue(ClaimTypes.Role) != "Admin") return Forbid();
 
             var response = await _productService.DeleteProductAsync(product);
             if (!response) return NotFound("Product not found!");

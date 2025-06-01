@@ -11,7 +11,7 @@ export interface userRegister{
     role: 'Customer' | 'Artisan' | 'Delivery' | 'Admin',
 }
 
-enum Role {
+export enum Role {
     Customer = 'Customer',
     Artisan = 'Artisan',
     Delivery = 'Delivery',

@@ -1,0 +1,42 @@
+<header class="d-flex">
+    <h1 class="me-auto p-2">Product List</h1>
+    <button class="btn art-button" (click)="onCategoryButtonClicked()">Category</button>
+</header>
+<hr>
+@if($products | async ; as products){
+    @if(products.length > 0){
+        <table class="table products">
+            <thead>
+                <tr>
+                    <th>Picture</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Stock</th>
+                    <th>Price</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for(product of products ; track product.id){
+                <tr class="product">
+                    <td><img [src]="apiUrl +'/Contents/'+product.image"/></td>
+                    <td>{{product.name}}</td>
+                    <td>{{product.description}}</td>
+                    <td><span [ngClass]="product.available ? 'badge badge-success' : 'badge badge-danger'">{{product.available ? 'Active' : 'Non-Active' }}</span></td>
+                    <td>{{product.stock}}</td>
+                    <td>{{product.price}}</td>
+                    <td>
+                        <ul class="action-list">
+                            <li><a (click)="deleteProduct(product.id)" class="badge badge-danger">Delete</a></li>
+                        </ul>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    }@else {
+        <p>You don't have any products</p>
+    }
+}
+

@@ -4,7 +4,7 @@ export interface User{
     firstName: string,
     lastName: string,
     email?: string,
-    role?: string,
+    role: number,
     active?: boolean,
     fullName: string,
     address?: Address,
@@ -16,4 +16,11 @@ interface Address{
     city: string,
     postalCode: string,
     country: string,
+}
+
+export enum RoleUser {
+    Customer = 0,
+    Artisan = 1,
+    Delivery = 2,
+    Admin = 3
 }

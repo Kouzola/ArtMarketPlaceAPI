@@ -1,0 +1,27 @@
+<body>
+    <h1>Edit Category</h1>
+    <hr>
+    <form [formGroup]="editCategoryForm" (ngSubmit)="updateCustomization()">
+        <div class="mb-3 form-floating">
+            <input type="text" id="name" class="form-control" placeholder="Name" required="true" formControlName="name"
+            [ngClass]="{'is-invalid': editCategoryForm.get('name')?.touched && editCategoryForm.get('name')?.invalid}">
+            <label for="name">Name</label>
+            @if(editCategoryForm.get('name')?.touched && editCategoryForm.get('name')?.invalid){
+                <div class="invalid-feedback d-block">
+                    <strong>Field required.</strong>
+                </div>
+            }
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label text-align-left">Description</label>     
+            <textarea type="textarea" id="description" class="form-control" required="true" formControlName="description"
+            [ngClass]="{'is-invalid': editCategoryForm.get('description')?.touched && editCategoryForm.get('description')?.invalid}" rows="5" cols="33"></textarea>         
+            @if(editCategoryForm.get('description')?.touched && editCategoryForm.get('description')?.invalid){
+                <div class="invalid-feedback d-block">
+                    <strong>Field required.</strong>
+                </div>
+            }  
+        </div> 
+        <button [disabled]="editCategoryForm.invalid" class="btn btn-primary w-100 py-2" type="submit">Edit Category</button>  
+    </form>
+</body>

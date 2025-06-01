@@ -31,7 +31,10 @@ export class SideBarComponent {
       {route: '/home/dashboard', title: 'My Dashboard', logo: 'bi bi-info-circle'},
       {route: '/home/shipments', title: 'My Shipments', logo: 'bi bi-truck'},
     ],
-    Admin: []
+    Admin: [
+      {route: '/home/productsList', title: 'Products List', logo: 'bi bi-list-ol'},
+      {route: '/home/userList', title: 'User Lists', logo: 'bi bi-people'},
+    ]
   };
 
   onSignOut(){

@@ -26,7 +26,7 @@ namespace ArtMarketPlaceAPI.Controllers
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _userService.GetAllUsersAsync();
-            return Ok(users.Select(u => u.MapToDto()));
+            return Ok(users.Select(u => u.MapToSelfResponseDto()));
         }
 
         [HttpGet("deliveryPartner")]
@@ -126,8 +126,9 @@ namespace ArtMarketPlaceAPI.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteUserById(int id)
         {
-            await _userService.DeleteUserAsync(id);
-            return Ok($"User with id : {id} deleted!");
+            var response = await _userService.DeleteUserAsync(id);
+            if (!response) return BadRequest();
+            return Ok();
         }
         #endregion
 
