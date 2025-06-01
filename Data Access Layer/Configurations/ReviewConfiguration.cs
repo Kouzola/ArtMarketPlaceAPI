@@ -21,7 +21,7 @@ namespace Data_Access_Layer.Configurations
             builder.Property(r => r.CreatedAt).IsRequired().HasDefaultValueSql("GETDATE()");
             builder.Property(r => r.UpdatedAt).IsRequired().HasDefaultValueSql("GETDATE()");
 
-            builder.Property(c => c.CustomerId).IsRequired(false);
+            builder.Property(c => c.CustomerId).IsRequired();
         }
     }
 }

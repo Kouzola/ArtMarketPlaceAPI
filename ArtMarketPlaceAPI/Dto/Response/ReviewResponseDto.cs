@@ -7,6 +7,7 @@
         public string Description { get; set; } = string.Empty;
         public int Score { get; set; }
         public string? ArtisanAnswer { get; set; } 
+        public int CustomerId { get; set; }
         public int ProductId { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }

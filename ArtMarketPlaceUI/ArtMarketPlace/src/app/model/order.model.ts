@@ -12,7 +12,8 @@ export type Order = {
     paymentDetail?: PaymentDetail,
     shipments?: number[],
     customer: User,
-    productsOrderedInfo: ProductsOrderedInfo[]
+    productsOrderedInfo: ProductsOrderedInfo[],
+    orderStatusPerArtisans?: OrderStatusPerArtisan[]
 }
 
 export type ProductsOrderedInfo = {
@@ -20,6 +21,12 @@ export type ProductsOrderedInfo = {
     id: number,
     reference: string,
     quantity: number,
+}
+
+export type OrderStatusPerArtisan = {
+    orderId: number,
+    artisanId: number,
+    status: number,
 }
 
 export enum Status {

@@ -127,6 +127,8 @@ namespace Business_Layer.Services
             if (paymentDetail.Amount != orderTotalPrice) throw new BusinessException("The amount of the payment does not match the price of the order!");
             var addedPaymentDetail = await AddPaymentDetailsAsync(paymentDetail);
             //Retire du stock, les produits quand on paye la commande.
+            var artisanIds = new HashSet<int>();
+            var statusList = new List<OrderStatusPerArtisan>();
             List<Product> dbProductsToUpdate = new List<Product>();
             foreach (var op in order.OrderProducts)
             {
@@ -134,11 +136,29 @@ namespace Business_Layer.Services
                 productDb.Stock -= op.Quantity;
                 productDb.ReservedStock -= op.Quantity;
                 dbProductsToUpdate.Add(productDb);
+
+                if (artisanIds.Add(productDb.ArtisanId))
+                {
+                    statusList.Add(new OrderStatusPerArtisan
+                    {
+                        OrderId = orderId,
+                        ArtisanId = productDb.ArtisanId,
+                        Status = 0
+                    });
+                }
             }
             foreach (var product in dbProductsToUpdate)
             {
                 await _productService.UpdateProductAsync(product);
             }
+
+            //ajouter le orderStatusPerArtisan a l'order
+            foreach(var orderStatus in statusList)
+            {
+                order.OrderStatusPerArtisans.Add(orderStatus);
+            }
+           
+            await UpdateOrderAsync(order);
 
             await UpdateOrderStatusAsync(orderId, OrderStatus.PENDING);
 
@@ -165,14 +185,23 @@ namespace Business_Layer.Services
                     DeliveryPartnerId = deliveryPartnerId,
                     Products = artisanProduct
                 });
+
+                foreach (var orderStatus in order.OrderStatusPerArtisans)
+                {
+                    if (orderStatus.ArtisanId == artisanId) orderStatus.Status = 2;
+                }
+
+                var updatedOrder = await UpdateOrderAsync(order);
+
                 return true;
             }
-
+          
             return false;
         }
 
         public async Task<Order> UpdateOrderStatusAsync(int orderId, OrderStatus status)
         {
+            //TODO DELETE LE ORDERPERSTATUS SI CA PASSE EN DELIVERED
             //Switch Case avec les états
             var order = await _repository.GetOrderByIdAsync(orderId);
             if (order == null) throw new NotFoundException("Order not found!");
@@ -194,6 +223,7 @@ namespace Business_Layer.Services
                     break;
 
                 case OrderStatus.DELIVERED:
+                    order.OrderStatusPerArtisans.Clear();
                     break;
 
                 case OrderStatus.CANCEL:
@@ -249,6 +279,12 @@ namespace Business_Layer.Services
             foreach (var product in productsToValidate)
             {
                 product.IsValidatedByArtisan = true;
+            }
+
+
+            foreach(var orderStatus in order.OrderStatusPerArtisans)
+            {
+                if(orderStatus.ArtisanId == artisanId) orderStatus.Status = 1;
             }
 
             await ValidateAndProcessOrderAsync(order);

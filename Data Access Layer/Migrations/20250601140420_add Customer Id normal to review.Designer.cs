@@ -4,6 +4,7 @@ using Data_Access_Layer.AppDbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data_Access_Layer.Migrations
 {
     [DbContext(typeof(ArtMarketPlaceDbContext))]
-    partial class ArtMarketPlaceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250601140420_add Customer Id normal to review")]
+    partial class addCustomerIdnormaltoreview
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -285,24 +288,6 @@ namespace Data_Access_Layer.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("OrderProducts");
-                });
-
-            modelBuilder.Entity("Domain_Layer.Entities.OrderStatusPerArtisan", b =>
-                {
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ArtisanId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.HasKey("OrderId", "ArtisanId");
-
-                    b.HasIndex("ArtisanId");
-
-                    b.ToTable("OrderStatusPerStatus");
                 });
 
             modelBuilder.Entity("Domain_Layer.Entities.PaymentDetail", b =>
@@ -690,25 +675,6 @@ namespace Data_Access_Layer.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("Domain_Layer.Entities.OrderStatusPerArtisan", b =>
-                {
-                    b.HasOne("Domain_Layer.Entities.User", "Artisan")
-                        .WithMany("OrderStatusPerArtisans")
-                        .HasForeignKey("ArtisanId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain_Layer.Entities.Order", "Order")
-                        .WithMany("OrderStatusPerArtisans")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Artisan");
-
-                    b.Navigation("Order");
-                });
-
             modelBuilder.Entity("Domain_Layer.Entities.PaymentDetail", b =>
                 {
                     b.HasOne("Domain_Layer.Entities.Order", "Order")
@@ -844,8 +810,6 @@ namespace Data_Access_Layer.Migrations
                 {
                     b.Navigation("OrderProducts");
 
-                    b.Navigation("OrderStatusPerArtisans");
-
                     b.Navigation("PaymentDetail");
 
                     b.Navigation("Shipments");
@@ -868,8 +832,6 @@ namespace Data_Access_Layer.Migrations
                     b.Navigation("InquiriesAsArtisan");
 
                     b.Navigation("InquiriesAsCustomer");
-
-                    b.Navigation("OrderStatusPerArtisans");
 
                     b.Navigation("Orders");
 

@@ -22,6 +22,7 @@ namespace Domain_Layer.Entities
         public ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
         public PaymentDetail? PaymentDetail { get; set; }
         public ICollection<Shipment> Shipments { get; } = new List<Shipment>();
+        public ICollection<OrderStatusPerArtisan> OrderStatusPerArtisans { get; set; } = new List<OrderStatusPerArtisan>();
 
     }
 

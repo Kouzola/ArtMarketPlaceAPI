@@ -41,6 +41,7 @@ namespace Data_Access_Layer.Repositories
                     .ThenInclude(op => op.Product)
                 .Include(o => o.PaymentDetail)
                 .Include(o => o.Shipments)
+                .Include(o => o.OrderStatusPerArtisans)
                 .ToListAsync();
 
             return orders;
@@ -55,6 +56,7 @@ namespace Data_Access_Layer.Repositories
                     .ThenInclude(op => op.Product)
                     .Where(o => o.OrderProducts.Any(op => op.Product.ArtisanId == artisanId))
                 .Include(o => o.Shipments)
+                .Include(o => o.OrderStatusPerArtisans)
                 .ToListAsync();
 
             return orders;
@@ -67,6 +69,7 @@ namespace Data_Access_Layer.Repositories
                 .Include(o => o.OrderProducts)
                 .Include(o => o.PaymentDetail)
                 .Include(o => o.Shipments)
+                .Include(o => o.OrderStatusPerArtisans)
                 .FirstOrDefaultAsync(o => o.Code == code);
 
             if (order == null) return null;
@@ -81,6 +84,7 @@ namespace Data_Access_Layer.Repositories
                 .Include(o => o.OrderProducts)
                     .ThenInclude(op => op.Product)
                 .Include(o => o.Shipments)
+                .Include(o => o.OrderStatusPerArtisans)
                 .FirstOrDefaultAsync(o => o.Id == id);
 
             if (order == null) return null;
@@ -94,6 +98,7 @@ namespace Data_Access_Layer.Repositories
                 .Include(o => o.PaymentDetail)
                 .Include(o => o.OrderProducts)
                 .Include(o => o.Shipments)
+                .Include(o => o.OrderStatusPerArtisans)
                 .FirstOrDefaultAsync(o => o.Shipments.Any(s => s.Id == shipmentId));
 
             if (order == null) return null;

@@ -23,10 +23,12 @@ namespace Domain_Layer.Entities
         //Relation related Field
         public ICollection<Product> Products { get; } = new List<Product>();
         public ICollection<Review> Reviews { get; } = new List<Review>();
-        public ICollection<Inquiry> InquiriesAsCustomer { get; } = new List<Inquiry>(); //TODO : Utiliser une vérif métier pour que pas les delivery guy peut avoir des inquiries
+        public ICollection<Inquiry> InquiriesAsCustomer { get; } = new List<Inquiry>();
         public ICollection<Inquiry> InquiriesAsArtisan { get; } = new List<Inquiry>();
         public ICollection<Order> Orders { get; } = new List<Order>();
-        public ICollection<Shipment> Shipments { get; } = new List<Shipment>(); //TODO: Verif métier pour uniquement les delivery guys
+        public ICollection<Shipment> Shipments { get; } = new List<Shipment>();
+        public ICollection<OrderStatusPerArtisan> OrderStatusPerArtisans { get; } = new List<OrderStatusPerArtisan>();
+
 
         public Cart Cart { get; set; } = null!;
         public int CartId   { get; set; }

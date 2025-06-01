@@ -35,7 +35,8 @@ namespace ArtMarketPlaceAPI.Dto.Mappers
                 CreatedAt = order.CreatedAt,
                 UpdatedAt = order.UpdatedAt,
                 Customer = order.Customer.MapToDto(),
-                ProductsOrderedInfo = order.OrderProducts.Where(op => op.Product.ArtisanId == artisanId).Select(op => op.MapToDtoForProductInfo()).ToList()
+                ProductsOrderedInfo = order.OrderProducts.Where(op => op.Product.ArtisanId == artisanId).Select(op => op.MapToDtoForProductInfo()).ToList(),
+                OrderStatusPerArtisans = order.OrderStatusPerArtisans.ToList(),
             };
         }
 

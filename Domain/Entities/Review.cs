@@ -17,8 +17,8 @@ namespace Domain_Layer.Entities
         public DateTime UpdatedAt { get; set; }
 
         //Relation related Field
-        public int? CustomerId { get; set; }
-        public User? Customer { get; set; }
+        public int CustomerId { get; set; }
+        public User Customer { get; set; } = null!;
         public int ProductId { get; set; }
         public Product Product { get; set; } = null!;
 

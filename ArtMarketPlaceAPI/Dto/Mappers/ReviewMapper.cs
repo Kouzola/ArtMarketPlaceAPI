@@ -16,6 +16,7 @@ namespace ArtMarketPlaceAPI.Dto.Mappers
                 ArtisanAnswer = review.ArtisanAnswer,
                 CreatedAt = review.CreatedAt,
                 UpdatedAt = review.UpdatedAt,
+                CustomerId = review.CustomerId,
             };
         }
     }

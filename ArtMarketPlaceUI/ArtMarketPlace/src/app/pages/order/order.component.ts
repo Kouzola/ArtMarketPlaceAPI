@@ -4,7 +4,7 @@ import { UserService } from '../../services/user.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import { StatusPipe } from '../../shared/status.pipe';
 import { ToastService } from '../../services/toast.service';
-import { Status } from '../../model/order.model';
+import { OrderStatusPerArtisan, Status } from '../../model/order.model';
 import { Router } from '@angular/router';
 import { ShipmentService } from '../../services/shipment.service';
 import { catchError, map, Observable, of } from 'rxjs';
@@ -29,6 +29,7 @@ export class OrderComponent implements OnInit{
   userId = this.userService.getUserTokenInfo().id;
   pendingStatus: Status = Status.PENDING;
   shipmentMap = new Map<number, Shipment[]>();
+  orderStatus: OrderStatusPerArtisan | undefined = undefined;
 
 
   ngOnInit(): void {
@@ -57,6 +58,8 @@ export class OrderComponent implements OnInit{
   }
 
   reloadPage(){
+    this.userRole = this.userService.getUserTokenInfo().role;
+    this.userId = this.userService.getUserTokenInfo().id;
     if(this.userRole === 'Customer') this.orderService.getAllCustomerOrder(this.userId).subscribe({
       next: (orders) => {
         for (const order of orders) {
@@ -66,7 +69,14 @@ export class OrderComponent implements OnInit{
       }
     });
     else if (this.userRole === 'Artisan') {
-      this.orderService.getAllArtisanOrder(this.userId).subscribe();
+      this.orderService.getAllArtisanOrder(this.userId).subscribe({
+        next: (orders) => {
+          for (const order of orders) {
+            this.orderStatus = order.orderStatusPerArtisans?.find(s => s.artisanId == this.userId);
+            console.log(this.orderStatus);
+          }
+        }
+      });
       
     }
   }

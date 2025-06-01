@@ -65,7 +65,6 @@ namespace ArtMarketPlaceAPI.Controllers
             var price = await _orderService.GetOrderTotalPriceAsync(orderId);
             return Ok(price);
         }
-
         #endregion
 
         #region POST
