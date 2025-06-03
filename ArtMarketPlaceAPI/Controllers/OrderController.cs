@@ -16,22 +16,24 @@ namespace ArtMarketPlaceAPI.Controllers
         private readonly IOrderService _orderService = orderService;
 
         #region GET
-        [HttpGet("by-CustomerId")]
+        [HttpGet("by-CustomerId/{customerId:int}")]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> GetAllCustomerOrder()
+        public async Task<IActionResult> GetAllCustomerOrder(int customerId)
         {
-            var currentUserId = int.Parse(User.FindFirst("id")!.Value!);
-            var orders = await _orderService.GetAllOrderOfCustomerAsync(currentUserId);
+            var currentUserId = User.FindFirst("id")?.Value;
+            if (currentUserId != customerId.ToString()) return Forbid();
+            var orders = await _orderService.GetAllOrderOfCustomerAsync(customerId);
             return Ok(orders.Select(o => o.MapToDto()));
         }
 
-        [HttpGet("by-ArtisanId")]
+        [HttpGet("by-ArtisanId/{artisanId:int}")]
         [Authorize(Roles = "Artisan")]
         public async Task<IActionResult> GetAllArtisanOrder(int artisanId)
         {
-            var currentUserId = int.Parse(User.FindFirst("id")!.Value!);
-            var orders = await _orderService.GetAllOrderForAnArtisanAsync(currentUserId);
-            return Ok(orders.Select(o => o.MapToDtoForArtisan(currentUserId)));
+            var currentUserId = User.FindFirst("id")?.Value;
+            if (currentUserId != artisanId.ToString()) return Forbid();
+            var orders = await _orderService.GetAllOrderForAnArtisanAsync(artisanId);
+            return Ok(orders.Select(o => o.MapToDtoForArtisan(artisanId)));
         }
 
         [HttpGet("{id:int}")]

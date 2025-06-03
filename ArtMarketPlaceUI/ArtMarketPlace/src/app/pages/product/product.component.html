@@ -1,42 +1,56 @@
 @if(product$ | async; as product){
-    <div class="product-area">
-        <img [src]="apiUrl +'/Contents/'+product.image"/>
-        <div class="product-info d-flex flex-column">
-            <h1>{{product.name}}</h1>
-            <p>{{product.description}}</p>
-            <div class="stock-price d-flex">
-                <p>Stock: {{product.stock}}</p>
-                <p>{{product.price + customizationPrice | number:'1.2-2'}} €</p>
-            </div>
-            @if(customizations$ | async ; as customizations){
-                @if(customizations.length > 0 ){
-                    <select class="form-select mb-3" [(ngModel)]="selectedCustomizationId" (change)="onCustomizationChanged()">
-                        <option [ngValue]="0">Without Customization</option>
-                        @for(customization of customizations; track customization.id){
-                            <option [ngValue]="customization.id">{{customization.name}}</option>
-                        }
-                    </select>
-                }
-            }
-            <div class="quantity-cart-button d-flex align-items-center">
-                <select class="form-select" [(ngModel)]="selectedQuantity">
-                     <option *ngFor="let i of index" [ngValue]="i">{{ i }}</option>
-                </select>
-                <button type="button" class="btn btn-lg" [disabled]="selectedQuantity > product.stock" (click)="addToCart(product.id)">Add to cart</button>
-            </div>
-        </div>
+<div class="product-area">
+  <img [src]="apiUrl + '/Contents/' + product.image" />
+  <div class="product-info d-flex flex-column">
+    <h1>{{ product.name }}</h1>
+    <p>{{ product.description }}</p>
+    <div class="stock-price d-flex">
+      <p>Stock: {{ product.stock }}</p>
+      <p>{{ product.price + customizationPrice | number : "1.2-2" }} €</p>
     </div>
-    <hr>
-    <div class="review-info">
-        <h1>Reviews</h1>
-        @if(reviews$ | async; as reviews){
-            @for(review of reviews; track review.id){
-                <h2>{{review.title}}</h2>
-                <p>{{review.description}}</p>
-                <p>Rating: {{review.score}} / 5</p>
-                Artisan Response: <p>{{review.artisanAnswer ?? "No Response"}}</p>
-                <hr>
-            }   
-        }
+    @if(customizations$ | async ; as customizations){ @if(customizations.length
+    > 0 ){
+    <select
+      class="form-select mb-3"
+      [(ngModel)]="selectedCustomizationId"
+      (change)="onCustomizationChanged()"
+    >
+      <option [ngValue]="0">Without Customization</option>
+      @for(customization of customizations; track customization.id){
+      <option [ngValue]="customization.id">{{ customization.name }}</option>
+      }
+    </select>
+    } }
+    <div class="quantity-cart-button d-flex align-items-center">
+      <select class="form-select" [(ngModel)]="selectedQuantity">
+        <option *ngFor="let i of index" [ngValue]="i">{{ i }}</option>
+      </select>
+      <button
+        type="button"
+        class="btn btn-lg"
+        [disabled]="selectedQuantity > product.stock"
+        (click)="addToCart(product.id)"
+      >
+        Add to cart
+      </button>
     </div>
-}
+  </div>
+</div>
+<hr />
+<div class="review-info">
+  <h1>Reviews</h1>
+  @if(reviews$ | async; as reviews){ @for(review of reviews; track review.id){
+  <h2>{{ review.title }}</h2>
+  <p>{{ review.description }}</p>
+  <p>Rating: {{ review.score }} / 5</p>
+  Artisan Response:
+  <p>{{ review.artisanAnswer ?? "No Response" }}</p>
+  <hr />
+  } }
+</div>
+@if(!isAlreadyReviewed && isOrderByCustomer){
+<button type="button" class="btn btn-lg" id="addBtnReview">Add a review</button>
+<div class="add-review-area">
+  <!--Add Text Area et bouton et un form coté angular-->
+</div>
+} }
