@@ -49,8 +49,88 @@
   } }
 </div>
 @if(!isAlreadyReviewed && isOrderByCustomer){
-<button type="button" class="btn btn-lg" id="addBtnReview">Add a review</button>
-<div class="add-review-area">
+<button
+  [hidden]="showReviewForm"
+  type="button"
+  class="btn btn-lg mb-3"
+  id="addBtnReview"
+  (click)="onAddReviewButtonClicked()"
+>
+  Add a review
+</button>
+<div class="add-review-area" id="review-area" [hidden]="!showReviewForm">
   <!--Add Text Area et bouton et un form coté angular-->
+  <form [formGroup]="reviewForm" (ngSubmit)="addReview()">
+    <div class="mb-3 form-floating">
+      <input
+        type="text"
+        id="title"
+        class="form-control"
+        placeholder="Title"
+        required="true"
+        formControlName="title"
+        [ngClass]="{
+          'is-invalid':
+            reviewForm.get('title')?.touched && reviewForm.get('title')?.invalid
+        }"
+      />
+      <label for="title">Title</label>
+      @if(reviewForm.get('title')?.touched && reviewForm.get('title')?.invalid){
+      <div class="invalid-feedback d-block">
+        <strong>Field required.</strong>
+      </div>
+      }
+    </div>
+    <div class="mb-3">
+      <label for="description" class="form-label text-align-left"
+        >Description</label
+      >
+      <textarea
+        type="textarea"
+        id="description"
+        class="form-control"
+        required="true"
+        formControlName="description"
+        [ngClass]="{
+          'is-invalid':
+            reviewForm.get('description')?.touched &&
+            reviewForm.get('description')?.invalid
+        }"
+        rows="5"
+        cols="33"
+      ></textarea>
+      @if(reviewForm.get('description')?.touched &&
+      reviewForm.get('description')?.invalid){
+      <div class="invalid-feedback d-block">
+        <strong>Field required.</strong>
+      </div>
+      }
+    </div>
+    <div class="mb-3 form-floating">
+      <input
+        type="number"
+        id="score"
+        min="0"
+        max="5"
+        class="form-control"
+        placeholder="Score"
+        required="true"
+        formControlName="score"
+        [ngClass]="{
+          'is-invalid':
+            reviewForm.get('score')?.touched && reviewForm.get('score')?.invalid
+        }"
+      />
+      <label for="score">Score</label>
+      @if(reviewForm.get('score')?.touched && reviewForm.get('score')?.invalid){
+      <div class="invalid-feedback d-block">
+        <strong>Field required. Must be between 0 and 5</strong>
+      </div>
+      }
+    </div>
+    <button type="submit" class="btn btn-lg" [disabled]="reviewForm.invalid">
+      Submit review
+    </button>
+  </form>
 </div>
 } }

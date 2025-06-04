@@ -17,6 +17,7 @@ namespace Data_Access_Layer.Repositories
         public async Task<Review> AddReviewAsync(Review review)
         {
             var addedReview = await _context.Reviews.AddAsync(review);
+            await _context.SaveChangesAsync();
             return addedReview.Entity;
         }
 
