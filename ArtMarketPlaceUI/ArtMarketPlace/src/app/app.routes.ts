@@ -33,6 +33,7 @@ import { adminGuard } from './guard/admin.guard';
 import { UserManageAdminComponent } from './pages/user-manage/user-manage-admin/user-manage-admin.component';
 import { CategoryListComponent } from './pages/category/category-list/category-list.component';
 import { CategoryEditFormComponent } from './pages/category/category-edit-form/category-edit-form.component';
+import { ReviewsComponent } from './pages/reviews/reviews/reviews.component';
 
 export const routes: Routes = [
     {
@@ -68,6 +69,7 @@ export const routes: Routes = [
             {path: 'customizations/:productId', component: CustomizationComponent, canActivate: [artisanGuard]},
             {path: 'customizations/:productId/add', component: CustomizationAddFormComponent, canActivate: [artisanGuard]},
             {path: 'customizations/:productId/edit/:customizationId', component: CustomizationEditFormComponent, canActivate: [artisanGuard]},
+            {path: 'reviews/:id', component: ReviewsComponent, canActivate: [artisanGuard]},
             {path: 'productsList', component: ProductAdminComponent, canActivate: [adminGuard]},
             {path: 'userList/:userId', component: UserManageAdminComponent, canActivate: [adminGuard]},
             {path: 'userList', component: UserListAdminComponent, canActivate: [adminGuard]},

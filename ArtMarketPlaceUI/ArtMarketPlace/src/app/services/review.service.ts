@@ -33,9 +33,9 @@ export class ReviewService {
     return this.http.post<Review>(this.URL,review);
   }
 
-  updateReview(review: Review){
-    const finalUrl = this.URL + `/${review.id}`;
-    return this.http.put<Review>(finalUrl,review);
+  respondToAReview(id: Number, response: string){
+    const finalUrl = this.URL + `/${id}`;
+    return this.http.put<Review>(finalUrl,response);
   }
 
   deleteReview(id: number){

@@ -25,7 +25,6 @@ export class SideBarComponent {
       {route: '/home/dashboard', title: 'My Dashboard', logo: 'bi bi-info-circle'},
       {route: '/home/myProducts', title: 'My Products', logo: 'bi bi-shop'},
       {route: '/home/orders', title: 'My Orders', logo: 'bi bi-bag'},
-      {route: '/home/inquiries', title: 'My Inquiries', logo: 'bi bi-question-circle'},
     ],
     Delivery: [
       {route: '/home/dashboard', title: 'My Dashboard', logo: 'bi bi-info-circle'},

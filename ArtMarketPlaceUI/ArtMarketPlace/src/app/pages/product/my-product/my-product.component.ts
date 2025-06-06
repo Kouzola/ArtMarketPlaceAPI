@@ -61,5 +61,9 @@ export class MyProductComponent implements OnInit{
   editCustomization(productId: number){
     this.router.navigate(['/home/customizations',productId]);
   }
+
+  getReviews(id: number){
+    this.router.navigate(['home/reviews',id]);
+  }
   
 }

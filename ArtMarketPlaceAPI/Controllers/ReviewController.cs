@@ -50,9 +50,9 @@ namespace ArtMarketPlaceAPI.Controllers
         #region PUT
         [HttpPut("{reviewId:int}")]
         [Authorize (Roles = "Artisan")]
-        public async Task<IActionResult> AnswerToAReviewByArtisant(int reviewId, [FromBody] string answer)
+        public async Task<IActionResult> AnswerToAReviewByArtisant(int reviewId, [FromBody] ReviewAnswerRequestDto request)
         {
-            var review = await _reviewService.RespondToAReview(reviewId, answer);
+            var review = await _reviewService.RespondToAReview(reviewId, request.Answer);
             return Ok(review.MapToDto());
         }
         #endregion
