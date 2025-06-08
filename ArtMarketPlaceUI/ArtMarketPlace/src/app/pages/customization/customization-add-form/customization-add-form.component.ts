@@ -34,7 +34,7 @@ export class CustomizationAddFormComponent{
   }
 
   addCustomization(){
-    const productId =  this.addCustomizationForm.get('productId');
+    const productId =  this.addCustomizationForm.get('productId')!.value;
     this.customizationService.addCustomization(this.addCustomizationForm.value).subscribe({
       next: () => {
         this.toastService.showSuccesToast("Customization Added!");

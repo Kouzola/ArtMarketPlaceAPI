@@ -4,6 +4,7 @@ using Data_Access_Layer.AppDbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data_Access_Layer.Migrations
 {
     [DbContext(typeof(ArtMarketPlaceDbContext))]
-    partial class ArtMarketPlaceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250608143536_DataInsert2")]
+    partial class DataInsert2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -749,7 +752,7 @@ namespace Data_Access_Layer.Migrations
                             Id = 1,
                             Active = true,
                             CartId = 0,
-                            CreatedAt = new DateTime(2025, 4, 19, 11, 41, 6, 663, DateTimeKind.Unspecified).AddTicks(3333),
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@example.com",
                             FirstName = "admin",
                             LastName = "admin",
@@ -763,7 +766,7 @@ namespace Data_Access_Layer.Migrations
                             Id = 2,
                             Active = true,
                             CartId = 0,
-                            CreatedAt = new DateTime(2025, 4, 19, 12, 31, 59, 846, DateTimeKind.Unspecified).AddTicks(6667),
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "jean@example.com",
                             FirstName = "Jean",
                             LastName = "Bon",
@@ -777,7 +780,7 @@ namespace Data_Access_Layer.Migrations
                             Id = 4,
                             Active = true,
                             CartId = 0,
-                            CreatedAt = new DateTime(2025, 5, 17, 23, 57, 57, 800, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "julien.degol@gmail.com",
                             FirstName = "Julien",
                             LastName = "De Gaulle",
@@ -791,7 +794,7 @@ namespace Data_Access_Layer.Migrations
                             Id = 3,
                             Active = true,
                             CartId = 0,
-                            CreatedAt = new DateTime(2025, 4, 19, 12, 36, 25, 36, DateTimeKind.Unspecified).AddTicks(6667),
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "paul@example.com",
                             FirstName = "Paul",
                             LastName = "Sevran",
@@ -805,7 +808,7 @@ namespace Data_Access_Layer.Migrations
                             Id = 5,
                             Active = true,
                             CartId = 0,
-                            CreatedAt = new DateTime(2025, 6, 8, 12, 52, 41, 333, DateTimeKind.Unspecified).AddTicks(3333),
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "a.dupont@gmail.com",
                             FirstName = "Adrien",
                             LastName = "Dupont",
@@ -819,7 +822,7 @@ namespace Data_Access_Layer.Migrations
                             Id = 6,
                             Active = true,
                             CartId = 0,
-                            CreatedAt = new DateTime(2025, 6, 8, 13, 4, 56, 863, DateTimeKind.Unspecified).AddTicks(3333),
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "g.latour@gmail.com",
                             FirstName = "Gabin",
                             LastName = "Latour",
@@ -833,7 +836,7 @@ namespace Data_Access_Layer.Migrations
                             Id = 7,
                             Active = true,
                             CartId = 0,
-                            CreatedAt = new DateTime(2025, 4, 19, 12, 37, 19, 663, DateTimeKind.Unspecified).AddTicks(3333),
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "kevin@deliveryman.com",
                             FirstName = "Kevin",
                             LastName = "Statam",

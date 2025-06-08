@@ -17,7 +17,7 @@ namespace Domain_Layer.Entities
         public Role Role { get; set; }
         public bool Active { get; set; } = true;
         public Address Address { get; set; } = null!;
-        public DateTime CreatedAt { get; private set; }
+        public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
         //Relation related Field

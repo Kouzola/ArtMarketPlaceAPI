@@ -40,7 +40,7 @@ export class CustomizationEditFormComponent {
   }
 
   updateCustomization(){
-    const productId =  this.editCustomizationForm.get('productId');
+    const productId =  this.editCustomizationForm.get('productId')!.value;
     this.customizationService.updateCustomization(this.editCustomizationForm.value).subscribe({
       next: () => {
         this.toastService.showSuccesToast("Customization Updated!");
