@@ -16,7 +16,7 @@ namespace ArtMarketPlaceAPI.Controllers
         private readonly IOrderService _orderService = orderService;
 
         #region GET
-        [HttpGet("by-CustomerId")]
+        [HttpGet("by-CustomerId/{customerId:int}")]
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> GetAllCustomerOrder(int customerId)
         {
@@ -26,7 +26,7 @@ namespace ArtMarketPlaceAPI.Controllers
             return Ok(orders.Select(o => o.MapToDto()));
         }
 
-        [HttpGet("by-ArtisanId")]
+        [HttpGet("by-ArtisanId/{artisanId:int}")]
         [Authorize(Roles = "Artisan")]
         public async Task<IActionResult> GetAllArtisanOrder(int artisanId)
         {
@@ -67,18 +67,18 @@ namespace ArtMarketPlaceAPI.Controllers
             var price = await _orderService.GetOrderTotalPriceAsync(orderId);
             return Ok(price);
         }
-
         #endregion
 
         #region POST
         [HttpPost]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> CreateOrderFromCart([FromBody] int cartId, int customerId)
+        //AJOUTER LE SHIPPING OPTION ET DONC DANS LE CART AUSSI
+        public async Task<IActionResult> CreateOrderFromCart(OrderRequestDto request)
         {
             var currentUserId = User.FindFirst("id")?.Value;
-            if (currentUserId != customerId.ToString()) return Forbid();
+            if (currentUserId != request.CustomerId.ToString()) return Forbid();
 
-            var order = await _orderService.CreateOrderFromCartAsync(cartId, customerId);
+            var order = await _orderService.CreateOrderFromCartAsync(request.CartId, request.CustomerId,request.ShippingOption);
             return Ok(order.MapToDto());
         }
         #endregion
@@ -86,40 +86,40 @@ namespace ArtMarketPlaceAPI.Controllers
         #region PUT
         [HttpPut("pay/{orderId:int}")]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> PayOrder(int orderId, PaymentDetailRequestDto paymentRequest, int cartId)
+        public async Task<IActionResult> PayOrder(int orderId, PaymentDetailRequestDto request)
         {
             var paymentDetail = new PaymentDetail
             {
-                PaymentMethod = paymentRequest.PaymentMethod,
-                Amount = paymentRequest.Amount,
+                PaymentMethod = request.PaymentMethod,
+                Amount = request.Amount,
                 OrderId = orderId,
                 PaymentDate = DateTime.Now
             };
-            var order = await _orderService.PayOrderAsync(orderId, paymentDetail,cartId);
+            var order = await _orderService.PayOrderAsync(orderId, paymentDetail);
             return Ok(order.MapToDto());
         }
 
         [HttpPut("ship/{orderId:int}")]
         [Authorize(Roles = "Artisan")]
-        public async Task<IActionResult> ShipOrder([FromBody] int orderId, int deliveryPartner, int artisanId)
+        public async Task<IActionResult> ShipOrder(int orderId, OrderRequestDto request)
         {
             var currentUserId = User.FindFirst("id")?.Value;
-            if (currentUserId != artisanId.ToString()) return Forbid();
-            var isShipped = await _orderService.ShipOrderAsync(orderId, deliveryPartner, artisanId);
-            if (isShipped) return Ok("Product(s) shipped!");
-            return BadRequest("Error: Product(s) not shipped!");
+            if (currentUserId != request.ArtisanId.ToString()) return Forbid();
+            var isShipped = await _orderService.ShipOrderAsync(orderId, request.DeliveryPartnerId, request.ArtisanId);
+            if (isShipped) return Ok();
+            return BadRequest();
         }
 
         [HttpPut("productValidate/{orderId:int}")]
         [Authorize(Roles = "Artisan")]
-        public async Task<IActionResult> ValidateProductsInOrder(int orderId, int artisanId)
+        public async Task<IActionResult> ValidateProductsInOrder(int orderId, [FromBody] int artisanId)
         {
             var currentUserId = User.FindFirst("id")?.Value;
             if (currentUserId != artisanId.ToString()) return Forbid();
 
             var isValidated = await _orderService.ValidateProductsInOrderAsync(orderId, artisanId);
-            if (isValidated) return Ok("Product(s) validated!");
-            return BadRequest("Error: Product(s) not validated");
+            if (isValidated) return Ok();
+            return BadRequest();
         }
         #endregion
 
@@ -134,8 +134,8 @@ namespace ArtMarketPlaceAPI.Controllers
             if (currentUserId != order.CustomerId.ToString()) return Forbid();
 
             var isCancel = await _orderService.CancelOrderAsync(orderId);
-            if (isCancel) return Ok("Order Cancel");
-            return BadRequest("Error: Order not cancel");
+            if (isCancel) return Ok(new { message = "Order cancel" });
+            return BadRequest(new { message = "Order cancel" });
         }
         #endregion
     }

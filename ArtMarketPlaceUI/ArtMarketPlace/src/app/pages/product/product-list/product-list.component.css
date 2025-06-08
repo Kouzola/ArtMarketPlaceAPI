@@ -1,0 +1,91 @@
+body {
+    height: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+hr {
+    width: 90%;
+    margin: auto;
+}
+
+header {
+    width: 100%;
+    display: flex;
+    justify-content: center;  
+    align-items: center;     
+    gap: 30px;               
+    padding: 10px;
+}
+
+
+.search-bar {
+    position: relative;
+}
+
+.search-input {
+    height: 50px;
+    border-radius: 30px;
+    padding-left: 35px;
+    border: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.search-bar .bi{
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    color: #888;
+}
+
+.bi-filter, .sort-options, .category-selector{
+    cursor: pointer;
+    
+}
+
+.product-image{
+    overflow: hidden;
+    height: 200px;
+}
+
+app-card{
+    cursor: pointer;
+}
+
+.product-image img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 8px 8px 0 0;
+}
+
+.card-header {
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px 15px;
+}
+
+.card-button {
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+    width: 100%;
+    background-color: #D4A373;
+    color: #fff;
+    border-radius: 0 0 8px 8px;
+    }
+
+.card-button:hover {
+    text-decoration: none;
+    background-color: #B97D50;
+    color: #fff;
+    cursor: pointer;
+}

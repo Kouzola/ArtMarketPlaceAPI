@@ -1,0 +1,63 @@
+<body>
+    <h1>My Order</h1>
+    <hr>
+    @if(orders$ | async ; as orders){
+    <table class="table table-hover orders">
+        <thead>
+            <tr>
+                <th scope="col">Code</th>
+                @if(userRole === 'Customer') {<th scope="col">Date</th>}
+                @else if(userRole === 'Artisan') {<th scope="col">Customer</th>}
+                <th scope="col">Status</th>
+                @if(userRole === 'Artisan') {<th scope="col">Action</th>}
+            </tr>
+        </thead>
+        <tbody>
+            @for(order of orders; track order.id){
+            <tr (click)="onOrderClicked(order.id)">
+                <td>{{order.code}}</td>
+                @if(userRole === 'Customer'){<td>{{order.orderDate | date : 'EEEE, d MMMM y'}}</td>}
+                @else if (userRole === 'Artisan') {<td>{{order.customer.fullName}}</td>}
+                <td>{{order.status! | status}}</td>
+                @if (userRole === 'Artisan') {
+                    <td>
+                    @if(order.status == 1 || order.status == 2){
+                        @if(orderStatus?.status == 0){<a (click)="confirmOrder(order.id)" class="badge badge-success" >Confirm Order</a>}
+                        @else if(orderStatus?.status == 1){<a (click)="shipOrder(order.id)" class="badge badge-success">Ship Order</a>}
+                    }                   
+                    </td>
+                }
+            </tr>
+            <table class="table order-info" [id]="'order-info-' + order.id">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                         @if(userRole === 'Customer'){
+                        <th>Shipment Tracking Number</th>
+                        <th>Shipment Status</th>
+                         }
+                    </tr>
+                </thead>
+                <tbody>
+                    @for(product of order.productsOrderedInfo; track product.reference ; let i = $index ){
+                    <tr>
+                        <td>{{product.name}}</td>
+                        <td>{{product.quantity}}</td>
+                         @if (shipmentMap.get(order.id) ; as shipments) {
+                            @if (getShipmentForProduct(shipments, product.id); as matchedShipment) {
+                                <td>{{ matchedShipment.trackingNumber }}</td>
+                                <td>{{ matchedShipment.status | shippingStatus }}</td>
+                            } @else {
+                                <td colspan="2">Non expédié</td>
+                            }
+                            }
+                    </tr>
+                    }
+                </tbody>
+            </table>
+            }
+        </tbody>
+    </table>
+    }   
+</body>

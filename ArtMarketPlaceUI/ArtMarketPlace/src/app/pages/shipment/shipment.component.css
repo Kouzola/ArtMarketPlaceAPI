@@ -1,0 +1,19 @@
+.shipment-info{
+    display: none;
+}
+
+.shipments th,
+.shipments td{
+    background-color: #F9F6F0 !important;
+}
+
+.badge.badge-success {
+  background-color: #198754 !important;
+  text-decoration: none;
+  color: white;
+}
+
+.badge.badge-success:hover{
+  background-color: #157347 !important;
+  cursor: pointer;
+}

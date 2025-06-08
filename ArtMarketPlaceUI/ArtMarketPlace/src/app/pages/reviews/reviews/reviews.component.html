@@ -1,0 +1,62 @@
+<header class="d-flex">
+    <h1 class="me-auto p-2">My Reviews</h1>
+</header>
+<hr>
+@if(reviews$ | async ; as reviews){
+    @if(reviews.length > 0){
+        <table class="table reviews">
+            <thead>
+                <tr>
+                    <th>Review Status</th>
+                    <th>Review Title</th>
+                    <th>Description</th>
+                    <th>Score</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for(review of reviews ; track review.id){
+                <tr class="review">
+                    <td><span [ngClass]="review.artisanAnswer ? 'badge badge-success' : 'badge badge-danger'">{{review.artisanAnswer ? 'Responded' : 'Not Responded' }}</span></td>
+                    <td>{{review.title}}</td>
+                    <td>{{review.description}}</td>
+                    <td>{{review.score}}</td>
+                    <td>
+                        <ul class="action-list">
+                            <li><a (click)="toggleViewResponseView(review.id)" class="badge badge-success" [hidden]="review.artisanAnswer">Respond to the Review</a></li>
+                        </ul>
+                    </td>
+                </tr>
+                <table class="table review-response-area" [id]="'review-textarea-'+ review.id">
+                <thead>
+                    <tr>
+                        <th>Answer</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><form [formGroup]="responseReviewForm">
+                            
+                                <textarea type="textarea" id="answer" class="form-control" required="true" formControlName="answer"
+                                [ngClass]="{'is-invalid': responseReviewForm.get('answer')?.touched && responseReviewForm.get('answer')?.invalid}" rows="5" cols="33"></textarea>         
+                                @if(responseReviewForm.get('answer')?.touched && responseReviewForm.get('answer')?.invalid){
+                                    <div class="invalid-feedback d-block">
+                                        <strong>Field required.</strong></div>
+                                    }
+                        
+                            </form>
+                        </td>
+                        <td><a (click)="respondToReview(review.id)" class="badge badge-success" type="submit">Send response</a></td>   
+                    </tr>
+                </tbody>
+            </table>
+                }
+            </tbody>
+            
+        </table>
+    }@else {
+        <p>You don't have any reviews on your products</p>
+    }
+}
+

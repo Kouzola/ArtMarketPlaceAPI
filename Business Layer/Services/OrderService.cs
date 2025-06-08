@@ -20,10 +20,9 @@ namespace Business_Layer.Services
         private readonly IPaymentDetailsRepository _paymentDetailsRepository = paymentDetailRepository;
         private readonly IShipmentRepository _shipmentRepository = shipmentRepository;
         private readonly ICartService _cartService = cartService;
-        //TODO AFFICHER STOCK - RESERVE STOCK SUR L'UI
         //Les appel de GET avec des services vérifient dèja l'existence de l'entité
         #region ORDER
-        public async Task<Order> CreateOrderFromCartAsync(int cartId, int customerId)
+        public async Task<Order> CreateOrderFromCartAsync(int cartId, int customerId, ShippingOption shippingOption)
         {
             //Checker avec les quantité des produit d'orderProduct est augmenté la reserver stock
             var customer = await _userService.GetUserByIdAsync(customerId);
@@ -37,7 +36,7 @@ namespace Business_Layer.Services
                 {
                     ProductId = cartItem.ProductId,
                     Quantity = cartItem.Quantity,
-                    UnitPrice = cartItem.Product.Price
+                    UnitPrice = cartItem.Product.Price + (cartItem.Customization == null ? 0 : cartItem.Customization.Price)
                 };
                 orderProducts.Add(orderProduct);
 
@@ -60,7 +59,10 @@ namespace Business_Layer.Services
                 Code = Guid.NewGuid().ToString("N").Substring(0, 16),
                 Status = OrderStatus.NOT_PAYED,
                 OrderProducts = orderProducts,
+                ShippingOption = shippingOption,
             };
+
+            await _cartService.DeleteCartAsync(cartId);
 
             return await _repository.AddOrderAsync(order);
         }
@@ -117,7 +119,7 @@ namespace Business_Layer.Services
 
         }
 
-        public async Task<PaymentDetail> PayOrderAsync(int orderId, PaymentDetail paymentDetail, int cartId)
+        public async Task<PaymentDetail> PayOrderAsync(int orderId, PaymentDetail paymentDetail)
         {
             var order = await _repository.GetOrderByIdAsync(orderId);
             if (order == null || order.Status != OrderStatus.NOT_PAYED) throw new NotFoundException("Order not found");
@@ -125,6 +127,8 @@ namespace Business_Layer.Services
             if (paymentDetail.Amount != orderTotalPrice) throw new BusinessException("The amount of the payment does not match the price of the order!");
             var addedPaymentDetail = await AddPaymentDetailsAsync(paymentDetail);
             //Retire du stock, les produits quand on paye la commande.
+            var artisanIds = new HashSet<int>();
+            var statusList = new List<OrderStatusPerArtisan>();
             List<Product> dbProductsToUpdate = new List<Product>();
             foreach (var op in order.OrderProducts)
             {
@@ -132,16 +136,31 @@ namespace Business_Layer.Services
                 productDb.Stock -= op.Quantity;
                 productDb.ReservedStock -= op.Quantity;
                 dbProductsToUpdate.Add(productDb);
+
+                if (artisanIds.Add(productDb.ArtisanId))
+                {
+                    statusList.Add(new OrderStatusPerArtisan
+                    {
+                        OrderId = orderId,
+                        ArtisanId = productDb.ArtisanId,
+                        Status = 0
+                    });
+                }
             }
             foreach (var product in dbProductsToUpdate)
             {
                 await _productService.UpdateProductAsync(product);
             }
 
-            await UpdateOrderStatusAsync(orderId, OrderStatus.PENDING);
+            //ajouter le orderStatusPerArtisan a l'order
+            foreach(var orderStatus in statusList)
+            {
+                order.OrderStatusPerArtisans.Add(orderStatus);
+            }
+           
+            await UpdateOrderAsync(order);
 
-            //Deleting Cart
-            await _cartService.DeleteCartAsync(cartId);
+            await UpdateOrderStatusAsync(orderId, OrderStatus.PENDING);
 
             return paymentDetail;
         }
@@ -155,19 +174,34 @@ namespace Business_Layer.Services
             var artisanProduct = order.OrderProducts.Where(p => p.Product.ArtisanId == artisanId).Select(op => op.Product).ToList();
             //création du Shipment avec les produits valider par l'artisan
             if (!artisanProduct.Any()) throw new BusinessException("No products to ship for this artisan in the order.");
-            var shipment = await AddShipmentAsync(new Shipment
+            //Check si le shipment n'a pas déja été envoyé.
+            var existingShipment = await _shipmentRepository.GetAllShipmentOfAnOrder(orderId);
+            if (!existingShipment.Any(s => s.Products.Any(p => artisanProduct.Any(ap => ap.Id == p.Id))))
             {
-                Status = ShipmentStatus.PENDING_PICKUP,
-                OrderId = orderId,
-                DeliveryPartnerId = deliveryPartnerId,
-                Products = artisanProduct
-            });
+                var shipment = await AddShipmentAsync(new Shipment
+                {
+                    Status = ShipmentStatus.PENDING_PICKUP,
+                    OrderId = orderId,
+                    DeliveryPartnerId = deliveryPartnerId,
+                    Products = artisanProduct
+                });
 
-            return true;
+                foreach (var orderStatus in order.OrderStatusPerArtisans)
+                {
+                    if (orderStatus.ArtisanId == artisanId) orderStatus.Status = 2;
+                }
+
+                var updatedOrder = await UpdateOrderAsync(order);
+
+                return true;
+            }
+          
+            return false;
         }
 
         public async Task<Order> UpdateOrderStatusAsync(int orderId, OrderStatus status)
         {
+            //TODO DELETE LE ORDERPERSTATUS SI CA PASSE EN DELIVERED
             //Switch Case avec les états
             var order = await _repository.GetOrderByIdAsync(orderId);
             if (order == null) throw new NotFoundException("Order not found!");
@@ -189,6 +223,7 @@ namespace Business_Layer.Services
                     break;
 
                 case OrderStatus.DELIVERED:
+                    order.OrderStatusPerArtisans.Clear();
                     break;
 
                 case OrderStatus.CANCEL:
@@ -244,6 +279,12 @@ namespace Business_Layer.Services
             foreach (var product in productsToValidate)
             {
                 product.IsValidatedByArtisan = true;
+            }
+
+
+            foreach(var orderStatus in order.OrderStatusPerArtisans)
+            {
+                if(orderStatus.ArtisanId == artisanId) orderStatus.Status = 1;
             }
 
             await ValidateAndProcessOrderAsync(order);

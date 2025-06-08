@@ -30,6 +30,7 @@ namespace ArtMarketPlaceAPI.Dto.Mappers
                 FullName = user.FullName,
                 Email = user.Email,
                 Address = user.Address,
+                Active = user.Active,
             };
         }
     }

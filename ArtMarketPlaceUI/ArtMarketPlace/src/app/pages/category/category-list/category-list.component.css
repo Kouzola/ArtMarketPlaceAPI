@@ -1,0 +1,64 @@
+.categories th,
+.categories td{
+    background-color: #F9F6F0 !important;
+}
+.art-button{
+    background-color: #D4A373;
+    color: #fff;
+    border-radius: 8px;
+    font-weight: bold;
+    }
+
+.art-button:hover {
+    text-decoration: none;
+    background-color: #B97D50;
+    color: #fff;
+    font-weight: bold;
+}
+
+th:first-child{
+    width: 32px;
+}
+th:last-child{
+    width: 120px;
+}
+
+.badge.badge-success {
+  background-color: #198754 !important;
+}
+
+.badge.badge-danger {
+  background-color: #dc3545 !important;
+}
+
+.action-list{
+    display: flex;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+}
+
+.action-list li{
+    display: inline-block;
+}
+
+.action-list a{
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.badge.badge-info{
+    background-color: #0dcaf0;
+}
+
+.badge.badge-info:hover {
+  background-color:  #31d2f2;
+}
+
+ul .badge.badge-success:hover{
+  background-color: #157347 !important;
+}
+
+ul .badge.badge-danger:hover {
+  background-color: #bb2d3b !important;
+}

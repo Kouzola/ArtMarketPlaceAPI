@@ -20,6 +20,7 @@ namespace ArtMarketPlaceAPI.Dto.Mappers
                 Customer = order.Customer.MapToDto(),
                 PaymentDetail = order.PaymentDetail?.MapToDto(),
                 Shipments = order.Shipments.Select(s => s.Id).ToList(),
+                ProductsOrderedInfo = order.OrderProducts.Select(op => op.MapToDtoForProductInfo()).ToList()
             };
         }
 
@@ -30,10 +31,12 @@ namespace ArtMarketPlaceAPI.Dto.Mappers
                 Id = order.Id,
                 Code = order.Code,
                 ShippingOption = order.ShippingOption,
+                Status = order.Status,
                 CreatedAt = order.CreatedAt,
                 UpdatedAt = order.UpdatedAt,
                 Customer = order.Customer.MapToDto(),
-                ProductsOrderedInfo = order.OrderProducts.Where(op => op.Product.ArtisanId == artisanId).Select(op => op.MapToDtoForProductInfo()).ToList()
+                ProductsOrderedInfo = order.OrderProducts.Where(op => op.Product.ArtisanId == artisanId).Select(op => op.MapToDtoForProductInfo()).ToList(),
+                OrderStatusPerArtisans = order.OrderStatusPerArtisans.ToList(),
             };
         }
 
@@ -42,6 +45,7 @@ namespace ArtMarketPlaceAPI.Dto.Mappers
             return new ProductOrderInfoDto
             {
                 Name = orderProduct.Product.Name,
+                Id = orderProduct.Product.Id,
                 Reference = orderProduct.Product.Reference,
                 Quantity = orderProduct.Quantity
 

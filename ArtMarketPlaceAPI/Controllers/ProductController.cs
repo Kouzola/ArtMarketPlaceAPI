@@ -38,7 +38,7 @@ namespace ArtMarketPlaceAPI.Controllers
         }
 
         [HttpGet("Categories/{name}")]
-        public async Task<IActionResult> GetCategoryById(string name)
+        public async Task<IActionResult> GetCategoryByName(string name)
         {
             var category = await _categoryService.GetCategoryByNameAsync(name);
             return Ok(category.MapToDto());
@@ -80,7 +80,7 @@ namespace ArtMarketPlaceAPI.Controllers
         public async Task<IActionResult> DeleteCategory(int id)
         {
             var response = await _categoryService.DeleteCategorybyIdAsync(id);
-            if (response) return Ok($"Product with id : {id} deleted");
+            if (response) return Ok();
             return NotFound();
         }
         #endregion
@@ -91,8 +91,14 @@ namespace ArtMarketPlaceAPI.Controllers
         [HttpGet("Products")]
         public async Task<IActionResult> GetAllProducts()
         {
+            var currentUserRole = User.FindFirstValue(ClaimTypes.Role);
             var products = await _productService.GetAllProductsAsync();
-            return Ok(products.Select(p => p.MapToDto()));
+            if (currentUserRole == "Admin")
+            {               
+                return Ok(products.Select(p => p.MapToDto()));
+            }
+            return Ok(products.Where(p => p.Available && p.Artisan.Active).Select(p => p.MapToDto()));
+            
         }
 
         [HttpGet("Products/{id:int}")]
@@ -131,6 +137,16 @@ namespace ArtMarketPlaceAPI.Controllers
             var currentUserId = User.FindFirst("id")?.Value;
             if (currentUserId != request.ArtisanId.ToString()) return Forbid();
 
+            if (request.ImageFile == null || request.ImageFile.Length == 0)
+                return BadRequest("Image file is required.");
+
+            if (request.ImageFile.Length > 1 * 1024 * 1024)
+                return BadRequest("File size must be less than 1MB.");
+
+            var ext = Path.GetExtension(request.ImageFile.FileName).ToLower();
+            if (ext != ".jpg" && ext != ".jpeg" && ext != ".png")
+                return BadRequest("Only jpg, jpeg and png files are allowed.");
+
             var product = await _productService.AddProductAsync(new Domain_Layer.Entities.Product
             {
                 Name = request.Name,
@@ -156,8 +172,17 @@ namespace ArtMarketPlaceAPI.Controllers
 
             var currentUserId = User.FindFirst("id")?.Value;
             if (currentUserId != request.ArtisanId.ToString()) return Forbid();
+            
+            if(request.ImageFile != null)
+            {
+                if (request.ImageFile.Length > 1 * 1024 * 1024)
+                    return BadRequest("File size must be less than 1MB.");
 
-            //Pq l'erreur ici regarder pq après
+                var ext = Path.GetExtension(request.ImageFile.FileName).ToLower();
+                if (ext != ".jpg" && ext != ".jpeg" && ext != ".png")
+                    return BadRequest("Only jpg, jpeg and png files are allowed.");
+            }
+
             var productToUpdate = await _productService.GetProductByIdAsync(id);
             if (productToUpdate == null) return NotFound("Product not found!");
             var updatedProduct = new Domain_Layer.Entities.Product
@@ -172,7 +197,7 @@ namespace ArtMarketPlaceAPI.Controllers
                 Image = productToUpdate.Image,
             };
             //Check si même image, si pas on remplace et on supprime l'ancienne
-            if (productToUpdate.Image != request.ImageFile.FileName)
+            if (request.ImageFile != null && productToUpdate.Image != request.ImageFile.FileName)
             {
                 _fileService.DeleteImageFileAsync(productToUpdate.Image);
                 updatedProduct.Image = await _fileService.SaveImageFileAsync(request.ImageFile);
@@ -192,12 +217,12 @@ namespace ArtMarketPlaceAPI.Controllers
         {
             var product = await _productService.GetProductByIdAsync(id);
             var currentUserId = User.FindFirst("id")?.Value;
-            if (currentUserId != product.ArtisanId.ToString() && User.FindFirstValue(ClaimTypes.Role) != "admin") return Forbid();
+            if (currentUserId != product.ArtisanId.ToString() && User.FindFirstValue(ClaimTypes.Role) != "Admin") return Forbid();
 
             var response = await _productService.DeleteProductAsync(product);
             if (!response) return NotFound("Product not found!");
-             _fileService.DeleteImageFileAsync(product.Image);
-            return Ok("Product deleted.");
+            _fileService.DeleteImageFileAsync(product.Image);
+            return Ok(new { message = "Product deleted!" });
         }
 
         [HttpDelete("Products")]
@@ -247,7 +272,7 @@ namespace ArtMarketPlaceAPI.Controllers
         #region POST
         [HttpPost("Customizations")]
         [Authorize(Roles = "Artisan")]
-        public async Task<IActionResult> UpdateCustomization(CustomizationRequestDto request)
+        public async Task<IActionResult> AddCustomization(CustomizationRequestDto request)
         {
             var customization = await _customizationService.AddCustomizationAsync(new Customization
             {
@@ -286,8 +311,8 @@ namespace ArtMarketPlaceAPI.Controllers
         public async Task<IActionResult> DeleteCustomization(int id)
         {
             var response = await _customizationService.DeleteCustomizationAsync(id);
-            if (!response) return NotFound("Customization not found!");
-            return Ok("Customization Deleted");
+            if (!response) return NotFound();
+            return Ok();
         }
         #endregion
         #endregion

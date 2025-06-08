@@ -31,13 +31,13 @@ namespace ArtMarketPlaceAPI.Controllers
         #region POST
         [HttpPost]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> AddAReviewToAProduct(int productId,ReviewRequestDto request)
+        public async Task<IActionResult> AddAReviewToAProduct(ReviewRequestDto request)
         {
             var customerId = User.FindFirst("id")?.Value;
 
             var review = await _reviewService.AddReviewAsync(new Domain_Layer.Entities.Review
             {
-                ProductId = productId,
+                ProductId = request.ProductId,
                 Title = request.Title,
                 Description = request.Description,
                 Score = request.Score,
@@ -50,9 +50,9 @@ namespace ArtMarketPlaceAPI.Controllers
         #region PUT
         [HttpPut("{reviewId:int}")]
         [Authorize (Roles = "Artisan")]
-        public async Task<IActionResult> AnswerToAReviewByArtisant(int reviewId, [FromBody] string answer)
+        public async Task<IActionResult> AnswerToAReviewByArtisant(int reviewId, [FromBody] ReviewAnswerRequestDto request)
         {
-            var review = await _reviewService.RespondToAReview(reviewId, answer);
+            var review = await _reviewService.RespondToAReview(reviewId, request.Answer);
             return Ok(review.MapToDto());
         }
         #endregion

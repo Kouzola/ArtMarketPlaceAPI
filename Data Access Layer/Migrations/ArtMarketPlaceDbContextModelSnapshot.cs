@@ -62,6 +62,9 @@ namespace Data_Access_Layer.Migrations
                     b.Property<int>("CartId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CustomizationId")
+                        .HasColumnType("int");
+
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
@@ -73,6 +76,8 @@ namespace Data_Access_Layer.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CartId");
+
+                    b.HasIndex("CustomizationId");
 
                     b.HasIndex("ProductId");
 
@@ -112,6 +117,24 @@ namespace Data_Access_Layer.Migrations
                         .IsUnique();
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Assiettes, bols ou tasses en céramiques.",
+                            Name = "Poterie",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Bijoux en or ou argent fait maison.",
+                            Name = "Bijoux",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("Domain_Layer.Entities.Customization", b =>
@@ -152,6 +175,28 @@ namespace Data_Access_Layer.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("Customizations");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Couleur de votre choix.",
+                            Name = "Couleur personnalisé",
+                            Price = 5.9900000000000002,
+                            ProductId = 1,
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Taille de votre choix.",
+                            Name = "Taille personnalisé",
+                            Price = 10.0,
+                            ProductId = 2,
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("Domain_Layer.Entities.Inquiry", b =>
@@ -248,18 +293,37 @@ namespace Data_Access_Layer.Migrations
                     b.HasIndex("CustomerId");
 
                     b.ToTable("Orders");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Code = "4e0cc3da6c204423",
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CustomerId = 4,
+                            OrderDate = new DateTime(2025, 6, 8, 13, 41, 27, 63, DateTimeKind.Unspecified).AddTicks(3333),
+                            ShippingOption = "FAST",
+                            Status = "PENDING",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("Domain_Layer.Entities.OrderProduct", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsValidatedByArtisan")
+                        .HasColumnType("bit");
+
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
-
-                    b.Property<bool>("IsValidatedByArtisan")
-                        .HasColumnType("bit");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -267,11 +331,50 @@ namespace Data_Access_Layer.Migrations
                     b.Property<double>("UnitPrice")
                         .HasColumnType("float");
 
-                    b.HasKey("OrderId", "ProductId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
 
                     b.HasIndex("ProductId");
 
                     b.ToTable("OrderProducts");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            IsValidatedByArtisan = false,
+                            OrderId = 1,
+                            ProductId = 4,
+                            Quantity = 1,
+                            UnitPrice = 49.990000000000002
+                        });
+                });
+
+            modelBuilder.Entity("Domain_Layer.Entities.OrderStatusPerArtisan", b =>
+                {
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ArtisanId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("OrderId", "ArtisanId");
+
+                    b.HasIndex("ArtisanId");
+
+                    b.ToTable("OrderStatusPerStatus");
+
+                    b.HasData(
+                        new
+                        {
+                            OrderId = 1,
+                            ArtisanId = 5,
+                            Status = 0
+                        });
                 });
 
             modelBuilder.Entity("Domain_Layer.Entities.PaymentDetail", b =>
@@ -313,6 +416,18 @@ namespace Data_Access_Layer.Migrations
                         .IsUnique();
 
                     b.ToTable("PaymentDetails");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Amount = 49.990000000000002,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            OrderId = 1,
+                            PaymentDate = new DateTime(2025, 6, 8, 15, 41, 30, 605, DateTimeKind.Unspecified).AddTicks(2851),
+                            PaymentMethod = "BANCONTACT",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("Domain_Layer.Entities.Product", b =>
@@ -380,6 +495,88 @@ namespace Data_Access_Layer.Migrations
                         .IsUnique();
 
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ArtisanId = 3,
+                            Available = true,
+                            CategoryId = 1,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Bol en céramique solide",
+                            Image = "46494bf1ef2343bcaf6ef3846296a4e5.jpg",
+                            Name = "Bol en céramique",
+                            Price = 19.989999999999998,
+                            Reference = "PAPS-1-82BD9C",
+                            ReservedStock = 0,
+                            Stock = 5,
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ArtisanId = 3,
+                            Available = true,
+                            CategoryId = 1,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Assiette Creuse en céramique.",
+                            Image = "aa1b85d03b774fb18d00ad1a7287f268.jpg",
+                            Name = "Assiette Creuse",
+                            Price = 10.0,
+                            Reference = "PAPS-2-F8E0D5",
+                            ReservedStock = 0,
+                            Stock = 10,
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ArtisanId = 3,
+                            Available = true,
+                            CategoryId = 1,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Assiette en céramique.",
+                            Image = "b2e82282131c46bb9f91dd22f078e6da.jpg",
+                            Name = "Assiette",
+                            Price = 15.0,
+                            Reference = "PAPS-3-3B66A5",
+                            ReservedStock = 0,
+                            Stock = 5,
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 4,
+                            ArtisanId = 5,
+                            Available = true,
+                            CategoryId = 2,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Collier celte de l'antiquité",
+                            Image = "e875c773f7624e078a4258cf5c6ed26b.jpeg",
+                            Name = "Collier celte",
+                            Price = 49.990000000000002,
+                            Reference = "ADAD-0-EFE65F",
+                            ReservedStock = 0,
+                            Stock = 9,
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 5,
+                            ArtisanId = 5,
+                            Available = true,
+                            CategoryId = 2,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Un beau bracelet de fleur en or.",
+                            Image = "c74aa49fdeec41b69fe993de0fdfc46e.jpg",
+                            Name = "Bracelet de Fleur",
+                            Price = 15.0,
+                            Reference = "ADAD-1-4110F7",
+                            ReservedStock = 0,
+                            Stock = 10,
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("Domain_Layer.Entities.Review", b =>
@@ -398,7 +595,7 @@ namespace Data_Access_Layer.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<int?>("CustomerId")
+                    b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -545,6 +742,106 @@ namespace Data_Access_Layer.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Active = true,
+                            CartId = 0,
+                            CreatedAt = new DateTime(2025, 4, 19, 11, 41, 6, 663, DateTimeKind.Unspecified).AddTicks(3333),
+                            Email = "admin@example.com",
+                            FirstName = "admin",
+                            LastName = "admin",
+                            Password = "AC9126E7F5A5CF1564991D85C03CB1C2",
+                            Role = "Admin",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserName = "admin"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Active = true,
+                            CartId = 0,
+                            CreatedAt = new DateTime(2025, 4, 19, 12, 31, 59, 846, DateTimeKind.Unspecified).AddTicks(6667),
+                            Email = "jean@example.com",
+                            FirstName = "Jean",
+                            LastName = "Bon",
+                            Password = "5FCF306D2BA332CDCC0EDE5C8158138D",
+                            Role = "Customer",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserName = "Jean"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Active = true,
+                            CartId = 0,
+                            CreatedAt = new DateTime(2025, 5, 17, 23, 57, 57, 800, DateTimeKind.Unspecified),
+                            Email = "julien.degol@gmail.com",
+                            FirstName = "Julien",
+                            LastName = "De Gaulle",
+                            Password = "2562122D9A3F07BEB424CAE6CBB45ECE",
+                            Role = "Customer",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserName = "Julien1"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Active = true,
+                            CartId = 0,
+                            CreatedAt = new DateTime(2025, 4, 19, 12, 36, 25, 36, DateTimeKind.Unspecified).AddTicks(6667),
+                            Email = "paul@example.com",
+                            FirstName = "Paul",
+                            LastName = "Sevran",
+                            Password = "33073B61D3610D08BBEF298767FE5572",
+                            Role = "Artisan",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserName = "Paul"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Active = true,
+                            CartId = 0,
+                            CreatedAt = new DateTime(2025, 6, 8, 12, 52, 41, 333, DateTimeKind.Unspecified).AddTicks(3333),
+                            Email = "a.dupont@gmail.com",
+                            FirstName = "Adrien",
+                            LastName = "Dupont",
+                            Password = "FA6E8A721B9885D39DCC052976ED5CD8",
+                            Role = "Artisan",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserName = "Adrien"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Active = true,
+                            CartId = 0,
+                            CreatedAt = new DateTime(2025, 6, 8, 13, 4, 56, 863, DateTimeKind.Unspecified).AddTicks(3333),
+                            Email = "g.latour@gmail.com",
+                            FirstName = "Gabin",
+                            LastName = "Latour",
+                            Password = "6314BAF29B5CCD2038277303DA8FE59B",
+                            Role = "Delivery",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserName = "Gabin"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Active = true,
+                            CartId = 0,
+                            CreatedAt = new DateTime(2025, 4, 19, 12, 37, 19, 663, DateTimeKind.Unspecified).AddTicks(3333),
+                            Email = "kevin@deliveryman.com",
+                            FirstName = "Kevin",
+                            LastName = "Statam",
+                            Password = "125EA6D54A96CBFCF5144EE10A10F672",
+                            Role = "Delivery",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserName = "Kevin"
+                        });
                 });
 
             modelBuilder.Entity("ProductShipment", b =>
@@ -581,6 +878,11 @@ namespace Data_Access_Layer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Domain_Layer.Entities.Customization", "Customization")
+                        .WithMany()
+                        .HasForeignKey("CustomizationId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
                     b.HasOne("Domain_Layer.Entities.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
@@ -588,6 +890,8 @@ namespace Data_Access_Layer.Migrations
                         .IsRequired();
 
                     b.Navigation("Cart");
+
+                    b.Navigation("Customization");
 
                     b.Navigation("Product");
                 });
@@ -652,6 +956,25 @@ namespace Data_Access_Layer.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("Domain_Layer.Entities.OrderStatusPerArtisan", b =>
+                {
+                    b.HasOne("Domain_Layer.Entities.User", "Artisan")
+                        .WithMany("OrderStatusPerArtisans")
+                        .HasForeignKey("ArtisanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain_Layer.Entities.Order", "Order")
+                        .WithMany("OrderStatusPerArtisans")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Artisan");
+
+                    b.Navigation("Order");
+                });
+
             modelBuilder.Entity("Domain_Layer.Entities.PaymentDetail", b =>
                 {
                     b.HasOne("Domain_Layer.Entities.Order", "Order")
@@ -686,7 +1009,8 @@ namespace Data_Access_Layer.Migrations
                 {
                     b.HasOne("Domain_Layer.Entities.User", "Customer")
                         .WithMany("Reviews")
-                        .HasForeignKey("CustomerId");
+                        .HasForeignKey("CustomerId")
+                        .IsRequired();
 
                     b.HasOne("Domain_Layer.Entities.Product", "Product")
                         .WithMany("Reviews")
@@ -751,6 +1075,64 @@ namespace Data_Access_Layer.Migrations
 
                             b1.WithOwner()
                                 .HasForeignKey("UserId");
+
+                            b1.HasData(
+                                new
+                                {
+                                    UserId = 1,
+                                    City = "AdminCity",
+                                    Country = "AdminLand",
+                                    PostalCode = "12345",
+                                    Street = "123 Admin St"
+                                },
+                                new
+                                {
+                                    UserId = 2,
+                                    City = "Paris",
+                                    Country = "France",
+                                    PostalCode = "7500",
+                                    Street = "123 Rue de Paris"
+                                },
+                                new
+                                {
+                                    UserId = 3,
+                                    City = "Lyon",
+                                    Country = "France",
+                                    PostalCode = "69000",
+                                    Street = "456 Rue de Lyon"
+                                },
+                                new
+                                {
+                                    UserId = 4,
+                                    City = "Paris",
+                                    Country = "France",
+                                    PostalCode = "10000",
+                                    Street = "Rue des Combattants 14"
+                                },
+                                new
+                                {
+                                    UserId = 5,
+                                    City = "Bordeaux",
+                                    Country = "France",
+                                    PostalCode = "25600",
+                                    Street = "Rue des Potiers"
+                                },
+                                new
+                                {
+                                    UserId = 6,
+                                    City = "Bordeaux",
+                                    Country = "France",
+                                    PostalCode = "23503",
+                                    Street = "Rue des Livreurs"
+                                },
+                                new
+                                {
+                                    UserId = 7,
+                                    City = "Marseille",
+                                    Country = "France",
+                                    PostalCode = "13000",
+                                    Street = "789 Rue de Marseille"
+                                });
                         });
 
                     b.Navigation("Address")
@@ -786,6 +1168,8 @@ namespace Data_Access_Layer.Migrations
                 {
                     b.Navigation("OrderProducts");
 
+                    b.Navigation("OrderStatusPerArtisans");
+
                     b.Navigation("PaymentDetail");
 
                     b.Navigation("Shipments");
@@ -808,6 +1192,8 @@ namespace Data_Access_Layer.Migrations
                     b.Navigation("InquiriesAsArtisan");
 
                     b.Navigation("InquiriesAsCustomer");
+
+                    b.Navigation("OrderStatusPerArtisans");
 
                     b.Navigation("Orders");
 

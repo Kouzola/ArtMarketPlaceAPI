@@ -1,0 +1,37 @@
+<header class="d-flex">
+    <h1 class="me-auto p-2">Category List</h1>
+</header>
+<hr>
+@if(categories$ | async ; as categories){
+    @if(categories.length > 0){
+        <table class="table categories">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for(category of categories ; track category.id){
+                <tr class="category">
+                    <td>{{category.id}}</td>
+                    <td>{{category.name}}</td>
+                    <td>{{category.description}}</td>
+                    <td>
+                        <ul class="action-list">
+                            <li><a (click)="editCategory(category.id)" class="badge badge-info">Edit</a></li>
+                            <li><a (click)="deleteCategory(category.id)" class="badge badge-danger">Delete</a></li>
+                        </ul>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    }@else {
+        <p>You don't have any products</p>
+    }
+}
+
+

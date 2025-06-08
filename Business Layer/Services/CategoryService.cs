@@ -50,7 +50,7 @@ namespace Business_Layer.Services
             if (categoryUpdated == null) throw new NotFoundException("Category not found!");
 
             var existingCategory = await _repository.GetCategoryByNameAsync(category.Name);
-            if (existingCategory != null) throw new AlreadyExistException("This category already exists!");
+            if (existingCategory != null && existingCategory.Id != category.Id) throw new AlreadyExistException("This category already exists!");
 
             return categoryUpdated;
         }

@@ -85,7 +85,7 @@ namespace Business_Layer.Services
                 throw new AlreadyExistException("This email is already used or invalid!");
             }
 
-            string salt = "" + firstName.ElementAt(0) + lastName.ElementAt(0) + lastName.ElementAt(lastName.Length - 1) + DateTime.Now.DayOfWeek;
+            string salt = "" + firstName.ElementAt(0) + lastName.ElementAt(0) + lastName.ElementAt(lastName.Length - 1) + DateTime.UtcNow.DayOfWeek;
 
             var newUser = new User 
             { 

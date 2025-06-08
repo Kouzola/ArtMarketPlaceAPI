@@ -1,0 +1,57 @@
+<body>
+    <h1>Users List</h1>
+    <hr>
+    @if(users$ | async ; as users){
+    <table class="table table-hover users">
+        <thead>
+            <tr>
+                <th scope="col">UserId</th>
+                <th scope="col">Username</th>
+                <th scope="col">Role</th>
+                <th scope="col">Availability</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(user of users; track user.id){
+            <tr (click)="onUserClicked(user.id)">
+                <td>{{user.id}}</td>
+                <td>{{user.userName}}</td>
+                <td>{{user.role | userRole}}</td>
+                <td><span [ngClass]="user.active ? 'badge badge-success' : 'badge badge-danger'">{{user.active ? 'Active' : 'Desactived' }}</span></td>
+                    <td>
+                        <ul class="action-list">
+                            <li><a (click)="editUser(user.id)" class="badge badge-info">Edit</a></li>
+                            <li><a (click)="deleteUser(user.id)" class="badge badge-danger">Delete</a></li>
+                        </ul>
+                    </td>
+            </tr>
+            <table class="table user-info" [id]="'user-info-' + user.id">
+                <thead>
+                    <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Street</th>
+                        <th>City</th>
+                        <th>Postal Code</th>
+                        <th>Country</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{user.firstName}}</td>
+                        <td>{{user.lastName}}</td>
+                        <td>{{user.email}}</td>
+                        <td>{{user.address?.street}}</td>
+                        <td>{{user.address?.city}}</td>
+                        <td>{{user.address?.postalCode}}</td>
+                        <td>{{user.address?.country}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            }
+        </tbody>
+    </table>
+    }   
+</body>

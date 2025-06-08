@@ -13,11 +13,7 @@ namespace Data_Access_Layer.Configurations
     {
         public void Configure(EntityTypeBuilder<OrderProduct> builder)
         {
-            builder.HasKey(op => new
-            {
-                op.OrderId,
-                op.ProductId
-            });
+            builder.HasKey(op => op.Id);
 
             builder.Property(op => op.Quantity).IsRequired();
             builder.Property(op => op.UnitPrice).IsRequired();
@@ -27,6 +23,7 @@ namespace Data_Access_Layer.Configurations
 
             builder.HasOne(op => op.Order).WithMany(p => p.OrderProducts)
             .HasForeignKey(op => op.OrderId).OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }

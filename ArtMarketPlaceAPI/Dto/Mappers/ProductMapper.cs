@@ -19,6 +19,8 @@ namespace ArtMarketPlaceAPI.Dto.Mappers
                 Available = product.Available,
                 CreatedAt = product.CreatedAt,
                 UpdatedAt = product.UpdatedAt,
+                Reviews = product.Reviews.Select(r => r.MapToDto()).ToList(),
+                Customizations = product.Customizations.Select(c => c.MapToDto()).ToList(),
                 Artisan = product.Artisan.MapToDto(),
                 Category = product.Category.Name,
             };

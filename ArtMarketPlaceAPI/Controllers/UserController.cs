@@ -1,6 +1,7 @@
 ﻿using ArtMarketPlaceAPI.Dto.Mappers;
 using ArtMarketPlaceAPI.Dto.Request;
 using Azure.Core;
+using Domain_Layer.Entities;
 using Domain_Layer.Interfaces.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +26,15 @@ namespace ArtMarketPlaceAPI.Controllers
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _userService.GetAllUsersAsync();
-            return Ok(users);
+            return Ok(users.Select(u => u.MapToSelfResponseDto()));
+        }
+
+        [HttpGet("deliveryPartner")]
+        [Authorize]
+        public async Task<IActionResult> GetDeliveryPartner()
+        {
+            var users = await _userService.GetAllUsersAsync();
+            return Ok(users.Select(u => u.MapToDto()).Where(u => u.Role == Role.Delivery));
         }
 
         [HttpGet("admin/users/{id:int}")]
@@ -33,7 +42,7 @@ namespace ArtMarketPlaceAPI.Controllers
         public async Task<IActionResult> GetUserByIdForAdmin(int id)
         {
             var user = await _userService.GetUserByIdAsync(id);
-            return Ok(user);
+            return Ok(user.MapToSelfResponseDto()); ;
         }
 
         [HttpGet("{username}")]
@@ -87,6 +96,8 @@ namespace ArtMarketPlaceAPI.Controllers
         {
             //Check le token claim avec l'id
             var currentUserId = User.FindFirst("id")?.Value;
+            var userRole = User.FindFirst(ClaimTypes.Role)?.Value?.Trim();
+            Enum.TryParse<Role>(userRole, true, out var parsedRole);
 
             if (currentUserId != id.ToString())
             {
@@ -102,7 +113,8 @@ namespace ArtMarketPlaceAPI.Controllers
                     FirstName = request.FirstName,
                     LastName = request.LastName,
                     Email = request.Email,
-                    Address = new Domain_Layer.Entities.Address { Street = request.Street, City = request.City, Country = request.Country, PostalCode = request.PostalCode}
+                    Role = parsedRole,
+                    Address = new Domain_Layer.Entities.Address { Street = request.Street, City = request.City, Country = request.Country, PostalCode = request.PostalCode }
                 });
 
             return Ok(user.MapToSelfResponseDto());
@@ -114,8 +126,9 @@ namespace ArtMarketPlaceAPI.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteUserById(int id)
         {
-            await _userService.DeleteUserAsync(id);
-            return Ok($"User with id : {id} deleted!");
+            var response = await _userService.DeleteUserAsync(id);
+            if (!response) return BadRequest();
+            return Ok();
         }
         #endregion
 

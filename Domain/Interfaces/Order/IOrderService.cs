@@ -15,7 +15,7 @@ namespace Domain_Layer.Interfaces.Order
         Task<Entities.Order> GetOrderOfAnShipmentAsync(int shipmentId);
         Task<Entities.Order> GetOrderByIdAsync(int id);
         Task<Entities.Order> GetOrderByCodeAsync(string code);
-        Task<Entities.Order> CreateOrderFromCartAsync(int cartId, int customerId);
+        Task<Entities.Order> CreateOrderFromCartAsync(int cartId, int customerId, ShippingOption shippingOption);
         Task<Entities.Order> UpdateOrderAsync(Entities.Order order);
         Task<bool> DeleteOrderAsync(int id);
         Task<double> GetOrderTotalPriceAsync(int id);
@@ -24,7 +24,7 @@ namespace Domain_Layer.Interfaces.Order
         Task<Entities.Order> UpdateOrderStatusAsync(int orderId, OrderStatus status);
         Task<bool> ShipOrderAsync(int orderId, int deliveryPartnerId, int artisanId);
         //Payment
-        Task<PaymentDetail> PayOrderAsync(int orderId, PaymentDetail paymentDetail, int cartId);
+        Task<PaymentDetail> PayOrderAsync(int orderId, PaymentDetail paymentDetail);
         //Validation
         Task<bool> CancelOrderAsync(int orderId);
         Task ValidateAndProcessOrderAsync(Entities.Order order); //Condition OK => Processus lancer paiement etc

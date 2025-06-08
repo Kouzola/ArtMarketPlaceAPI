@@ -1,0 +1,85 @@
+<body>
+    <h1>Add Product</h1>
+    <hr>
+    <form [formGroup]="addProductForm" (ngSubmit)="addProduct()">
+        <div class="mb-3 form-floating">
+            <input type="text" id="name" class="form-control" placeholder="Name" required="true" formControlName="name"
+            [ngClass]="{'is-invalid': addProductForm.get('name')?.touched && addProductForm.get('name')?.invalid}">
+            <label for="name">Name</label>
+            @if(addProductForm.get('name')?.touched && addProductForm.get('name')?.invalid){
+                <div class="invalid-feedback d-block">
+                    <strong>Field required.</strong>
+                </div>
+            }  
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label text-align-left">Description</label>     
+            <textarea type="textarea" id="description" class="form-control" required="true" formControlName="description"
+            [ngClass]="{'is-invalid': addProductForm.get('description')?.touched && addProductForm.get('description')?.invalid}" rows="5" cols="33"></textarea>         
+            @if(addProductForm.get('description')?.touched && addProductForm.get('description')?.invalid){
+                <div class="invalid-feedback d-block">
+                    <strong>Field required.</strong>
+                </div>
+            }  
+        </div>
+        <div class="d-flex flex-row justify-content-center">
+            <div class="mb-3 form-floating me-2 flex-grow-1">
+                <input type="text" id="price" class="form-control" placeholder="Price" required="true" formControlName="price"
+                [ngClass]="{'is-invalid': addProductForm.get('price')?.touched && addProductForm.get('price')?.invalid}" step="0.01">
+                <label for="price">Price</label>
+                @if(addProductForm.get('price')?.touched && addProductForm.get('price')?.invalid){
+                <div class="invalid-feedback d-block">
+                    <strong>Field required. Format must be X,X</strong>
+                </div>
+            }  
+            </div>
+            <div class="mb-3 form-floating ms-2 flex-grow-1">
+                <input type="number" id="stock" class="form-control" placeholder="Stock" required="true" formControlName="stock"
+                [ngClass]="{'is-invalid': addProductForm.get('stock')?.touched && addProductForm.get('stock')?.invalid}">
+                <label for="stock">Stock</label>
+                @if(addProductForm.get('stock')?.touched && addProductForm.get('stock')?.invalid){
+                <div class="invalid-feedback d-block">
+                    <strong>Field required.</strong>
+                </div>
+            }  
+            </div>
+        </div>
+        <select class="form-select mb-3 form-floating" id="categoryId" formControlName="categoryId">
+            <option selected disabled [ngValue]="null">Category</option>
+            @if(categories$ | async; as categories){
+                @for(category of categories; track category.id){
+                    <option [ngValue]="category.id">{{category.name}}</option>
+                }
+            }
+        </select>
+        @if(addProductForm.get('categoryId')?.touched && addProductForm.get('categoryId')?.invalid){
+        <div class="invalid-feedback d-block">
+            <strong>Field required.</strong>
+        </div>
+        }
+        <div class="mb-3">
+            <input class="form-control" type="file" id="formFile" (change)="onFileChanged($event)" (click)="onFileFormTouched()">
+            @if(addProductForm.get('imageFile')?.invalid && addProductForm.get('imageFile')?.touched){
+                <div class="invalid-feedback d-block">
+                    <strong>A correct file is required!</strong>
+                </div>
+            }
+            @if(addProductForm.get('imageFile')?.invalid && addProductForm.get('imageFile')?.errors?.['maxFileSize']){
+                <div class="invalid-feedback d-block">
+                    <strong>File size too big! Must be &lt; 1MB </strong>
+                </div>
+            }
+            @if(addProductForm.get('imageFile')?.invalid && addProductForm.get('imageFile')?.errors?.['invalidFileType']){
+                <div class="invalid-feedback d-block">
+                    <strong>The file must be a png, jpg or a jpeg!</strong>
+                </div>
+            }
+        </div>
+        <div class="mb-3 form-check">
+            <input type="checkbox" id="available" class="form-check-input" placeholder="available" formControlName="available"
+            [ngClass]="{'is-invalid': addProductForm.get('available')?.touched && addProductForm.get('available')?.invalid}">
+            <label for="available">Available</label>       
+        </div>
+        <button [disabled]="addProductForm.invalid" class="btn btn-primary w-100 py-2" type="submit">Add Product</button>
+    </form>
+</body>

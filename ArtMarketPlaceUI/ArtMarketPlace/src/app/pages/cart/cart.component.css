@@ -1,0 +1,22 @@
+.cart th,
+.cart td{
+    background-color: #F9F6F0 !important;
+}
+
+.btn.pay{
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+    width: 20%;
+    background-color: #D4A373;
+    color: #fff;
+    border-radius: 8px;
+    }
+
+.btn.pay:hover {
+    text-decoration: none;
+    background-color: #B97D50;
+    color: #fff;
+    cursor: pointer;
+}

@@ -1,0 +1,42 @@
+<body>
+    <h1>My Cart</h1>
+    <hr>
+    @if(cart$ | async; as cart){
+        @if(cart.items.length > 0){    
+            <table class="table cart">
+                <thead>
+                    <tr>
+                        <th scope="col">Product Name</th>
+                        <th scope="col" class="text-center">Quantity</th>
+                        <th scope="col">Price</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                 
+                <tbody>
+                    @for(item of cart.items; track item.id){
+                    <tr>                  
+                    <td>{{item.productName}}</td>
+                    <td class="text-center">{{item.quantity}}</td>
+                    <td>{{item.productPrice * item.quantity | number:'1.2-2'}} €</td>
+                    <td><button class="btn btn-danger" (click)="deleteItem(cart.id,item)">Delete</button></td>
+                    </tr>   
+                    }                
+                </tbody>
+            
+            </table>
+        <hr>
+    <select class="form-select-sm p-2" [(ngModel)]="selectedShippingOption">
+        <option [ngValue]="0">NORMAL SHIPPING</option>
+        <option [ngValue]="1">FAST SHIPPING</option>
+    </select>
+    <p>Total Price: {{getTotalPrice(cart)}} €</p>
+    <button class="btn btn-lg pay" (click)="confirmOrder(cart.id)">Confirm order</button>
+        } @else {
+            <p>Your cart is empty</p>
+        }
+    } @else{
+        <p>Your cart is empty</p>
+    }
+
+</body>

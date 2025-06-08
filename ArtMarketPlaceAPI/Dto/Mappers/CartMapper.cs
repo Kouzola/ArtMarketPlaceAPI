@@ -27,7 +27,9 @@ namespace ArtMarketPlaceAPI.Dto.Mappers
                 Id = cartItem.Id,
                 CartId = cartItem.CartId,
                 ProductName = cartItem.Product.Name,
-                ProductPrice = cartItem.Product.Price,
+                ProductId = cartItem.Product.Id,
+                ProductPrice = cartItem.Product.Price + (cartItem.Customization == null ? 0 : cartItem.Customization.Price),
+                CustomizationId = cartItem.CustomizationId,
                 Quantity = cartItem.Quantity,
             };
         }
