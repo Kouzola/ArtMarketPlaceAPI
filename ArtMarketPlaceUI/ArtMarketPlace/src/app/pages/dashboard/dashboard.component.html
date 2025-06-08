@@ -1,1 +1,10 @@
-<p>Under construction</p>
+<app-card>
+    @if(userRole === 'Artisan') {
+        <p class="info-text">Orders received</p>
+        <p class="order-count">{{displayedOrderCount | number:'1.0-0' }}</p>
+    }
+    @else if(userRole === 'Delivery'){
+        <p class="info-text">Shipments delivered</p>
+        <p class="shipment-count">{{displayDeliveredShipmentCount | number:'1.0-0' }}</p>
+    }
+</app-card>

@@ -4,6 +4,7 @@ import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/user.service';
 import { Router } from '@angular/router';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-user-manage',
@@ -17,6 +18,7 @@ export class UserManageComponent implements OnInit{
   updateForm: FormGroup;
   formBuilder = inject(FormBuilder);
   userService = inject(UserService);
+  toastService = inject(ToastService);
   changePassword: boolean = false;
   user$ = this.userService.user$;
 
@@ -43,7 +45,8 @@ export class UserManageComponent implements OnInit{
     this.userService.updateUserInfo(id,userLoginDate).subscribe({
       next: (v) => {
         this.reloadPage();
-      }, //TODO: TOAST success
+        this.toastService.showSuccesToast("User Data updated!");
+      },
       error: (e) => {
         if(e.error){
           const errorMessages = Object.entries(e.error.errors);

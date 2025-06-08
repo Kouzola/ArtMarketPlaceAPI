@@ -23,7 +23,7 @@
                     <td>{{review.score}}</td>
                     <td>
                         <ul class="action-list">
-                            <li><a (click)="toggleViewResponseView(review.id)" class="badge badge-success">Respond to the Review</a></li>
+                            <li><a (click)="toggleViewResponseView(review.id)" class="badge badge-success" [hidden]="review.artisanAnswer">Respond to the Review</a></li>
                         </ul>
                     </td>
                 </tr>
