@@ -79,6 +79,7 @@ namespace Business_Layer.Services
         {
             var shipment = await GetShipmentByIdAsync(shipmentId);
             var actualStatus = shipment.Status;
+            Shipment? updatedShipment = null;
             //Quand c in transit faut mettre une date de livraison estimé et init la shipping date
             switch (actualStatus)
             {
@@ -88,10 +89,13 @@ namespace Business_Layer.Services
                         shipment.Status = ShipmentStatus.IN_TRANSIT;
                         shipment.ShippingDate = DateTime.Now;
                         shipment.EstimatedArrivalDate = DateTime.Now.AddDays(3).Date;
-
+                        updatedShipment = await _repository.UpdateShipmentAsync(shipment);
                         //Si tous les packets sont en transit, on peut update la order au status de SHIPPED
                         var shipmentsOfAnOrder = await GetAllShipmentOfAnOrder(shipment.OrderId);
-                        if (shipmentsOfAnOrder.All(s => s.Status == ShipmentStatus.IN_TRANSIT)) await _orderService.UpdateOrderStatusAsync(shipment.OrderId, OrderStatus.SHIPPED);
+                        if (shipmentsOfAnOrder.All(s => s.Status == ShipmentStatus.IN_TRANSIT || s.Status == ShipmentStatus.OUT_FOR_DELIVERY || s.Status == ShipmentStatus.DELIVERED))
+                        {
+                            await _orderService.UpdateOrderStatusAsync(shipment.OrderId, OrderStatus.SHIPPED);
+                        }
                     }
                     else if (shipmentStatus == ShipmentStatus.LOST) shipment.Status = ShipmentStatus.LOST;
                     break;
@@ -101,6 +105,7 @@ namespace Business_Layer.Services
                     {
                         if (shipment.EstimatedArrivalDate != DateTime.Now.Date) shipment.EstimatedArrivalDate = DateTime.Now.Date;
                         shipment.Status = ShipmentStatus.OUT_FOR_DELIVERY;
+                        updatedShipment = await _repository.UpdateShipmentAsync(shipment);
                     }
                     break;
                     //Le gars est en train de livrer le colis vers le client
@@ -109,7 +114,7 @@ namespace Business_Layer.Services
                     {
                         shipment.Status = ShipmentStatus.DELIVERED;
                         shipment.ArrivalDate = DateTime.Now;
-
+                        updatedShipment = await _repository.UpdateShipmentAsync(shipment);
                         //Si tous les packets sont delivered, on peut update la order au status de DELIVERED
                         var shipmentsOfAnOrder = await GetAllShipmentOfAnOrder(shipment.OrderId);
                         if (shipmentsOfAnOrder.All(s => s.Status == ShipmentStatus.DELIVERED)) await _orderService.UpdateOrderStatusAsync(shipment.OrderId, OrderStatus.DELIVERED);
@@ -120,7 +125,6 @@ namespace Business_Layer.Services
                     //Not Implemented Yet
                     break;
             }
-            var updatedShipment = await _repository.UpdateShipmentAsync(shipment);
             return updatedShipment!;
         }
     }

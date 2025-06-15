@@ -2,6 +2,7 @@
 using Domain_Layer.Entities;
 using Domain_Layer.Interfaces.Order;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -116,7 +117,12 @@ namespace Data_Access_Layer.Repositories
             orderToUpdated.PaymentDetail = order.PaymentDetail;
             orderToUpdated.UpdatedAt = DateTime.Now;
             orderToUpdated.OrderProducts = order.OrderProducts;
-
+            // Supprimer les anciens OrderStatusPerArtisans si le status est DELIVERED
+            if (order.Status == OrderStatus.DELIVERED && orderToUpdated.OrderStatusPerArtisans.Any())
+            {
+                _context.OrderStatusPerStatus.RemoveRange(orderToUpdated.OrderStatusPerArtisans);
+                orderToUpdated.OrderStatusPerArtisans.Clear();
+            }
             await _context.SaveChangesAsync();
             return orderToUpdated;
         }

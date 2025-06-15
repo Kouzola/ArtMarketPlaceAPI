@@ -27,7 +27,7 @@ namespace ArtMarketPlaceAPI.Dto.Response
         public DateTime UpdatedAt { get; set; }
         public UserResponseDto Customer { get; set; } = null!;
         public List<ProductOrderInfoDto> ProductsOrderedInfo { get; set; } = new List<ProductOrderInfoDto>();
-        public List<OrderStatusPerArtisan> OrderStatusPerArtisans { get; set; } = new List<OrderStatusPerArtisan>();
+        public List<OrderStatusPerArtisanDto> OrderStatusPerArtisans { get; set; } = new List<OrderStatusPerArtisanDto>();
 
     }
 }

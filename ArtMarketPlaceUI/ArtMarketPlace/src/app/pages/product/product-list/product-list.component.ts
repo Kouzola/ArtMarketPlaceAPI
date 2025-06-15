@@ -68,7 +68,8 @@ export class ProductListComponent implements OnInit{
     this.cartService.AddItemToCart(
       {userId: this.userService.getUserTokenInfo().id, productId: productId, quantity: 1, customizationId: 0 }
     ).subscribe({
-      next: (v) => this.toastService.showSuccesToast("Product Added to Cart!")
+      next: (v) => this.toastService.showSuccesToast("Product Added to Cart!"),
+      error: (e) => this.toastService.showErrorToast("Product not added to cart!"),
     });
   }
 
